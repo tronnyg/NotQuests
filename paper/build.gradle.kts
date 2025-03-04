@@ -178,12 +178,11 @@ dependencies {
 
 
     compileOnly("io.lumine:Mythic-Dist:5.3.0-SNAPSHOT")
-    compileOnly(files("libs/EliteMobs-9.2.3.jar")) // No Repo existent
-    compileOnly(files("libs/ProjectKorra-1.11.3.jar")) // No Repo existent
+    compileOnly(files("libs/EliteMobs-9.3.2.jar")) // No Repo existent
+    compileOnly(files("libs/ProjectKorra-1.11.2.jar")) // No Repo existent
 
 
-    compileOnly("org.betonquest:betonquest:2.2.0")
-    //compileOnly(files("libs/betonquest-2.0.1.jar"))
+    compileOnly(files("libs/betonquest-2.2.1.jar"))
 
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
@@ -245,7 +244,6 @@ dependencies {
     compileOnly(files("libs/EcoBosses-v8.78.0.jar"))
     compileOnly("com.willfp:eco:6.38.3")
 
-    compileOnly(files("libs/znpcs-5.0.jar")) // No Repo existent
     compileOnly(files("libs/ProjectKorra-1.11.2.jar")) // No Repo existent
     compileOnly(files("libs/EliteMobs.jar")) // No Repo existent
 

@@ -25,7 +25,6 @@ import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.events.hooks.*;
 import rocks.gravili.notquests.paper.managers.integrations.betonquest.BetonQuestManager;
 import rocks.gravili.notquests.paper.managers.integrations.citizens.CitizensManager;
-import rocks.gravili.notquests.paper.managers.integrations.znpcs.ZNPCsManager;
 import rocks.gravili.notquests.paper.placeholders.QuestPlaceholders;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -56,7 +55,6 @@ public class IntegrationsManager {
 
   private boolean floodgateEnabled = false;
 
-  private boolean zNPCsEnabled = false;
 
 
   // Managers
@@ -71,7 +69,6 @@ public class IntegrationsManager {
   private EcoBossesManager ecoBossesManager;
   private FloodgateManager floodgateManager;
 
-  private ZNPCsManager zNPCsManager;
 
 
   public IntegrationsManager(final NotQuests main) {
@@ -340,35 +337,6 @@ public class IntegrationsManager {
                 })
     );
 
-    integrations.add(
-        new Integration(main, "ServersNPC")
-            .setEnableCondition(() -> main.getConfiguration().isIntegrationZNPCsEnabled())
-            .setRunWhenEnabled(
-                () -> {
-                  zNPCsEnabled = true;
-                  zNPCsManager = new ZNPCsManager(main);
-                  return true;
-                })
-            .setRunWhenRegisteringEventsOnTime(
-                () -> {
-                  main.getMain()
-                      .getServer()
-                      .getPluginManager()
-                      .registerEvents(new ZNPCsEvents(main), main.getMain());
-                })
-            .setRunAlsoWhenEnabledLate(
-                () -> {
-                  main.getDataManager().setAlreadyLoadedNPCs(false);
-                  main.getMain()
-                      .getServer()
-                      .getPluginManager()
-                      .registerEvents(new ZNPCsEvents(main), main.getMain());
-                  if (!main.getDataManager().isAlreadyLoadedNPCs()) { // Just making sure
-                    main.getDataManager().loadNPCData();
-                  }
-                })
-    );
-
     integrationsNotEnabled.addAll(integrations);
   }
 
@@ -530,10 +498,6 @@ public class IntegrationsManager {
     return floodgateEnabled;
   }
 
-  public final boolean isZNPCsEnabled() {
-    return zNPCsEnabled;
-  }
-
   public final MythicMobsManager getMythicMobsManager() {
     return mythicMobsManager;
   }
@@ -556,10 +520,6 @@ public class IntegrationsManager {
 
   public final CitizensManager getCitizensManager() {
     return citizensManager;
-  }
-
-  public final ZNPCsManager getZNPCsManager() {
-    return zNPCsManager;
   }
 
   public final ProjectKorraManager getProjectKorraManager() {

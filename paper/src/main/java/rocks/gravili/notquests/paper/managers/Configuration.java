@@ -126,22 +126,11 @@ public class Configuration {
   private boolean integrationEcoBossesEnabled = true;
   private boolean integrationUltimateJobsEnabled = true;
 
-  private boolean integrationZNPCsEnabled = true;
 
 
   private boolean objectiveUnlockConditionsCheckOnAnyAction = true;
 
   private int objectiveUnlockConditionsCheckRegularInterval = -1;
-
-
-  public boolean isIntegrationZNPCsEnabled() {
-    return integrationZNPCsEnabled;
-  }
-
-  public void setIntegrationZNPCsEnabled(boolean integrationZNPCsEnabled) {
-    this.integrationZNPCsEnabled = integrationZNPCsEnabled;
-  }
-
 
   public boolean isIntegrationFloodgateEnabled() {
     return integrationFloodgateEnabled;

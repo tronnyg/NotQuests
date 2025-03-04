@@ -1118,12 +1118,6 @@ public class DataManager {
                 true
         ));
 
-        configuration.setIntegrationZNPCsEnabled(getGeneralConfigBoolean(
-            "integrations.zNPCs.enabled",
-            true
-        ));
-
-
         configuration.setIntegrationFloodgateEnabled(getGeneralConfigBoolean(
             "integrations.floodgate.enabled",
             true
