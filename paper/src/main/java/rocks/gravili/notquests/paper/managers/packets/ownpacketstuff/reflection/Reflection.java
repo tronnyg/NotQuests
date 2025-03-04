@@ -18,12 +18,13 @@
 
 package rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.reflection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class Reflection {
 

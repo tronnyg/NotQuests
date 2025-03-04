@@ -18,85 +18,77 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import org.bukkit.command.CommandSender;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.structs.CompletedQuest;
 import rocks.gravili.notquests.paper.structs.Quest;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
-/** This variable is true if the Quest is on cooldown for the player */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * This variable is true if the Quest is on cooldown for the player
+ */
 public class QuestOnCooldownVariable extends Variable<Boolean> {
-  public QuestOnCooldownVariable(NotQuests main) {
-    super(main);
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("Quest to check")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Quest Name]",
-                          "[...]");
-
-                  ArrayList<String> suggestions = new ArrayList<>();
-                  for (Quest quest : main.getQuestManager().getAllQuests()) {
-                    suggestions.add(quest.getIdentifier() );
-                  }
-                  return suggestions;
-                })
-            .single()
-            .build());
-  }
-
-  @Override
-  public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
-    final Quest quest = main.getQuestManager().getQuest(getRequiredStringValue("Quest to check"));
-
-    if (quest == null || questPlayer == null) {
-      return false;
+    public QuestOnCooldownVariable(NotQuests main) {
+        super(main);
+        addRequiredString(StringVariableValueParser.of("Quest to check", null, (context, lastString) -> {
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Quest Name]", "[...]");
+            ArrayList<Suggestion> suggestions = new ArrayList<>();
+            for (Quest quest : main.getQuestManager().getAllQuests()) {
+                suggestions.add(Suggestion.suggestion(quest.getIdentifier()));
+            }
+            return CompletableFuture.completedFuture(suggestions);
+        }));
     }
 
-    // int completedAmount = 0; //only needed for maxAccepts
+    @Override
+    public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
+        final Quest quest = main.getQuestManager().getQuest(getRequiredStringValue("Quest to check"));
 
-    long mostRecentCompleteTime = 0;
-    for (final CompletedQuest completedQuest : questPlayer.getCompletedQuests()) {
-      if (completedQuest.getQuest().equals(quest)) {
-        // completedAmount += 1;
-        if (completedQuest.getTimeCompleted() > mostRecentCompleteTime) {
-          mostRecentCompleteTime = completedQuest.getTimeCompleted();
+        if (quest == null || questPlayer == null) {
+            return false;
         }
-      }
+
+        // int completedAmount = 0; //only needed for maxAccepts
+
+        long mostRecentCompleteTime = 0;
+        for (final CompletedQuest completedQuest : questPlayer.getCompletedQuests()) {
+            if (completedQuest.getQuest().equals(quest)) {
+                // completedAmount += 1;
+                if (completedQuest.getTimeCompleted() > mostRecentCompleteTime) {
+                    mostRecentCompleteTime = completedQuest.getTimeCompleted();
+                }
+            }
+        }
+
+        final long completeTimeDifference = System.currentTimeMillis() - mostRecentCompleteTime;
+        final long completeTimeDifferenceMinutes = TimeUnit.MILLISECONDS.toMinutes(completeTimeDifference);
+
+        return completeTimeDifferenceMinutes < quest.getAcceptCooldownComplete(); // on cooldown
     }
 
-    final long completeTimeDifference = System.currentTimeMillis() - mostRecentCompleteTime;
-    final long completeTimeDifferenceMinutes = TimeUnit.MILLISECONDS.toMinutes(completeTimeDifference);
+    @Override
+    public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
+        return false;
+    }
 
-    return completeTimeDifferenceMinutes < quest.getAcceptCooldownComplete(); // on cooldown
-  }
+    @Override
+    public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+        return null;
+    }
 
-  @Override
-  public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
-    return false;
-  }
+    @Override
+    public String getPlural() {
+        return "Quest on cooldown";
+    }
 
-  @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    return null;
-  }
-
-  @Override
-  public String getPlural() {
-    return "Quest on cooldown";
-  }
-
-  @Override
-  public String getSingular() {
-    return "Quest on cooldown";
-  }
+    @Override
+    public String getSingular() {
+        return "Quest on cooldown";
+    }
 }

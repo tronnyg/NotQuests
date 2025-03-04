@@ -18,61 +18,62 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerHealthVariable extends Variable<Double> {
 
-  public PlayerHealthVariable(NotQuests main) {
-    super(main);
-    setCanSetValue(true);
-  }
-
-  @Override
-  public Double getValueInternally(QuestPlayer questPlayer, Object... objects) {
-    if (questPlayer != null) {
-      return questPlayer.getPlayer().getHealth();
-    } else {
-      return 0d;
-    }
-  }
-
-  @Override
-  public boolean setValueInternally(Double newValue, QuestPlayer questPlayer, Object... objects) {
-    if (questPlayer != null) {
-      questPlayer.getPlayer().setHealth(newValue);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    AttributeInstance maxValueInstance =
-        questPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
-    if (maxValueInstance == null) {
-      return null;
+    public PlayerHealthVariable(NotQuests main) {
+        super(main);
+        setCanSetValue(true);
     }
 
-    List<String> possibleValues = new ArrayList<>();
-    for (double health = 0; health <= maxValueInstance.getValue(); health += 0.5d) {
-      possibleValues.add("" + health);
+    @Override
+    public Double getValueInternally(QuestPlayer questPlayer, Object... objects) {
+        if (questPlayer != null) {
+            return questPlayer.getPlayer().getHealth();
+        } else {
+            return 0d;
+        }
     }
-    return possibleValues;
-  }
 
-  @Override
-  public String getPlural() {
-    return "Health";
-  }
+    @Override
+    public boolean setValueInternally(Double newValue, QuestPlayer questPlayer, Object... objects) {
+        if (questPlayer != null) {
+            questPlayer.getPlayer().setHealth(newValue);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-  @Override
-  public String getSingular() {
-    return "Health";
-  }
+    @Override
+    public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+        AttributeInstance maxValueInstance = questPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (maxValueInstance == null) {
+            return null;
+        }
+
+        List<Suggestion> possibleValues = new ArrayList<>();
+        for (double health = 0; health <= maxValueInstance.getValue(); health += 0.5d) {
+            possibleValues.add(Suggestion.suggestion(String.valueOf(health)));
+        }
+        return possibleValues;
+    }
+
+    @Override
+    public String getPlural() {
+        return "Health";
+    }
+
+    @Override
+    public String getSingular() {
+        return "Health";
+    }
 }

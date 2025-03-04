@@ -18,198 +18,165 @@
 
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.bukkit.parsers.WorldArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.bukkit.parser.WorldParser.worldParser;
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+
 public class BeamAction extends Action {
 
-  private String beamName = "";
-  private boolean remove = false;
-  private Location beamLocation = null;
+    private String beamName = "";
+    private boolean remove = false;
+    private Location beamLocation = null;
 
-  public BeamAction(final NotQuests main) {
-    super(main);
-  }
+    public BeamAction(final NotQuests main) {
+        super(main);
+    }
 
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> builder,
-      ActionFor actionFor) {
-    manager.command(
-        builder
-            .argument(
-                StringArgument.<CommandSender>newBuilder("beamName")
-                    .withSuggestionsProvider(
-                        (context, lastString) -> {
-                          ArrayList<String> completions = new ArrayList<>();
-
-                          completions.add("<Enter beam name>");
-
-                          final List<String> allArgs = context.getRawInput();
-                          main.getUtilManager()
-                              .sendFancyCommandCompletion(
-                                  context.getSender(),
-                                  allArgs.toArray(new String[0]),
-                                  "[Beam Name]",
-                                  "[...]");
-
-                          return completions;
-                        })
-                    .build(),
-                ArgumentDescription.of("Beam Name."))
-            .literal("remove")
-            .handler(
-                (context) -> {
-                  String beamName = context.get("beamName");
-
-                  BeamAction beamAction = new BeamAction(main);
-                  beamAction.setBeamName(beamName);
-                  beamAction.setRemove(true);
-
-                  main.getActionManager().addAction(beamAction, context, actionFor);
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> builder,
+            ActionFor actionFor) {
+        manager.command(builder.required("beamName", stringParser(), Description.of("Beam Name."), (context, lastString) -> {
+                    ArrayList<Suggestion> completions = new ArrayList<>();
+                    completions.add(Suggestion.suggestion("<Enter beam name>"));
+                    main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Beam Name]", "[...]");
+                    return CompletableFuture.completedFuture(completions);
+                })
+                .literal("remove")
+                .handler((context) -> {
+                    String beamName = context.get("beamName");
+                    BeamAction beamAction = new BeamAction(main);
+                    beamAction.setBeamName(beamName);
+                    beamAction.setRemove(true);
+                    main.getActionManager().addAction(beamAction, context, actionFor);
                 }));
 
-    manager.command(
-        builder
-            .argument(
-                StringArgument.<CommandSender>newBuilder("beamName")
-                    .withSuggestionsProvider(
-                        (context, lastString) -> {
-                          ArrayList<String> completions = new ArrayList<>();
+        manager.command(builder.required("beamName", stringParser(), Description.of("Beam Name."), (context, lastString) -> {
+                    ArrayList<Suggestion> completions = new ArrayList<>();
+                    completions.add(Suggestion.suggestion("<Enter beam name>"));
+                    main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Beam Name]", "[...]");
+                    return CompletableFuture.completedFuture(completions);
+                })
+                .literal("spawn")
+                .required("world", worldParser(), Description.of("World name"))
+                .required("x", integerParser(1, 5000), Description.of("X coordinate"))
+                .required("y", integerParser(1, 5000), Description.of("Y coordinate"))
+                .required("z", integerParser(1, 5000), Description.of("Z coordinate"))
+                .handler(
+                        (context) -> {
+                            String beamName = context.get("beamName");
+                            final World world = context.get("world");
+                            final Vector coordinates = new Vector(context.get("x"), context.get("y"), context.get("z"));
+                            final Location location = coordinates.toLocation(world);
 
-                          completions.add("<Enter beam name>");
+                            BeamAction beamAction = new BeamAction(main);
+                            beamAction.setBeamName(beamName);
+                            beamAction.setRemove(false);
+                            beamAction.setBeamLocation(location);
+                            main.getActionManager().addAction(beamAction, context, actionFor);
+                        }));
+    }
 
-                          final List<String> allArgs = context.getRawInput();
-                          main.getUtilManager()
-                              .sendFancyCommandCompletion(
-                                  context.getSender(),
-                                  allArgs.toArray(new String[0]),
-                                  "[Beam Name]",
-                                  "[...]");
+    public final String getBeamName() {
+        return beamName;
+    }
 
-                          return completions;
-                        })
-                    .build(),
-                ArgumentDescription.of("Beam Name."))
-            .literal("spawn")
-            .argument(WorldArgument.of("world"), ArgumentDescription.of("World name"))
-            .argument(IntegerArgument.newBuilder("x"), ArgumentDescription.of("X coordinate"))
-            .argument(IntegerArgument.newBuilder("y"), ArgumentDescription.of("Y coordinate"))
-            .argument(IntegerArgument.newBuilder("z"), ArgumentDescription.of("Z coordinate"))
-            .handler(
-                (context) -> {
-                  String beamName = context.get("beamName");
-                  final World world = context.get("world");
-                  final Vector coordinates =
-                      new Vector(context.get("x"), context.get("y"), context.get("z"));
-                  final Location location = coordinates.toLocation(world);
+    public void setBeamName(final String beamName) {
+        this.beamName = beamName;
+    }
 
-                  BeamAction beamAction = new BeamAction(main);
-                  beamAction.setBeamName(beamName);
-                  beamAction.setRemove(false);
-                  beamAction.setBeamLocation(location);
+    public final boolean isRemove() {
+        return remove;
+    }
 
-                  main.getActionManager().addAction(beamAction, context, actionFor);
-                }));
-  }
+    public void setRemove(final boolean remove) {
+        this.remove = remove;
+    }
 
-  public final String getBeamName() {
-    return beamName;
-  }
+    public final Location getBeamLocation() {
+        return beamLocation;
+    }
 
-  public void setBeamName(final String beamName) {
-    this.beamName = beamName;
-  }
+    public void setBeamLocation(final Location beamLocation) {
+        this.beamLocation = beamLocation;
+    }
 
-  public final boolean isRemove() {
-    return remove;
-  }
-
-  public void setRemove(final boolean remove) {
-    this.remove = remove;
-  }
-
-  public final Location getBeamLocation() {
-    return beamLocation;
-  }
-
-  public void setBeamLocation(final Location beamLocation) {
-    this.beamLocation = beamLocation;
-  }
-
-  @Override
-  public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
-    if (isRemove()) {
-      if (questPlayer != null) {
-        if (questPlayer.getActiveLocationsAndBeacons().containsKey(getBeamName())) {
-          questPlayer.clearBeacons();
+    @Override
+    public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
+        if (isRemove()) {
+            if (questPlayer != null) {
+                if (questPlayer.getActiveLocationsAndBeacons().containsKey(getBeamName())) {
+                    questPlayer.clearBeacons();
+                }
+            }
+        } else {
+            if (getBeamLocation() == null) {
+                return;
+            }
+            questPlayer.trackBeacon(beamName, getBeamLocation());
         }
-      }
-    } else {
-      if (getBeamLocation() == null) {
-        return;
-      }
-      questPlayer.trackBeacon(beamName, getBeamLocation());
     }
-  }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {
-    configuration.set(initialPath + ".specifics.beamName", getBeamName());
-    configuration.set(initialPath + ".specifics.remove", isRemove());
-    configuration.set(initialPath + ".specifics.location", getBeamLocation());
-  }
-
-  @Override
-  public void load(final FileConfiguration configuration, String initialPath) {
-    this.beamName = configuration.getString(initialPath + ".specifics.beamName");
-    this.remove = configuration.getBoolean(initialPath + ".specifics.remove");
-    this.beamLocation = configuration.getLocation(initialPath + ".specifics.location", null);
-  }
-
-  @Override
-  public void deserializeFromSingleLineString(ArrayList<String> arguments) {
-    this.beamName = arguments.get(0);
-
-    this.remove = String.join(" ", arguments).toLowerCase(Locale.ROOT).contains("--remove");
-
-    if (!remove) {
-      final World world = Bukkit.getWorld(arguments.get(1));
-
-      if (world != null) {
-        final Vector coordinates =
-            new Vector(
-                Integer.parseInt(arguments.get(2)),
-                Integer.parseInt(arguments.get(3)),
-                Integer.parseInt(arguments.get(4)));
-
-        this.beamLocation = coordinates.toLocation(world);
-      }
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+        configuration.set(initialPath + ".specifics.beamName", getBeamName());
+        configuration.set(initialPath + ".specifics.remove", isRemove());
+        configuration.set(initialPath + ".specifics.location", getBeamLocation());
     }
-  }
 
-  @Override
-  public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
-    if (remove) {
-      return "Despawns beam: " + getBeamName();
-    } else {
-      return "Spawns beam: " + getBeamName();
+    @Override
+    public void load(final FileConfiguration configuration, String initialPath) {
+        this.beamName = configuration.getString(initialPath + ".specifics.beamName");
+        this.remove = configuration.getBoolean(initialPath + ".specifics.remove");
+        this.beamLocation = configuration.getLocation(initialPath + ".specifics.location", null);
     }
-  }
+
+    @Override
+    public void deserializeFromSingleLineString(ArrayList<String> arguments) {
+        this.beamName = arguments.get(0);
+
+        this.remove = String.join(" ", arguments).toLowerCase(Locale.ROOT).contains("--remove");
+
+        if (!remove) {
+            final World world = Bukkit.getWorld(arguments.get(1));
+
+            if (world != null) {
+                final Vector coordinates =
+                        new Vector(
+                                Integer.parseInt(arguments.get(2)),
+                                Integer.parseInt(arguments.get(3)),
+                                Integer.parseInt(arguments.get(4)));
+
+                this.beamLocation = coordinates.toLocation(world);
+            }
+        }
+    }
+
+    @Override
+    public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
+        if (remove) {
+            return "Despawns beam: " + getBeamName();
+        } else {
+            return "Spawns beam: " + getBeamName();
+        }
+    }
 }

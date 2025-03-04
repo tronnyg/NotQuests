@@ -21,11 +21,12 @@ package rocks.gravili.notquests.paper.managers.integrations;
 import com.willfp.ecobosses.EcoBossesPlugin;
 import com.willfp.ecobosses.bosses.Bosses;
 import com.willfp.ecobosses.bosses.EcoBoss;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.bukkit.Location;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.actions.SpawnMobAction;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class EcoBossesManager {
   private final NotQuests main;

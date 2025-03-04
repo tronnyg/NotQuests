@@ -1,10 +1,10 @@
 package rocks.gravili.notquests.paper.managers.integrations.znpcs;
 
 import io.github.gonalez.znpcs.ServersNPC;
-import java.util.ArrayList;
-
 import io.github.gonalez.znpcs.npc.NPC;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.ArrayList;
 
 public class ZNPCsManager {
   private final NotQuests main;

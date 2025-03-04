@@ -18,20 +18,23 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 
 public class RunCommandObjective extends Objective {
 
@@ -45,47 +48,19 @@ public class RunCommandObjective extends Objective {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
-    manager.command(
-        addObjectiveBuilder
-            .argument(
-                NumberVariableValueArgument.newBuilder("amount", main, null),
-                ArgumentDescription.of("Amount of times the command needs to be run"))
-            .argument(
-                StringArgument.<CommandSender>newBuilder("Command")
-                    .withSuggestionsProvider(
-                        (context, lastString) -> {
-                          final List<String> allArgs = context.getRawInput();
-                          main.getUtilManager()
-                              .sendFancyCommandCompletion(
-                                  context.getSender(),
-                                  allArgs.toArray(new String[0]),
-                                  "[Enter command (put between \" \" if you want to use spaces)]",
-                                  "");
-
-                          ArrayList<String> completions = new ArrayList<>();
-
-                          completions.add(
-                              "<Enter command (put between \" \" if you want to use spaces)>");
-                          return completions;
-                        })
-                    .quoted()
-                    .build(),
-                ArgumentDescription.of("Command"))
-            .flag(
-                manager
-                    .flagBuilder("ignoreCase")
-                    .withDescription(
-                        ArgumentDescription.of(
-                            "Makes it so it doesn't matter whether the player uses uppercase or lowercase characters")))
-            .flag(
-                manager
-                    .flagBuilder("cancelCommand")
-                    .withDescription(
-                        ArgumentDescription.of(
-                            "Makes it so the command will be cancelled (not actually run) when entered while this objective is active")))
+    manager.command(addObjectiveBuilder
+            .required("amount", integerParser(1), Description.of("Amount of times the command needs to be run"))
+                    .required("Command", stringParser(), Description.of("Command to run"), (context, lastString) -> {
+                        main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Enter command (put between \" \" if you want to use spaces)]", "");
+                        ArrayList<Suggestion> completions = new ArrayList<>();
+                        completions.add(Suggestion.suggestion("<Enter command (put between \" \" if you want to use spaces)>"));
+                        return CompletableFuture.completedFuture(completions);
+                    })
+            .flag(manager.flagBuilder("ignoreCase").withDescription(Description.of("Makes it so it doesn't matter whether the player uses uppercase or lowercase characters")))
+            .flag(manager.flagBuilder("cancelCommand").withDescription(Description.of("Makes it so the command will be cancelled (not actually run) when entered while this objective is active")))
             .handler(
                 (context) -> {
                   String command = context.get("Command");

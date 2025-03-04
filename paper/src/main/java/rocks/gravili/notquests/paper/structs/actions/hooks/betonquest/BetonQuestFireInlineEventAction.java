@@ -18,29 +18,32 @@
 
 package rocks.gravili.notquests.paper.structs.actions.hooks.betonquest;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.StringArrayArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.api.QuestEvent;
 import org.betonquest.betonquest.api.profiles.Profile;
 import org.betonquest.betonquest.config.Config;
 import org.betonquest.betonquest.exceptions.QuestRuntimeException;
-import org.betonquest.betonquest.quest.event.legacy.QuestEventFactory;
+import org.betonquest.betonquest.quest.legacy.LegacyTypeFactory;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.actions.Action;
 import rocks.gravili.notquests.paper.structs.actions.ActionFor;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.parser.standard.StringArrayParser.stringArrayParser;
 
 public class BetonQuestFireInlineEventAction extends Action {
 
@@ -53,36 +56,23 @@ public class BetonQuestFireInlineEventAction extends Action {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> builder,
       ActionFor actionFor) {
-    manager.command(
-        builder
-            .argument(
-                StringArrayArgument.of(
-                    "event",
-                    (context, lastString) -> {
-                      final List<String> allArgs = context.getRawInput();
-                      main.getUtilManager()
-                          .sendFancyCommandCompletion(
-                              context.getSender(),
-                              allArgs.toArray(new String[0]),
-                              "<Enter new BetonQuest inline event>",
-                              "");
-                      ArrayList<String> completions = new ArrayList<>();
-                      String rawInput = context.getRawInputJoined();
-                      String curInput =
-                          context
-                              .getRawInputJoined()
-                              .substring(
-                                  context.getRawInputJoined().indexOf("BetonQuestFireInlineEvent ")
-                                      + 26);
+    manager.command(builder.required("event", stringArrayParser(), Description.of("BetonQuest Event"), (context, lastString) -> {
+                      main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "<Enter new BetonQuest inline event>", "");
+                      ArrayList<Suggestion> completions = new ArrayList<>();
+                      String rawInput = context.rawInput().input();
+                      //String curInput = context.getRawInputJoined().substring(context.getRawInputJoined().indexOf("BetonQuestFireInlineEvent ") + 26);
+                      String curInput = rawInput.substring(rawInput.indexOf("BetonQuestFireInlineEvent ") + 26);
                       String[] curInputSplit = curInput.split(" ");
 
                       int length = curInputSplit.length;
                       if (curInput.endsWith(" ")) {
                         length++;
                       }
+
+
                       /*context.getSender().sendMessage(curInput);
                       context.getSender().sendMessage(curInputSplit);
                       context.getSender().sendMessage("Length: " + length);*/
@@ -99,11 +89,11 @@ public class BetonQuestFireInlineEventAction extends Action {
                           // ignored.printStackTrace();
                         }
                         if (eventTypes != null) {
-                          completions.addAll(eventTypes.keySet());
+                          completions.addAll(eventTypes.keySet().stream().map(Suggestion::suggestion).toList());
                         }
                       } else {
                         final String eventClassName = curInputSplit[0];
-                        final QuestEventFactory questEventFactory =
+                        final LegacyTypeFactory<QuestEvent> questEventFactory =
                             BetonQuest.getInstance().getEventFactory(eventClassName);
                         if (questEventFactory == null) {
                           return null;
@@ -112,50 +102,49 @@ public class BetonQuestFireInlineEventAction extends Action {
                         switch (eventClassName) {
                           case "cancel":
                             if (length == 2) {
-                              completions.add("<name of a quest canceler, as defined in main.yml>");
+                              completions.add(Suggestion.suggestion("<name of a quest canceler, as defined in main.yml>"));
                             }
                             break;
                           case "chat":
-                            completions.add("<enter chat message>");
+                            completions.add(Suggestion.suggestion("<enter chat message>"));
                             break;
                           case "chestclear":
                             if (length == 2) {
-                              completions.add("<location>");
+                              completions.add(Suggestion.suggestion("<location>"));
                             }
                             break;
                           case "chestgive":
                             if (length == 2) {
-                              completions.add("<location>");
+                              completions.add(Suggestion.suggestion("<location>"));
                             } else if (length == 3) {
-                              completions.add("<items>");
+                              completions.add(Suggestion.suggestion("<items>"));
                             }
                             break;
                           case "chesttake":
                             if (length == 2) {
-                              completions.add("<location>");
+                              completions.add(Suggestion.suggestion("<location>"));
                             } else if (length == 3) {
-                              completions.add("<items>");
+                              completions.add(Suggestion.suggestion("<items>"));
                             }
                             break;
                           case "clear":
                             if (length == 2) {
-                              completions.add("<mobs>");
+                              completions.add(Suggestion.suggestion("<mobs>"));
                             } else if (length == 3) {
-                              completions.add("<location>");
+                              completions.add(Suggestion.suggestion("<location>"));
                             } else if (length == 4) {
-                              completions.add("<radius around location>");
+                              completions.add(Suggestion.suggestion("<radius around location>"));
                             } else if (length == 5) {
-                              completions.add("<Optional arguments>");
+                              completions.add(Suggestion.suggestion("<Optional arguments>"));
                             }
                             break;
                           default:
-                            completions.add("<arguments>");
+                            completions.add(Suggestion.suggestion("<arguments>"));
                         }
                       }
 
-                      return completions;
-                    }),
-                ArgumentDescription.of("BetonQuest Event"))
+                      return CompletableFuture.completedFuture(completions);
+                    })
             .handler(
                 (context) -> {
                   final String event = String.join(" ", (String[]) context.get("event"));
@@ -180,7 +169,7 @@ public class BetonQuestFireInlineEventAction extends Action {
 
   public final QuestEvent getQuestEvent() {
     if (cachedEvent == null) {
-      final QuestEventFactory questEventFactory =
+      final LegacyTypeFactory<QuestEvent> questEventFactory =
           BetonQuest.getInstance().getEventFactory(getEvent().split(" ")[0]);
       if (questEventFactory == null) {
         // if it's null then there is no such type registered, log
@@ -208,7 +197,7 @@ public class BetonQuestFireInlineEventAction extends Action {
               instruction); // TODO: 1.19 check
 
       try {
-        cachedEvent = questEventFactory.parseEventInstruction(instructionObject);
+        cachedEvent = questEventFactory.parseInstruction(instructionObject);
       } catch (Exception e) {
         main.getLogManager()
             .warn("Something went wrong creating BetonQuest Event from: " + getEvent());

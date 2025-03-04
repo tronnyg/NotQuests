@@ -18,17 +18,18 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.EntityTypeSelector;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.EntityTypeParser.entityTypeParser;
 
 public class BreedObjective extends Objective {
   private String entityToBreedType = "";
@@ -39,17 +40,12 @@ public class BreedObjective extends Objective {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
-    manager.command(
-        addObjectiveBuilder
-            .argument(
-                EntityTypeSelector.of("entityType", main, false),
-                ArgumentDescription.of("Type of Entity the player has to breed."))
-            .argument(
-                NumberVariableValueArgument.newBuilder("amount", main, null),
-                ArgumentDescription.of("Amount of times the player needs to breed this entity."))
+    manager.command(addObjectiveBuilder
+            .required("entityType", entityTypeParser(main, false), Description.of("Type of Entity the player has to breed."))
+            .required("amount", integerParser(1), Description.of("Amount of times the player needs to breed this entity."))
             .handler(
                 (context) -> {
                   final String entityType = context.get("entityType");

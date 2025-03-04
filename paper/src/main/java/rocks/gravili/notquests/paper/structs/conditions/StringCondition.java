@@ -18,25 +18,29 @@
 
 package rocks.gravili.notquests.paper.structs.conditions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.flags.CommandFlag;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.parser.flag.CommandFlag;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.BooleanVariableValueArgument;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
-import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueArgument;
+import rocks.gravili.notquests.paper.commands.arguments.variables.BooleanVariableValueParser;
+import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.managers.expressions.NumberExpression;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.variables.Variable;
 import rocks.gravili.notquests.paper.structs.variables.VariableDataType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser.stringVariableParser;
 
 public class StringCondition extends Condition {
 
@@ -56,7 +60,7 @@ public class StringCondition extends Condition {
         additionalBooleanArguments = new HashMap<>();
     }
 
-    public static void handleCommands(NotQuests main, PaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ConditionFor conditionFor) {
+    public static void handleCommands(NotQuests main, LegacyPaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ConditionFor conditionFor) {
         for (String variableString : main.getVariablesManager().getVariableIdentifiers()) {
 
             Variable<?> variable = main.getVariablesManager().getVariableFromString(variableString);
@@ -74,23 +78,20 @@ public class StringCondition extends Condition {
 
 
             manager.command(main.getVariablesManager().registerVariableCommands(variableString, builder)
-                    .argument(StringArgument.<CommandSender>newBuilder("operator").withSuggestionsProvider((context, lastString) -> {
-                        ArrayList<String> completions = new ArrayList<>();
-                        completions.add("equals");
-                        completions.add("equalsIgnoreCase");
-                        completions.add("contains");
-                        completions.add("startsWith");
-                        completions.add("endsWith");
-                        completions.add("isEmpty");
+                    .required("operator", stringParser(), Description.of("String operator."),(context, lastString) -> {
+                        ArrayList<Suggestion> completions = new ArrayList<>();
+                        completions.add(Suggestion.suggestion("equals"));
+                        completions.add(Suggestion.suggestion("equalsIgnoreCase"));
+                        completions.add(Suggestion.suggestion("contains"));
+                        completions.add(Suggestion.suggestion("startsWith"));
+                        completions.add(Suggestion.suggestion("endsWith"));
+                        completions.add(Suggestion.suggestion("isEmpty"));
+                        main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[String Comparison Operator]", "[...]");
 
-                        final List<String> allArgs = context.getRawInput();
-                        main.getUtilManager().sendFancyCommandCompletion(context.getSender(), allArgs.toArray(new String[0]), "[String Comparison Operator]", "[...]");
-
-                        return completions;
-                    }).build(), ArgumentDescription.of("String operator."))
-                    .argument(StringVariableValueArgument.newBuilder("string", main, variable), ArgumentDescription.of("String"))
+                        return CompletableFuture.completedFuture(completions);
+                    })
+                    .required("string", stringVariableParser("string", variable), Description.of("String"))
                     .handler((context) -> {
-
                         String string = context.get("string");
                         string = string.replace("__", " ");
 
@@ -104,23 +105,23 @@ public class StringCondition extends Condition {
 
 
                         HashMap<String, String> additionalStringArguments = new HashMap<>();
-                        for (StringArgument<CommandSender> stringArgument : variable.getRequiredStrings()) {
-                            additionalStringArguments.put(stringArgument.getName(), context.get(stringArgument.getName()));
+                        for(StringVariableValueParser stringParser : variable.getRequiredStrings()){
+                            additionalStringArguments.put(stringParser.getIdentifier(), context.get(stringParser.getIdentifier()));
                         }
                         stringCondition.setAdditionalStringArguments(additionalStringArguments);
 
                         HashMap<String, NumberExpression> additionalNumberArguments = new HashMap<>();
-                        for (NumberVariableValueArgument<CommandSender> numberVariableValueArgument : variable.getRequiredNumbers()) {
-                            additionalNumberArguments.put(numberVariableValueArgument.getName(), new NumberExpression(main, context.get(numberVariableValueArgument.getName())));
+                        for(NumberVariableValueParser numberParser : variable.getRequiredNumbers()){
+                            additionalNumberArguments.put(numberParser.getIdentifier(), new NumberExpression(main, context.get(numberParser.getIdentifier())));
                         }
                         stringCondition.setAdditionalNumberArguments(additionalNumberArguments);
 
                         HashMap<String, NumberExpression> additionalBooleanArguments = new HashMap<>();
-                        for (BooleanVariableValueArgument<CommandSender> booleanArgument : variable.getRequiredBooleans()) {
-                            additionalBooleanArguments.put(booleanArgument.getName(), new NumberExpression(main, context.get(booleanArgument.getName())));
+                        for(BooleanVariableValueParser booleanParser : variable.getRequiredBooleans()){
+                            additionalBooleanArguments.put(booleanParser.getIdentifier(), new NumberExpression(main, context.get(booleanParser.getIdentifier())));
                         }
-                        for (CommandFlag<?> commandFlag : variable.getRequiredBooleanFlags()) {
-                            additionalBooleanArguments.put(commandFlag.getName(), context.flags().isPresent(commandFlag.getName()) ? NumberExpression.ofStatic(main, 1) : NumberExpression.ofStatic(main, 0));
+                        for(CommandFlag<?> commandFlag : variable.getRequiredBooleanFlags()){
+                            additionalBooleanArguments.put(commandFlag.name(), context.flags().isPresent(commandFlag.name()) ? NumberExpression.ofStatic(main, 1) : NumberExpression.ofStatic(main, 0));
                         }
                         stringCondition.setAdditionalBooleanArguments(additionalBooleanArguments);
 
@@ -299,16 +300,16 @@ public class StringCondition extends Condition {
                 counter++;
                 if(counter >= 4){
                     if(variable.getRequiredStrings().size() > counterStrings){
-                        additionalStringArguments.put(variable.getRequiredStrings().get(counter-4).getName(), argument);
+                        additionalStringArguments.put(variable.getRequiredStrings().get(counter-4).getIdentifier(), argument);
                         counterStrings++;
                     } else if(variable.getRequiredNumbers().size() > counterNumbers){
-                        additionalNumberArguments.put(variable.getRequiredNumbers().get(counter - 4).getName(), new NumberExpression(main, argument));
+                        additionalNumberArguments.put(variable.getRequiredNumbers().get(counter - 4).getIdentifier(), new NumberExpression(main, argument));
                         counterNumbers++;
                     } else if(variable.getRequiredBooleans().size()  > counterBooleans){
-                        additionalBooleanArguments.put(variable.getRequiredBooleans().get(counter - 4).getName(), new NumberExpression(main, argument));
+                        additionalBooleanArguments.put(variable.getRequiredBooleans().get(counter - 4).getIdentifier(), new NumberExpression(main, argument));
                         counterBooleans++;
                     } else if(variable.getRequiredBooleanFlags().size()  > counterBooleanFlags){
-                        additionalBooleanArguments.put(variable.getRequiredBooleanFlags().get(counter - 4).getName(), new NumberExpression(main, argument));
+                        additionalBooleanArguments.put(variable.getRequiredBooleanFlags().get(counter - 4).name(), new NumberExpression(main, argument));
                         counterBooleanFlags++;
                     }
                 }

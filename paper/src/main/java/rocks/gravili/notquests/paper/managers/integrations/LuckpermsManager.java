@@ -18,12 +18,13 @@
 
 package rocks.gravili.notquests.paper.managers.integrations;
 
-import java.util.UUID;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.UUID;
 
 public class LuckpermsManager {
   private final NotQuests main;

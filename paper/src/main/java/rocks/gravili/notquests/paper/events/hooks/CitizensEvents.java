@@ -18,9 +18,6 @@
 
 package rocks.gravili.notquests.paper.events.hooks;
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
 import net.citizensnpcs.api.event.CitizensReloadEvent;
@@ -56,6 +53,10 @@ import rocks.gravili.notquests.paper.structs.objectives.TalkToNPCObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.citizens.EscortNPCObjective;
 import rocks.gravili.notquests.paper.structs.triggers.ActiveTrigger;
 import rocks.gravili.notquests.paper.structs.triggers.types.NPCDeathTrigger;
+
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CitizensEvents implements Listener {
     private final NotQuests main;

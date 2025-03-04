@@ -1,6 +1,5 @@
 package rocks.gravili.notquests.paper.managers.integrations.betonquest.conversationInterceptors;
 
-import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -14,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.ArrayList;
 
 public class NotQuestsInterceptor implements Interceptor, Listener {
 

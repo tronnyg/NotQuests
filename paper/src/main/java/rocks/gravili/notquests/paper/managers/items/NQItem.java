@@ -18,12 +18,13 @@
 
 package rocks.gravili.notquests.paper.managers.items;
 
-import java.util.Locale;
-import javax.annotation.Nullable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.data.Category;
+
+import javax.annotation.Nullable;
+import java.util.Locale;
 
 public class NQItem {
   private final NotQuests main;

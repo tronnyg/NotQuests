@@ -18,99 +18,93 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.command.CommandSender;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import static rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser.stringVariableParser;
+
 public class AdvancementVariable extends Variable<Boolean> {
-  public AdvancementVariable(NotQuests main) {
-    super(main);
-    setCanSetValue(true);
+    public AdvancementVariable(NotQuests main) {
+        super(main);
+        setCanSetValue(true);
 
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("Advancement")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Advancement Name]",
-                          "[...]");
-
-                  ArrayList<String> suggestions = new ArrayList<>();
-                  Iterator<Advancement> advancements = Bukkit.getServer().advancementIterator();
-                  while (advancements.hasNext()) {
-                    Advancement advancement = advancements.next();
-                    suggestions.add(advancement.getKey().getKey());
-                  }
-                  return suggestions;
-                })
-            .single()
-            .build());
-  }
-
-  @Override
-  public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
-    NamespacedKey namespacedKey = NamespacedKey.fromString(getRequiredStringValue("Advancement"));
-    if (namespacedKey == null) {
-      return false;
-    }
-    Advancement advancement = Bukkit.getAdvancement(namespacedKey);
-    if (advancement == null) {
-      return false;
-    }
-    return questPlayer != null
-        && questPlayer.getPlayer().getAdvancementProgress(advancement).isDone();
-  }
-
-  @Override
-  public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
-    NamespacedKey namespacedKey = NamespacedKey.fromString(getRequiredStringValue("Advancement"));
-    if (namespacedKey == null) {
-      return false;
-    }
-    Advancement advancement = Bukkit.getAdvancement(namespacedKey);
-    if (advancement == null) {
-      return false;
+        addRequiredString(StringVariableValueParser.of("Advancement", null,
+                (context, input) -> {
+                    main.getUtilManager().sendFancyCommandCompletion(context.sender(), input.input().split(" "), "[Advancement Name]", "[...]");
+                    ArrayList<Suggestion> suggestions = new ArrayList<>();
+                    Iterator<Advancement> advancements = Bukkit.getServer().advancementIterator();
+                    while (advancements.hasNext()) {
+                        Advancement advancement = advancements.next();
+                        suggestions.add(Suggestion.suggestion(advancement.getKey().getKey()));
+                    }
+                    return CompletableFuture.completedFuture(suggestions);
+                }));
     }
 
-    AdvancementProgress progress = questPlayer.getPlayer().getAdvancementProgress(advancement);
-
-    if (newValue) {
-      for (String criteria : progress.getRemainingCriteria()) {
-        progress.awardCriteria(criteria);
-      }
-    } else {
-      for (String criteria : progress.getAwardedCriteria()) {
-        progress.revokeCriteria(criteria);
-      }
+    @Override
+    public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
+        NamespacedKey namespacedKey = NamespacedKey.fromString(getRequiredStringValue("Advancement"));
+        if (namespacedKey == null) {
+            return false;
+        }
+        Advancement advancement = Bukkit.getAdvancement(namespacedKey);
+        if (advancement == null) {
+            return false;
+        }
+        return questPlayer != null
+                && questPlayer.getPlayer().getAdvancementProgress(advancement).isDone();
     }
 
-    return true;
-  }
+    @Override
+    public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
+        NamespacedKey namespacedKey = NamespacedKey.fromString(getRequiredStringValue("Advancement"));
+        if (namespacedKey == null) {
+            return false;
+        }
+        Advancement advancement = Bukkit.getAdvancement(namespacedKey);
+        if (advancement == null) {
+            return false;
+        }
 
-  @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    return null;
-  }
+        AdvancementProgress progress = questPlayer.getPlayer().getAdvancementProgress(advancement);
 
-  @Override
-  public String getPlural() {
-    return "Advancements";
-  }
+        if (newValue) {
+            for (String criteria : progress.getRemainingCriteria()) {
+                progress.awardCriteria(criteria);
+            }
+        } else {
+            for (String criteria : progress.getAwardedCriteria()) {
+                progress.revokeCriteria(criteria);
+            }
+        }
 
-  @Override
-  public String getSingular() {
-    return "Advancement";
-  }
+        return true;
+    }
+
+    @Override
+    public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+        return null;
+    }
+
+    @Override
+    public String getPlural() {
+        return "Advancements";
+    }
+
+    @Override
+    public String getSingular() {
+        return "Advancement";
+    }
 }

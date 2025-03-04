@@ -18,15 +18,12 @@
 
 package rocks.gravili.notquests.paper.structs.conditions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.parser.ArgumentParseResult;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.ActiveQuest;
 import rocks.gravili.notquests.paper.structs.Quest;
@@ -34,163 +31,127 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveHolder;
 
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+
+import static rocks.gravili.notquests.paper.commands.arguments.ObjectiveParser.objectiveParser;
+
 public class CompletedObjectiveCondition extends Condition {
 
-  private int objectiveID;
+    private int objectiveID;
 
-  public CompletedObjectiveCondition(NotQuests main) {
-    super(main);
-  }
+    public CompletedObjectiveCondition(NotQuests main) {
+        super(main);
+    }
 
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> builder,
-      ConditionFor conditionFor) {
-    if (conditionFor == ConditionFor.OBJECTIVEUNLOCK || conditionFor == ConditionFor.OBJECTIVEPROGRESS || conditionFor == ConditionFor.OBJECTIVECOMPLETE) {
-      manager.command(
-          builder
-              .argument(
-                  IntegerArgument.<CommandSender>newBuilder("Depending Objective ID")
-                      .withMin(1)
-                      .withSuggestionsProvider(
-                          (context, lastString) -> {
-                            final List<String> allArgs = context.getRawInput();
-                            main.getUtilManager()
-                                .sendFancyCommandCompletion(
-                                    context.getSender(),
-                                    allArgs.toArray(new String[0]),
-                                    "[Depending Objective ID]",
-                                    "");
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> builder,
+            ConditionFor conditionFor) {
+        if (conditionFor == ConditionFor.OBJECTIVEUNLOCK || conditionFor == ConditionFor.OBJECTIVEPROGRESS || conditionFor == ConditionFor.OBJECTIVECOMPLETE) {
+            manager.command(builder.required("dependingObjectiveId", objectiveParser(main, 0), Description.of("Depending Objective ID"), (context, lastString) -> {
+                        main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Depending Objective ID]", "");
 
-                            ArrayList<String> completions = new ArrayList<>();
+                        ArrayList<Suggestion> completions = new ArrayList<>();
 
-                            final Quest quest = context.get("quest");
-                            for (final Objective objective : quest.getObjectives()) {
-                              if (objective.getObjectiveID() != ((Objective)context.get("Objective ID")).getObjectiveID() ) { //TODO: Support nested objectives
-                                completions.add("" + objective.getObjectiveID());
-                              }
+                        final Quest quest = context.get("quest");
+                        for (final Objective objective : quest.getObjectives()) {
+                            if (objective.getObjectiveID() != ((Objective) context.get("objectiveId")).getObjectiveID()) { //TODO: Support nested objectives
+                                completions.add(Suggestion.suggestion("" + objective.getObjectiveID()));
                             }
-                            return completions;
-                          })
-                      .withParser(
-                          (context, lastString) -> {
-                            final int ID = context.get("Depending Objective ID");
-                            if (ID == (int) context.get("Depending Objective ID")) {
-                              return ArgumentParseResult.failure(
-                                  new IllegalArgumentException(
-                                      "An objective cannot depend on itself!"));
-                            }
-                            final Quest quest = context.get("quest");
-                            final Objective foundObjective = quest.getObjectiveFromID(ID);
-                            if (foundObjective == null) {
-                              return ArgumentParseResult.failure(
-                                  new IllegalArgumentException(
-                                      "Objective with the ID '"
-                                          + ID
-                                          + "' does not belong to Quest '"
-                                          + quest.getIdentifier() 
-                                          + "'!"));
-                            } else {
-                              return ArgumentParseResult.success(ID);
-                            }
-                          })
-                      .build(),
-                  ArgumentDescription.of("Depending Objective ID"))
-              .handler(
-                  (context) -> {
-                    final Quest quest = context.get("quest");
+                        }
+                        return CompletableFuture.completedFuture(completions);
+                    })
+                    .handler(
+                            (context) -> {
+                                final Quest quest = context.get("quest");
 
-                    final Objective objective = context.get("Objective ID"); //TODO: Support nested objectives
+                                final Objective objective = context.get("objectiveId"); //TODO: Support nested objectives
 
-                    final int dependingObjectiveID = context.get("Depending Objective ID");
-                    final Objective dependingObjective =
-                        quest.getObjectiveFromID(dependingObjectiveID);
-                    assert dependingObjective != null; // Shouldn't be null
+                                final int dependingObjectiveID = context.get("dependingObjectiveId");
+                                final Objective dependingObjective = quest.getObjectiveFromID(dependingObjectiveID);
+                                assert dependingObjective != null; // Shouldn't be null
 
-                    if (dependingObjective != objective) {
+                                if (dependingObjective != objective) {
 
-                      CompletedObjectiveCondition completedObjectiveCondition =
-                          new CompletedObjectiveCondition(main);
-                      completedObjectiveCondition.setObjectiveID(dependingObjectiveID);
+                                    CompletedObjectiveCondition completedObjectiveCondition =
+                                            new CompletedObjectiveCondition(main);
+                                    completedObjectiveCondition.setObjectiveID(dependingObjectiveID);
 
-                      main.getConditionsManager()
-                          .addCondition(completedObjectiveCondition, context, conditionFor);
-                    } else {
-                      context
-                          .getSender()
-                          .sendMessage(
-                              main.parse(
-                                  "<error>Error: You cannot set an objective to depend on itself!"));
-                    }
-                  }));
-    }
-  }
-
-  public void setObjectiveID(final int objectiveID) {
-    this.objectiveID = objectiveID;
-  }
-
-  public final int getObjectiveToCompleteID() {
-    return objectiveID;
-  }
-
-  public final Objective getObjectiveToComplete() {
-    return getObjectiveHolder().getObjectiveFromID(getObjectiveToCompleteID());
-  }
-
-  @Override
-  public String checkInternally(final QuestPlayer questPlayer) {
-    final Objective objectiveToComplete = getObjectiveToComplete();
-    if (objectiveToComplete == null) {
-      return "<RED>Error: Cannot find objective you have to complete first.";
+                                    main.getConditionsManager()
+                                            .addCondition(completedObjectiveCondition, context, conditionFor);
+                                } else {
+                                    context.sender().sendMessage(main.parse("<error>Error: You cannot set an objective to depend on itself!"));
+                                }
+                            }));
+        }
     }
 
-    final ObjectiveHolder objectiveHolder = getObjectiveHolder();
-    if (objectiveHolder == null) {
-      return "<RED>Error: Cannot find current quest.";
+    public void setObjectiveID(final int objectiveID) {
+        this.objectiveID = objectiveID;
     }
 
-    //TODO: Support nested objectives
-    if(objectiveHolder instanceof final Quest quest){
-      ActiveQuest activeQuest = questPlayer.getActiveQuest(quest);
-      if (activeQuest == null) {
-        return "<RED>Error: Cannot find current active quest.";
-      }
-
-      if (activeQuest.getActiveObjectiveFromID(getObjectiveToCompleteID()) != null) {
-        return "<YELLOW>Finish the following objective first: <highlight>"
-            + objectiveToComplete.getDisplayNameOrIdentifier();
-      }
-    }else {
-      return "objectiveHolder is no Quest";
+    public final int getObjectiveToCompleteID() {
+        return objectiveID;
     }
 
-    return "";
-  }
-
-  @Override
-  public String getConditionDescriptionInternally(QuestPlayer questPlayer, Object... objects) {
-    final Objective otherObjective = getObjectiveToComplete();
-    if (otherObjective != null) {
-      return "<GRAY>-- Finish Objective first: " + otherObjective.getDisplayNameOrIdentifier();
-    } else {
-      return "<GRAY>-- Finish otherObjective first: " + getObjectiveToCompleteID();
+    public final Objective getObjectiveToComplete() {
+        return getObjectiveHolder().getObjectiveFromID(getObjectiveToCompleteID());
     }
-  }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {
-    configuration.set(initialPath + ".specifics.objectiveID", getObjectiveToCompleteID());
-  }
+    @Override
+    public String checkInternally(final QuestPlayer questPlayer) {
+        final Objective objectiveToComplete = getObjectiveToComplete();
+        if (objectiveToComplete == null) {
+            return "<RED>Error: Cannot find objective you have to complete first.";
+        }
 
-  @Override
-  public void load(FileConfiguration configuration, String initialPath) {
-    objectiveID = configuration.getInt(initialPath + ".specifics.objectiveID");
-  }
+        final ObjectiveHolder objectiveHolder = getObjectiveHolder();
+        if (objectiveHolder == null) {
+            return "<RED>Error: Cannot find current quest.";
+        }
 
-  @Override
-  public void deserializeFromSingleLineString(ArrayList<String> arguments) {
-    objectiveID = Integer.parseInt(arguments.get(0));
-  }
+        //TODO: Support nested objectives
+        if (objectiveHolder instanceof final Quest quest) {
+            ActiveQuest activeQuest = questPlayer.getActiveQuest(quest);
+            if (activeQuest == null) {
+                return "<RED>Error: Cannot find current active quest.";
+            }
+
+            if (activeQuest.getActiveObjectiveFromID(getObjectiveToCompleteID()) != null) {
+                return "<YELLOW>Finish the following objective first: <highlight>"
+                        + objectiveToComplete.getDisplayNameOrIdentifier();
+            }
+        } else {
+            return "objectiveHolder is no Quest";
+        }
+
+        return "";
+    }
+
+    @Override
+    public String getConditionDescriptionInternally(QuestPlayer questPlayer, Object... objects) {
+        final Objective otherObjective = getObjectiveToComplete();
+        if (otherObjective != null) {
+            return "<GRAY>-- Finish Objective first: " + otherObjective.getDisplayNameOrIdentifier();
+        } else {
+            return "<GRAY>-- Finish otherObjective first: " + getObjectiveToCompleteID();
+        }
+    }
+
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+        configuration.set(initialPath + ".specifics.objectiveID", getObjectiveToCompleteID());
+    }
+
+    @Override
+    public void load(FileConfiguration configuration, String initialPath) {
+        objectiveID = configuration.getInt(initialPath + ".specifics.objectiveID");
+    }
+
+    @Override
+    public void deserializeFromSingleLineString(ArrayList<String> arguments) {
+        objectiveID = Integer.parseInt(arguments.get(0));
+    }
 }

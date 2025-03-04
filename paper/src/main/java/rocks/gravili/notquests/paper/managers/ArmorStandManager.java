@@ -18,8 +18,6 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.util.ArrayList;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -29,6 +27,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class ArmorStandManager {
     final NamespacedKey attachedConversationKey;

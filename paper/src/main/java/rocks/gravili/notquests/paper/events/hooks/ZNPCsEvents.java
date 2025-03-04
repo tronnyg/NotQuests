@@ -5,8 +5,6 @@ import io.github.gonalez.znpcs.npc.event.NPCInteractEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.managers.npc.NQNPC;
-import rocks.gravili.notquests.paper.managers.npc.NQNPCID;
 
 public class ZNPCsEvents implements Listener {
   private final NotQuests main;

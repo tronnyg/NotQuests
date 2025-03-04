@@ -16,9 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.JavaVersion.*
-import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import net.minecrell.pluginyml.paper.PaperPluginDescription
+import org.gradle.api.JavaVersion.VERSION_21
 
 plugins {
 
@@ -160,7 +158,9 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
-        minimize()
+        // DO NOT minimize the jar, since cloud doesnt like it
+        // Reference: https://discord.com/channels/766366162388123678/1170254709722984460/1242027222773006376
+
         archiveClassifier.set("")
 
         //relocate("rocks.gravili.notquests.spigot", "$shadowPath.spigot")

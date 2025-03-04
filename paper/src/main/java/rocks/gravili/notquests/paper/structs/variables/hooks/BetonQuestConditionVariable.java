@@ -18,9 +18,6 @@
 
 package rocks.gravili.notquests.paper.structs.variables.hooks;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.util.ArrayList;
-import java.util.List;
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.config.Config;
@@ -28,117 +25,98 @@ import org.betonquest.betonquest.exceptions.ObjectNotFoundException;
 import org.betonquest.betonquest.id.ConditionID;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.variables.Variable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 public class BetonQuestConditionVariable extends Variable<Boolean> {
-  private ConditionID cachedConditionID = null;
+    private ConditionID cachedConditionID = null;
 
-  public BetonQuestConditionVariable(NotQuests main) {
-    super(main);
+    public BetonQuestConditionVariable(NotQuests main) {
+        super(main);
 
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("package")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final ArrayList<String> completions =
-                      new ArrayList<>(Config.getPackages().keySet());
+        addRequiredString(StringVariableValueParser.of("package", null, (context, lastString) -> {
+            final ArrayList<Suggestion> completions = new ArrayList<>(Config.getPackages().keySet().stream().map(Suggestion::suggestion).toList());
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Quest Name]", "[...]");
+            return CompletableFuture.completedFuture(completions);
+        }));
 
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Package Name]",
-                          "[Event Name]");
+        addRequiredString(StringVariableValueParser.of("condition", null,  (context, lastString) -> {
+                    String packageName = context.get("package");
+                    final QuestPackage configPack = Config.getPackages().get(packageName);
+                    ConfigurationSection conditionsFileConfiguration =
+                            configPack.getConfig().getConfigurationSection("conditions");
+                    if (conditionsFileConfiguration == null) {
+                        return CompletableFuture.completedFuture(new ArrayList<>());
+                    }
+                    final List<Suggestion> completions = new ArrayList<>(conditionsFileConfiguration.getKeys(false)).stream().map(Suggestion::suggestion).toList();
+                    main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Condition Name]", "[...]");
 
-                  return completions;
-                })
-            .build());
-
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("condition")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  String packageName = context.get("package");
-                  final QuestPackage configPack = Config.getPackages().get(packageName);
-                  ConfigurationSection conditionsFileConfiguration =
-                      configPack.getConfig().getConfigurationSection("conditions");
-                  if (conditionsFileConfiguration == null) {
-                    return new ArrayList<>();
-                  }
-                  final ArrayList<String> completions =
-                      new ArrayList<>(conditionsFileConfiguration.getKeys(false));
-
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Condition Name]",
-                          "[...]");
-
-                  return completions;
-                })
-            .build());
-  }
-
-  public final ConditionID getConditionID() {
-    if (cachedConditionID == null) {
-      final QuestPackage configPack = Config.getPackages().get(getRequiredStringValue("package"));
-      try {
-        cachedConditionID = new ConditionID(configPack, getRequiredStringValue("condition"));
-      } catch (final ObjectNotFoundException e) {
-        main.getLogManager()
-            .warn(
-                "Tried to check BetonQuestCondition Variable, but the BetonQuest condition was not found: "
-                    + e.getMessage());
-        return null;
-      }
+                    return CompletableFuture.completedFuture(completions);
+                }));
     }
-    return cachedConditionID;
-  }
 
-  @Override
-  public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
-    return questPlayer != null
-        && BetonQuest.condition(
-            PlayerConverter.getID(questPlayer.getPlayer() != null ? questPlayer.getPlayer() : Bukkit.getOfflinePlayer(questPlayer.getUniqueId())),
-        getConditionID());
-
-
-  }
-
-  @Override
-  public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
-    return false;
-  }
-
-  @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    return null;
-  }
-
-  @Override
-  public String getPlural() {
-    String together = getRequiredStringValue("package") + "." + getRequiredStringValue("condition");
-    if (together.equalsIgnoreCase(".")) {
-      return "BetonQuest Conditions";
-    } else {
-      return "BetonQuest " + together + " Conditions";
+    public final ConditionID getConditionID() {
+        if (cachedConditionID == null) {
+            final QuestPackage configPack = Config.getPackages().get(getRequiredStringValue("package"));
+            try {
+                cachedConditionID = new ConditionID(configPack, getRequiredStringValue("condition"));
+            } catch (final ObjectNotFoundException e) {
+                main.getLogManager()
+                        .warn(
+                                "Tried to check BetonQuestCondition Variable, but the BetonQuest condition was not found: "
+                                        + e.getMessage());
+                return null;
+            }
+        }
+        return cachedConditionID;
     }
-  }
 
-  @Override
-  public String getSingular() {
-    String together = getRequiredStringValue("package") + "." + getRequiredStringValue("condition");
-    if (together.equalsIgnoreCase(".")) {
-      return "BetonQuest Condition";
-    } else {
-      return "BetonQuest " + together + " Condition";
+    @Override
+    public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
+        return questPlayer != null
+                && BetonQuest.condition(
+                PlayerConverter.getID(questPlayer.getPlayer() != null ? questPlayer.getPlayer() : Bukkit.getOfflinePlayer(questPlayer.getUniqueId())),
+                getConditionID());
+
+
     }
-  }
+
+    @Override
+    public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
+        return false;
+    }
+
+    @Override
+    public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+        return List.of();
+    }
+
+
+    @Override
+    public String getPlural() {
+        String together = getRequiredStringValue("package") + "." + getRequiredStringValue("condition");
+        if (together.equalsIgnoreCase(".")) {
+            return "BetonQuest Conditions";
+        } else {
+            return "BetonQuest " + together + " Conditions";
+        }
+    }
+
+    @Override
+    public String getSingular() {
+        String together = getRequiredStringValue("package") + "." + getRequiredStringValue("condition");
+        if (together.equalsIgnoreCase(".")) {
+            return "BetonQuest Condition";
+        } else {
+            return "BetonQuest " + together + " Condition";
+        }
+    }
 }

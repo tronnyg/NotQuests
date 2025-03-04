@@ -18,9 +18,10 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.util.List;
 import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 /**
  * This is the Configuration Class which contains the settings which can be configured in the

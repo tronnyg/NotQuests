@@ -18,26 +18,17 @@
 
 package rocks.gravili.notquests.paper.managers.integrations;
 
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.events.hooks.BetonQuestEvents;
-import rocks.gravili.notquests.paper.events.hooks.CitizensEvents;
-import rocks.gravili.notquests.paper.events.hooks.EcoBossesEvents;
-import rocks.gravili.notquests.paper.events.hooks.EliteMobsEvents;
-import rocks.gravili.notquests.paper.events.hooks.JobsRebornEvents;
-import rocks.gravili.notquests.paper.events.hooks.MythicMobsEvents;
-import rocks.gravili.notquests.paper.events.hooks.ProjectKorraEvents;
-import rocks.gravili.notquests.paper.events.hooks.SlimefunEvents;
-import rocks.gravili.notquests.paper.events.hooks.TownyEvents;
-import rocks.gravili.notquests.paper.events.hooks.UltimateJobsEvents;
-import rocks.gravili.notquests.paper.events.hooks.ZNPCsEvents;
+import rocks.gravili.notquests.paper.events.hooks.*;
 import rocks.gravili.notquests.paper.managers.integrations.betonquest.BetonQuestManager;
 import rocks.gravili.notquests.paper.managers.integrations.citizens.CitizensManager;
 import rocks.gravili.notquests.paper.managers.integrations.znpcs.ZNPCsManager;
 import rocks.gravili.notquests.paper.placeholders.QuestPlaceholders;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class IntegrationsManager {
   private final NotQuests main;

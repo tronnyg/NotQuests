@@ -26,7 +26,7 @@ import rocks.gravili.notquests.paper.NotQuests;
 public class UpdateManager {
   final UpdateChecker updateChecker;
   private final NotQuests main;
-  private String latestVersion = "";
+  private String latestVersion;
 
   public UpdateManager(final NotQuests main) {
     this.main = main;

@@ -18,19 +18,19 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import java.util.List;
-import org.bukkit.command.CommandSender;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
+import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.List;
 
 public class ChanceVariable extends Variable<Boolean> {
 
   public ChanceVariable(NotQuests main) {
     super(main);
 
-    addRequiredNumber(
-        NumberVariableValueArgument.<CommandSender>newBuilder("chance", main, null).build());
+    addRequiredNumber(NumberVariableValueParser.of("chance", null));
   }
 
   @Override
@@ -47,7 +47,7 @@ public class ChanceVariable extends Variable<Boolean> {
   }
 
   @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+  public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
     return null;
   }
 

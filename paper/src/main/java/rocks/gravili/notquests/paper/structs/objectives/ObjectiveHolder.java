@@ -1,8 +1,9 @@
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import java.util.ArrayList;
 import org.bukkit.configuration.file.FileConfiguration;
 import rocks.gravili.notquests.paper.structs.PredefinedProgressOrder;
+
+import java.util.ArrayList;
 
 public abstract class ObjectiveHolder {
   protected PredefinedProgressOrder predefinedProgressOrder;

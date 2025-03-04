@@ -18,12 +18,12 @@
 
 package rocks.gravili.notquests.paper.conversation;
 
+import rocks.gravili.notquests.paper.structs.actions.Action;
+import rocks.gravili.notquests.paper.structs.conditions.Condition;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import rocks.gravili.notquests.paper.structs.actions.Action;
-import rocks.gravili.notquests.paper.structs.conditions.Condition;
 
 public class ConversationLine {
   private final Speaker speaker;

@@ -18,11 +18,6 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -41,22 +36,18 @@ import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.data.Category;
 import rocks.gravili.notquests.paper.managers.npc.NQNPC;
 import rocks.gravili.notquests.paper.structs.*;
-import rocks.gravili.notquests.paper.structs.actions.Action;
-import rocks.gravili.notquests.paper.structs.actions.BooleanAction;
-import rocks.gravili.notquests.paper.structs.actions.ItemStackListAction;
-import rocks.gravili.notquests.paper.structs.actions.ListAction;
-import rocks.gravili.notquests.paper.structs.actions.NumberAction;
-import rocks.gravili.notquests.paper.structs.actions.StringAction;
-import rocks.gravili.notquests.paper.structs.conditions.BooleanCondition;
-import rocks.gravili.notquests.paper.structs.conditions.Condition;
-import rocks.gravili.notquests.paper.structs.conditions.ItemStackListCondition;
-import rocks.gravili.notquests.paper.structs.conditions.ListCondition;
-import rocks.gravili.notquests.paper.structs.conditions.NumberCondition;
-import rocks.gravili.notquests.paper.structs.conditions.StringCondition;
+import rocks.gravili.notquests.paper.structs.actions.*;
+import rocks.gravili.notquests.paper.structs.conditions.*;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveHolder;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveObjective;
 import rocks.gravili.notquests.paper.structs.triggers.Trigger;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 
 public class QuestManager {

@@ -18,15 +18,17 @@
 
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.MiniMessageSelector;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+
+import static org.incendo.cloud.minecraft.extras.parser.ComponentParser.miniMessageParser;
 
 public class SendMessageAction extends Action {
 
@@ -38,24 +40,15 @@ public class SendMessageAction extends Action {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> builder,
       ActionFor actionFor) {
     manager.command(
-        builder
-            .argument(
-                MiniMessageSelector.<CommandSender>newBuilder("Sending Message", main)
-                    .withPlaceholders()
-                    .build(),
-                ArgumentDescription.of("Message to broadcast"))
-            .handler(
-                (context) -> {
-                  final String messageToSend =
-                      String.join(" ", (String[]) context.get("Sending Message"));
-
+        builder.required("Sending Message", miniMessageParser(), Description.of("Message to broadcast"))
+            .handler((context) -> {
+                  final String messageToSend = String.join(" ", (String[]) context.get("Sending Message"));
                   SendMessageAction sendMessageAction = new SendMessageAction(main);
                   sendMessageAction.setMessageToSend(messageToSend);
-
                   main.getActionManager().addAction(sendMessageAction, context, actionFor);
                 }));
   }

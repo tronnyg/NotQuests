@@ -18,57 +18,35 @@
 
 package rocks.gravili.notquests.paper.structs.variables.reflectionVariables;
 
-import cloud.commandframework.arguments.standard.StringArgument;
+import org.incendo.cloud.suggestion.Suggestion;
+import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
+import rocks.gravili.notquests.paper.structs.QuestPlayer;
+import rocks.gravili.notquests.paper.structs.variables.Variable;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.command.CommandSender;
-import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.structs.QuestPlayer;
-import rocks.gravili.notquests.paper.structs.variables.Variable;
+import java.util.concurrent.CompletableFuture;
 
 public class ReflectionStaticFloatVariable extends Variable<Float> {
   public ReflectionStaticFloatVariable(NotQuests main) {
     super(main);
     setCanSetValue(true);
 
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("Class Path")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Class Path]",
-                          "[...]");
+    addRequiredString(StringVariableValueParser.of("Class Path", null, (context, lastString) -> {
+        main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Item Slot ID / Equipment Slot Name]", "[...]");
+        ArrayList<Suggestion> suggestions = new ArrayList<>();
+        suggestions.add(Suggestion.suggestion("<Enter class path>"));
+        return CompletableFuture.completedFuture(suggestions);
+    }));
 
-                  ArrayList<String> suggestions = new ArrayList<>();
-                  suggestions.add("<Enter class path>");
-                  return suggestions;
-                })
-            .single()
-            .build());
-
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("Field")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Field name]",
-                          "[...]");
-
-                  ArrayList<String> suggestions = new ArrayList<>();
-                  suggestions.add("<Enter field name>");
-                  return suggestions;
-                })
-            .single()
-            .build());
+    addRequiredString(StringVariableValueParser.of("Field", null, (context, lastString) -> {
+                main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Item Slot ID / Equipment Slot Name]", "[...]");
+                ArrayList<Suggestion> suggestions = new ArrayList<>();
+                suggestions.add(Suggestion.suggestion("<Enter field name>"));
+                return CompletableFuture.completedFuture(suggestions);
+            }));
   }
 
   @Override
@@ -111,7 +89,7 @@ public class ReflectionStaticFloatVariable extends Variable<Float> {
   }
 
   @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+  public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
     return null;
   }
 

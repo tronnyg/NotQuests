@@ -19,9 +19,6 @@
 package rocks.gravili.notquests.paper.managers.integrations.citizens;
 
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.function.Consumer;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -40,6 +37,10 @@ import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.ActiveObjectiveHolder;
 import rocks.gravili.notquests.paper.structs.Quest;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.citizens.EscortNPCObjective;
+
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.function.Consumer;
 
 public class CitizensManager {
   private final NotQuests main;

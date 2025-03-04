@@ -21,17 +21,17 @@ package rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.reflection
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Locale;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.reflection.wrappers.WrappedChatPacket;
 import rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.reflection.wrappers.WrappedChatType;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class ReflectionNQPacketListener extends ChannelDuplexHandler {
   private final NotQuests main;

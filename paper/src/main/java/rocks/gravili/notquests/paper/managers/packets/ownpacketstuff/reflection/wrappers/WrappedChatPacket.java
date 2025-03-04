@@ -19,11 +19,12 @@
 package rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.reflection.wrappers;
 
 import io.netty.channel.ChannelHandlerContext;
-import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.reflection.Reflection;
+
+import java.util.UUID;
 
 public class WrappedChatPacket {
   private final Object

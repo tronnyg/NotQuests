@@ -22,13 +22,13 @@ import io.lumine.mythic.api.MythicPlugin;
 import io.lumine.mythic.api.MythicProvider;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
+import org.bukkit.Location;
+import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.structs.actions.SpawnMobAction;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import org.bukkit.Location;
-import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.structs.actions.SpawnMobAction;
 
 public class MythicMobsManager {
   private final NotQuests main;

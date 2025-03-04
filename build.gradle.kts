@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.JavaVersion.*
+import org.gradle.api.JavaVersion.VERSION_21
 
 plugins {
     `java-library`
@@ -33,7 +33,7 @@ subprojects {
 }
 
 group = "rocks.gravili.notquests"
-version = "5.19.0"
+version = "6.0.0"
 
 
 repositories {

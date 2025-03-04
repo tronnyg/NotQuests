@@ -18,10 +18,12 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import java.util.List;
 import org.bukkit.Statistic;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.List;
 
 public class PlayerPlaytimeHoursVariable extends Variable<Double> {
   public PlayerPlaytimeHoursVariable(NotQuests main) {
@@ -49,7 +51,7 @@ public class PlayerPlaytimeHoursVariable extends Variable<Double> {
   }
 
   @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+  public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
     return null;
   }
 

@@ -18,8 +18,6 @@
 
 package rocks.gravili.notquests.paper.managers.integrations.betonquest.events;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.api.QuestEvent;
 import org.betonquest.betonquest.api.profiles.Profile;
@@ -27,6 +25,9 @@ import org.betonquest.betonquest.exceptions.InstructionParseException;
 import org.betonquest.betonquest.exceptions.QuestRuntimeException;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.actions.Action;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BQActionEvent extends QuestEvent {
 

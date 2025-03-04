@@ -18,8 +18,6 @@
 
 package rocks.gravili.notquests.paper.managers.integrations.betonquest.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.api.profiles.Profile;
 import org.betonquest.betonquest.exceptions.InstructionParseException;
@@ -27,6 +25,9 @@ import org.betonquest.betonquest.exceptions.QuestRuntimeException;
 import org.betonquest.betonquest.id.ID;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.conditions.Condition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BQConditionsCondition
     extends org.betonquest.betonquest.api

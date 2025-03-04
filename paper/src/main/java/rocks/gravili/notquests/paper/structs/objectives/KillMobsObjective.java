@@ -18,18 +18,20 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.EntityTypeSelector;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.Map;
+
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.EntityTypeParser.entityTypeParser;
 
 public class KillMobsObjective extends Objective {
 
@@ -45,17 +47,13 @@ public class KillMobsObjective extends Objective {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
     addObjectiveBuilder =
         addObjectiveBuilder
-            .argument(
-                EntityTypeSelector.of("entityType", main, true),
-                ArgumentDescription.of("Type of Entity the player has to kill."))
-            .argument(
-                NumberVariableValueArgument.newBuilder("amount", main, null),
-                ArgumentDescription.of("Amount of kills needed"))
+            .required("entityType", entityTypeParser(main), Description.of("Type of Entity the player has to kill."))
+            .required("amount", integerParser(1), Description.of("Amount of kills needed"))
             .flag(main.getCommandManager().nametag_equals)
             .flag(main.getCommandManager().nametag_containsany);
 
@@ -101,22 +99,10 @@ public class KillMobsObjective extends Objective {
               main.getObjectiveManager().addObjective(killMobsObjective, context, level);
 
               if (!nametag_equals.isBlank()) {
-                context
-                    .getSender()
-                    .sendMessage(
-                        main.parse(
-                            "<main>With nametag_equals flag: <highlight>"
-                                + nametag_equals
-                                + "</highlight>!"));
+                context.sender().sendMessage(main.parse("<main>With nametag_equals flag: <highlight>" + nametag_equals + "</highlight>!"));
               }
               if (!nametag_containsany.isBlank()) {
-                context
-                    .getSender()
-                    .sendMessage(
-                        main.parse(
-                            "main>With nametag_containsany flag: <highlight>"
-                                + nametag_containsany
-                                + "</highlight>!"));
+                context.sender().sendMessage(main.parse("main>With nametag_containsany flag: <highlight>" + nametag_containsany + "</highlight>!"));
               }
             });
 

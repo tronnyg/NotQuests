@@ -18,15 +18,16 @@
 
 package rocks.gravili.notquests.paper.conversation;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.data.Category;
 import rocks.gravili.notquests.paper.managers.npc.NQNPC;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Conversation {
   final ArrayList<Speaker> speakers;

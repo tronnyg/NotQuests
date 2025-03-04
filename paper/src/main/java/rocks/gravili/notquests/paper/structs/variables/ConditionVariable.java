@@ -18,121 +18,113 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.util.ArrayList;
-import java.util.List;
-import org.bukkit.command.CommandSender;
+
 import org.bukkit.entity.Player;
+import org.incendo.cloud.suggestion.Suggestion;
 import redempt.crunch.CompiledExpression;
 import redempt.crunch.Crunch;
 import redempt.crunch.functional.EvaluationEnvironment;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class ConditionVariable extends Variable<Boolean> {
 
-  private final EvaluationEnvironment env = new EvaluationEnvironment();
-  Variable<?> cachedVariable = null;
-  private CompiledExpression exp;
-  private int variableCounter = 0;
-  private Player playerToEvaluate = null;
-  private QuestPlayer questPlayerToEvaluate = null;
+    private final EvaluationEnvironment env = new EvaluationEnvironment();
+    Variable<?> cachedVariable = null;
+    private CompiledExpression exp;
+    private int variableCounter = 0;
+    private Player playerToEvaluate = null;
+    private QuestPlayer questPlayerToEvaluate = null;
 
-  public ConditionVariable(NotQuests main) {
-    super(main);
+    public ConditionVariable(NotQuests main) {
+        super(main);
 
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("Conditions")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Conditions(s) expression]",
-                          "[...]");
+        addRequiredString(StringVariableValueParser.of("Conditions", null, (context, lastString) -> {
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Conditions(s) expression]", "[...]");
 
-                  ArrayList<String> suggestions = new ArrayList<>();
-                  for (String conditionIdentifier :
-                      main.getConditionsYMLManager().getConditionsAndIdentifiers().keySet()) {
-                    if (lastString.endsWith(conditionIdentifier)) {
-                      suggestions.add(lastString + "&");
-                      suggestions.add(lastString + "|");
-                    } else {
-                      suggestions.add(conditionIdentifier);
-                    }
-                  }
-                  return suggestions;
-                })
-            .single()
-            .build());
-  }
-
-  public final String getExpression() {
-    return getRequiredStringValue("Conditions");
-  }
-
-  @Override
-  public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
-    this.playerToEvaluate = questPlayer.getPlayer();
-    this.questPlayerToEvaluate = questPlayer;
-    initializeExpressionAndCachedVariable();
-
-    return exp.evaluate() >= 0.98d;
-  }
-
-  public final String getExpressionAndGenerateEnv(String expressions) {
-    boolean foundOne = false;
-    for (final String conditionIdentifier :
-        main.getConditionsYMLManager().getConditionsAndIdentifiers().keySet()) {
-      if (!expressions.contains(conditionIdentifier)) {
-        continue;
-      }
-      foundOne = true;
-
-      variableCounter++;
-      expressions = expressions.replace(conditionIdentifier, "var" + variableCounter);
-      env.addLazyVariable(
-          "var" + variableCounter,
-          () -> main.getConditionsYMLManager()
-                  .getCondition(conditionIdentifier)
-                  .check(questPlayerToEvaluate)
-                  .fulfilled()
-              ? 1
-              : 0);
-    }
-    if (!foundOne) {
-      return expressions;
+            ArrayList<Suggestion> suggestions = new ArrayList<>();
+            for (String conditionIdentifier :
+                    main.getConditionsYMLManager().getConditionsAndIdentifiers().keySet()) {
+                if (lastString.input().endsWith(conditionIdentifier)) {
+                    suggestions.add(Suggestion.suggestion(lastString + "&"));
+                    suggestions.add(Suggestion.suggestion(lastString + "|"));
+                } else {
+                    suggestions.add(Suggestion.suggestion(conditionIdentifier));
+                }
+            }
+            return CompletableFuture.completedFuture(suggestions);
+        }));
     }
 
-    return getExpressionAndGenerateEnv(expressions);
-  }
-
-  public void initializeExpressionAndCachedVariable() {
-    if (exp == null) {
-      String expression = getExpressionAndGenerateEnv(getExpression());
-      exp = Crunch.compileExpression(expression, env);
+    public final String getExpression() {
+        return getRequiredStringValue("Conditions");
     }
-  }
 
-  @Override
-  public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
-    return false;
-  }
+    @Override
+    public Boolean getValueInternally(QuestPlayer questPlayer, Object... objects) {
+        this.playerToEvaluate = questPlayer.getPlayer();
+        this.questPlayerToEvaluate = questPlayer;
+        initializeExpressionAndCachedVariable();
 
-  @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    return null;
-  }
+        return exp.evaluate() >= 0.98d;
+    }
 
-  @Override
-  public String getPlural() {
-    return "Conditions";
-  }
+    public final String getExpressionAndGenerateEnv(String expressions) {
+        boolean foundOne = false;
+        for (final String conditionIdentifier :
+                main.getConditionsYMLManager().getConditionsAndIdentifiers().keySet()) {
+            if (!expressions.contains(conditionIdentifier)) {
+                continue;
+            }
+            foundOne = true;
 
-  @Override
-  public String getSingular() {
-    return "Condition";
-  }
+            variableCounter++;
+            expressions = expressions.replace(conditionIdentifier, "var" + variableCounter);
+            env.addLazyVariable(
+                    "var" + variableCounter,
+                    () -> main.getConditionsYMLManager()
+                            .getCondition(conditionIdentifier)
+                            .check(questPlayerToEvaluate)
+                            .fulfilled()
+                            ? 1
+                            : 0);
+        }
+        if (!foundOne) {
+            return expressions;
+        }
+
+        return getExpressionAndGenerateEnv(expressions);
+    }
+
+    public void initializeExpressionAndCachedVariable() {
+        if (exp == null) {
+            String expression = getExpressionAndGenerateEnv(getExpression());
+            exp = Crunch.compileExpression(expression, env);
+        }
+    }
+
+    @Override
+    public boolean setValueInternally(Boolean newValue, QuestPlayer questPlayer, Object... objects) {
+        return false;
+    }
+
+    @Override
+    public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+        return null;
+    }
+
+    @Override
+    public String getPlural() {
+        return "Conditions";
+    }
+
+    @Override
+    public String getSingular() {
+        return "Condition";
+    }
 }

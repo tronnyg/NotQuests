@@ -21,15 +21,15 @@ package rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.modern;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import org.bukkit.entity.Player;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.ArrayList;
 
 public class NQPacketListener extends ChannelDuplexHandler {
     private final NotQuests main;

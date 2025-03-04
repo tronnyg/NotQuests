@@ -18,16 +18,14 @@
 
 package rocks.gravili.notquests.paper.managers;
 
+import org.apache.commons.io.FileUtils;
+import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.managers.data.Category;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import org.apache.commons.io.FileUtils;
-import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.managers.data.Category;
 
 public class BackupManager {
   private final NotQuests main;

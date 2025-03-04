@@ -1,7 +1,5 @@
 package rocks.gravili.notquests.paper.commands.arguments.wrappers;
 
-import java.util.ArrayList;
-import java.util.Locale;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,6 +8,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.items.NQItem;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class ItemStackSelection {
   private final NotQuests main;

@@ -18,55 +18,44 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
-import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
+import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
-public class ContainerInventoryVariable extends Variable<ItemStack[]>{
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+public class ContainerInventoryVariable extends Variable<ItemStack[]> {
     public ContainerInventoryVariable(NotQuests main) {
         super(main);
         setCanSetValue(true);
 
-        addRequiredString(
-                StringArgument.<CommandSender>newBuilder("world").withSuggestionsProvider(
-                        (context, lastString) -> {
-                            final List<String> allArgs = context.getRawInput();
-                            main.getUtilManager().sendFancyCommandCompletion(context.getSender(), allArgs.toArray(new String[0]), "[World Name]", "[...]");
+        addRequiredString(StringVariableValueParser.of("world", null, (context, input) -> {
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), input.input().split(" "), "[World Name]", "[...]");
+            ArrayList<Suggestion> suggestions = new ArrayList<>();
+            for (World world : Bukkit.getWorlds()) {
+                suggestions.add(Suggestion.suggestion(world.getName()));
+            }
+            return CompletableFuture.completedFuture(suggestions);
+        }));
 
-                            ArrayList<String> suggestions = new ArrayList<>();
-                            for(World world : Bukkit.getWorlds()){
-                                suggestions.add(world.getName());
-                            }
-                            return suggestions;
+        addRequiredNumber(NumberVariableValueParser.of("x", null));
+        addRequiredNumber(NumberVariableValueParser.of("y", null));
+        addRequiredNumber(NumberVariableValueParser.of("z", null));
 
-                        }
-                ).single().build()
-        );
-        addRequiredNumber(
-                NumberVariableValueArgument.<CommandSender>newBuilder("x", main, null).build()
-        );
-        addRequiredNumber(
-                NumberVariableValueArgument.<CommandSender>newBuilder("y", main, null).build()
-        );
-        addRequiredNumber(
-                NumberVariableValueArgument.<CommandSender>newBuilder("z", main, null).build()
-        );
-
-        addRequiredBooleanFlag(
-                main.getCommandManager().getPaperCommandManager().flagBuilder("skipItemIfInventoryFull")
-                        .withDescription(ArgumentDescription.of("Does not drop the item if inventory full if flag set")).build()
+        addRequiredBooleanFlag(main.getCommandManager().getPaperCommandManager().flagBuilder("skipItemIfInventoryFull")
+                .withDescription(Description.of("Does not drop the item if inventory full if flag set")).build()
         );
     }
 
@@ -88,7 +77,7 @@ public class ContainerInventoryVariable extends Variable<ItemStack[]>{
         if (block.getState() instanceof final Container container) {
             return container.getInventory().getStorageContents();
 
-        }else{
+        } else {
             main.getLogManager().warn("Error: cannot get value of chest inventory variable, because the location does not have a container block. Real type: " + block.getType().name());
             return new ItemStack[0];
         }
@@ -124,7 +113,7 @@ public class ContainerInventoryVariable extends Variable<ItemStack[]>{
             } else {
                 container.getInventory().setContents(newValue);
             }
-        }else{
+        } else {
             main.getLogManager().warn("Error: cannot set value of chest inventory variable, because the location does not have a container block. Real type: " + block.getType().name());
             return false;
         }
@@ -134,7 +123,7 @@ public class ContainerInventoryVariable extends Variable<ItemStack[]>{
 
 
     @Override
-    public final List<String> getPossibleValues(final QuestPlayer questPlayer, final Object... objects) {
+    public final List<Suggestion> getPossibleValues(final QuestPlayer questPlayer, final Object... objects) {
         return null;
     }
 

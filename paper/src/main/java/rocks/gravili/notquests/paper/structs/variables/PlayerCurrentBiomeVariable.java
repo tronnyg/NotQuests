@@ -18,12 +18,14 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
+import org.bukkit.block.Biome;
+import org.incendo.cloud.suggestion.Suggestion;
+import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import org.bukkit.block.Biome;
-import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 public class PlayerCurrentBiomeVariable extends Variable<String> {
   public PlayerCurrentBiomeVariable(NotQuests main) {
@@ -51,10 +53,10 @@ public class PlayerCurrentBiomeVariable extends Variable<String> {
   }
 
   @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    List<String> possibleValues = new ArrayList<>();
+  public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+    List<Suggestion> possibleValues = new ArrayList<>();
     for (Biome biome : Biome.values()) {
-      possibleValues.add(biome.name().toLowerCase(Locale.ROOT));
+      possibleValues.add(Suggestion.suggestion(biome.name().toLowerCase(Locale.ROOT)));
     }
     return possibleValues;
   }

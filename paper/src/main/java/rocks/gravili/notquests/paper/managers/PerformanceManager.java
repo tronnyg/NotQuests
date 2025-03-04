@@ -18,9 +18,10 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.text.DecimalFormat;
 import org.bukkit.Bukkit;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.text.DecimalFormat;
 
 public class PerformanceManager {
   private final NotQuests main;

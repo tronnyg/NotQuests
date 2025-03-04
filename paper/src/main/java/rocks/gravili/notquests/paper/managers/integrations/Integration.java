@@ -1,11 +1,12 @@
 package rocks.gravili.notquests.paper.managers.integrations;
 
-import java.util.function.Supplier;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.function.Supplier;
 
 public class Integration {
 

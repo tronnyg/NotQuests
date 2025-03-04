@@ -18,31 +18,35 @@
 
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.flags.CommandFlag;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.parser.flag.CommandFlag;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.BooleanVariableValueArgument;
-import rocks.gravili.notquests.paper.commands.arguments.variables.ItemStackListVariableValueArgument;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
+import rocks.gravili.notquests.paper.commands.arguments.variables.BooleanVariableValueParser;
+import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.managers.expressions.NumberExpression;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.variables.Variable;
 import rocks.gravili.notquests.paper.structs.variables.VariableDataType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.ItemStackListVariableValueParser.itemStackListVariableParser;
 
 
 public class ItemStackListAction extends Action {
@@ -62,15 +66,15 @@ public class ItemStackListAction extends Action {
         additionalBooleanArguments = new HashMap<>();
     }
 
-    public static void handleCommands(NotQuests main, PaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ActionFor actionFor) {
-        for(String variableString : main.getVariablesManager().getVariableIdentifiers()){
+    public static void handleCommands(NotQuests main, LegacyPaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ActionFor actionFor) {
+        for (String variableString : main.getVariablesManager().getVariableIdentifiers()) {
 
             Variable<?> variable = main.getVariablesManager().getVariableFromString(variableString);
 
-            if(variable == null || !variable.isCanSetValue() || variable.getVariableDataType() != VariableDataType.ITEMSTACKLIST){
+            if (variable == null || !variable.isCanSetValue() || variable.getVariableDataType() != VariableDataType.ITEMSTACKLIST) {
                 continue;
             }
-            if(main.getVariablesManager().alreadyFullRegisteredVariables.contains(variableString)){
+            if (main.getVariablesManager().alreadyFullRegisteredVariables.contains(variableString)) {
                 continue;
             }
 
@@ -80,21 +84,19 @@ public class ItemStackListAction extends Action {
 
 
             manager.command(main.getVariablesManager().registerVariableCommands(variableString, builder)
-                    .argument(StringArgument.<CommandSender>newBuilder("operator").withSuggestionsProvider((context, lastString) -> {
-                        ArrayList<String> completions = new ArrayList<>();
+                    .required("operator", stringParser(), Description.of("Operator."), (context, lastString) -> {
+                        ArrayList<Suggestion> completions = new ArrayList<>();
+                        completions.add(Suggestion.suggestion("set"));
+                        completions.add(Suggestion.suggestion("add"));
+                        completions.add(Suggestion.suggestion("remove"));
+                        completions.add(Suggestion.suggestion("clear"));
+                        main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Operator]", "[...]");
 
-                        completions.add("set");
-                        completions.add("add");
-                        completions.add("remove");
-                        completions.add("clear");
+                        return CompletableFuture.completedFuture(completions);
+                    })
 
-                        final List<String> allArgs = context.getRawInput();
-                        main.getUtilManager().sendFancyCommandCompletion(context.getSender(), allArgs.toArray(new String[0]), "[Operator]", "[...]");
-
-                        return completions;
-                    }).build(), ArgumentDescription.of("Operator."))
-                    .argument(ItemStackListVariableValueArgument.newBuilder("expression", main, variable), ArgumentDescription.of("Expression"))
-                    .argument(IntegerArgument.<CommandSender>newBuilder("amount").withMin(1), ArgumentDescription.of("Amount of items"))
+                    .required("expression", itemStackListVariableParser("expression", variable), Description.of("Expression"))
+                    .required("amount", integerParser(1), Description.of("Amount of items"))
                     .handler((context) -> {
 
                         final String expression = context.get("expression");
@@ -102,25 +104,24 @@ public class ItemStackListAction extends Action {
 
                         ItemStack itemStack;
                         if (expression.equalsIgnoreCase("hand")) {
-                            if (context.getSender() instanceof Player player) {
+                            if (context.sender() instanceof Player player) {
                                 itemStack = player.getInventory().getItemInMainHand().clone();
                                 itemStack.setAmount(amount);
                             } else {
-                                context.getSender().sendMessage(main.parse(
+                                context.sender().sendMessage(main.parse(
                                         "<error>This must be run by a player."
                                 ));
                                 return;
                             }
                         } else {
                             if (expression.equalsIgnoreCase("any")) {
-                                context.getSender().sendMessage(main.parse(
+                                context.sender().sendMessage(main.parse(
                                         "<error>You cannot use <highlight>'any'</highlight> here!"
                                 ));
                                 return;
                             }
                             itemStack = new ItemStack(Material.valueOf(expression.toUpperCase(Locale.ROOT)), amount);
                         }
-
 
 
                         final String operator = context.get("operator");
@@ -132,23 +133,23 @@ public class ItemStackListAction extends Action {
 
 
                         HashMap<String, String> additionalStringArguments = new HashMap<>();
-                        for(StringArgument<CommandSender> stringArgument : variable.getRequiredStrings()){
-                            additionalStringArguments.put(stringArgument.getName(), context.get(stringArgument.getName()));
+                        for (StringVariableValueParser<CommandSender> stringParser : variable.getRequiredStrings()) {
+                            additionalStringArguments.put(stringParser.getIdentifier(), context.get(stringParser.getIdentifier()));
                         }
                         listAction.setAdditionalStringArguments(additionalStringArguments);
 
                         HashMap<String, NumberExpression> additionalNumberArguments = new HashMap<>();
-                        for(NumberVariableValueArgument<CommandSender> numberVariableValueArgument : variable.getRequiredNumbers()){
-                            additionalNumberArguments.put(numberVariableValueArgument.getName(), new NumberExpression(main, context.get(numberVariableValueArgument.getName())));
+                        for (NumberVariableValueParser<CommandSender> numberParser : variable.getRequiredNumbers()) {
+                            additionalNumberArguments.put(numberParser.getIdentifier(), new NumberExpression(main, context.get(numberParser.getIdentifier())));
                         }
                         listAction.setAdditionalNumberArguments(additionalNumberArguments);
 
                         HashMap<String, NumberExpression> additionalBooleanArguments = new HashMap<>();
-                        for(BooleanVariableValueArgument<CommandSender> booleanArgument : variable.getRequiredBooleans()){
-                            additionalBooleanArguments.put(booleanArgument.getName(), new NumberExpression(main, context.get(booleanArgument.getName())));
+                        for (BooleanVariableValueParser<CommandSender> booleanParser : variable.getRequiredBooleans()) {
+                            additionalBooleanArguments.put(booleanParser.getIdentifier(), new NumberExpression(main, context.get(booleanParser.getIdentifier())));
                         }
-                        for(CommandFlag<?> commandFlag : variable.getRequiredBooleanFlags()){
-                            additionalBooleanArguments.put(commandFlag.getName(), context.flags().isPresent(commandFlag.getName()) ? NumberExpression.ofStatic(main, 1) : NumberExpression.ofStatic(main, 0));
+                        for (CommandFlag<?> commandFlag : variable.getRequiredBooleanFlags()) {
+                            additionalBooleanArguments.put(commandFlag.name(), context.flags().isPresent(commandFlag.name()) ? NumberExpression.ofStatic(main, 1) : NumberExpression.ofStatic(main, 0));
                         }
                         listAction.setAdditionalBooleanArguments(additionalBooleanArguments);
 
@@ -167,19 +168,19 @@ public class ItemStackListAction extends Action {
         this.operator = mathOperator;
     }
 
-    public final String getVariableName(){
+    public final String getVariableName() {
         return variableName;
     }
 
-    public void setVariableName(final String variableName){
+    public void setVariableName(final String variableName) {
         this.variableName = variableName;
     }
 
-    public final ItemStack getItemStack(){
+    public final ItemStack getItemStack() {
         return itemStack;
     }
 
-    public void setItemStack(final ItemStack itemStack){
+    public void setItemStack(final ItemStack itemStack) {
         this.itemStack = itemStack;
     }
 
@@ -236,7 +237,7 @@ public class ItemStackListAction extends Action {
             currentValue = (ItemStack[]) currentValueObject;
         }
 
-        if(currentValue == null){
+        if (currentValue == null) {
             main.sendMessage(questPlayer.getPlayer(), "Error executing " + getActionName() + " action: Current value is null.");
             main.getLogManager().warn("Error executing " + getActionName() + " action: Current value is null.");
             return;
@@ -244,14 +245,14 @@ public class ItemStackListAction extends Action {
 
         ArrayList<ItemStack> currentValueArrayList = new ArrayList<>();
 
-        for (ItemStack o : currentValue){
+        for (ItemStack o : currentValue) {
             if (o != null) {
                 currentValueArrayList.add(o);
             }
         }
 
 
-        if(getItemStack() == null){
+        if (getItemStack() == null) {
             main.sendMessage(questPlayer.getPlayer(), "Error executing " + getActionName() + " action: New itemStack is null.");
             main.getLogManager().warn("Error executing " + getActionName() + " action: New itemStack is null.");
             return;
@@ -260,32 +261,32 @@ public class ItemStackListAction extends Action {
         ArrayList<ItemStack> nextNewValueList = new ArrayList<>();
         ItemStack[] nextNewValue = null;
 
-        if(getOperator().equalsIgnoreCase("set")){
+        if (getOperator().equalsIgnoreCase("set")) {
             variable.addAdditionalBooleanArgument("set", NumberExpression.ofStatic(main, 1));
             int amountLeft = getItemStack().getAmount();
-            if(getItemStack().getAmount() > getItemStack().getMaxStackSize()){
-                while (amountLeft > 0){
+            if (getItemStack().getAmount() > getItemStack().getMaxStackSize()) {
+                while (amountLeft > 0) {
                     ItemStack clone = getItemStack().clone();
                     clone.setAmount(clone.getMaxStackSize());
                     nextNewValueList.add(clone);
                     amountLeft -= clone.getMaxStackSize();
                 }
-            }else{
+            } else {
                 nextNewValueList.add(getItemStack());
             }
             nextNewValue = nextNewValueList.toArray(new ItemStack[nextNewValueList.size()]);
-        }else if(getOperator().equalsIgnoreCase("add")){
+        } else if (getOperator().equalsIgnoreCase("add")) {
             variable.addAdditionalBooleanArgument("add", NumberExpression.ofStatic(main, 1));
 
             int amountLeft = getItemStack().getAmount();
-            if(getItemStack().getAmount() > getItemStack().getMaxStackSize()){
-                while (amountLeft > 0){
+            if (getItemStack().getAmount() > getItemStack().getMaxStackSize()) {
+                while (amountLeft > 0) {
                     ItemStack clone = getItemStack().clone();
                     clone.setAmount(clone.getMaxStackSize());
                     nextNewValueList.add(clone);
                     amountLeft -= clone.getMaxStackSize();
                 }
-            }else{
+            } else {
                 nextNewValueList.add(getItemStack());
             }
 
@@ -324,16 +325,16 @@ public class ItemStackListAction extends Action {
 
 
             nextNewValue = nextNewValueList.toArray(new ItemStack[nextNewValueList.size()]);
-        }else if(getOperator().equalsIgnoreCase("remove")){
+        } else if (getOperator().equalsIgnoreCase("remove")) {
             int amountLeft = getItemStack().getAmount();
-            if(getItemStack().getAmount() > getItemStack().getMaxStackSize()){
-                while (amountLeft > 0){
+            if (getItemStack().getAmount() > getItemStack().getMaxStackSize()) {
+                while (amountLeft > 0) {
                     ItemStack clone = getItemStack().clone();
                     clone.setAmount(clone.getMaxStackSize());
                     nextNewValueList.add(clone);
                     amountLeft -= clone.getMaxStackSize();
                 }
-            }else{
+            } else {
                 nextNewValueList.add(getItemStack());
             }
             variable.addAdditionalBooleanArgument("remove", NumberExpression.ofStatic(main, 1));
@@ -341,26 +342,25 @@ public class ItemStackListAction extends Action {
             nextNewValueList.removeAll(currentValueArrayList);*/
 
             nextNewValue = nextNewValueList.toArray(new ItemStack[nextNewValueList.size()]);
-        }else if(getOperator().equalsIgnoreCase("clear")){
+        } else if (getOperator().equalsIgnoreCase("clear")) {
             variable.addAdditionalBooleanArgument("clear", NumberExpression.ofStatic(main, 1));
             nextNewValue = new ItemStack[0];
-        }else{
+        } else {
             main.sendMessage(questPlayer.getPlayer(), "<ERROR>Error: variable operator <highlight>" + getOperator() + "</highlight> is invalid. Report this to the Server owner.");
             return;
         }
-        if(nextNewValue == null){
+        if (nextNewValue == null) {
             return;
         }
 
         questPlayer.sendDebugMessage("New Value: " + Arrays.toString(nextNewValue));
 
 
-
-        if(currentValueObject instanceof ItemStack[]){
+        if (currentValueObject instanceof ItemStack[]) {
             ((Variable<ItemStack[]>) variable).setValue(nextNewValue, questPlayer, objects);
-        }else if(currentValueObject instanceof ArrayList<?>){
+        } else if (currentValueObject instanceof ArrayList<?>) {
             ((Variable<ArrayList<ItemStack>>) variable).setValue((ArrayList<ItemStack>) Arrays.asList(nextNewValue), questPlayer, objects);
-        }else{
+        } else {
             main.getLogManager().warn("Cannot execute ItemStackList action, because the number type " + currentValueObject.getClass().getName() + " is invalid.");
         }
 
@@ -372,7 +372,6 @@ public class ItemStackListAction extends Action {
     }
 
 
-
     @Override
     public void save(final FileConfiguration configuration, String initialPath) {
         configuration.set(initialPath + ".specifics.itemStack", getItemStack());
@@ -380,13 +379,13 @@ public class ItemStackListAction extends Action {
         configuration.set(initialPath + ".specifics.variableName", getVariableName());
         configuration.set(initialPath + ".specifics.operator", getOperator());
 
-        for(final String key : additionalStringArguments.keySet()){
+        for (final String key : additionalStringArguments.keySet()) {
             configuration.set(initialPath + ".specifics.additionalStrings." + key, additionalStringArguments.get(key));
         }
-        for(final String key : additionalNumberArguments.keySet()){
+        for (final String key : additionalNumberArguments.keySet()) {
             configuration.set(initialPath + ".specifics.additionalNumbers." + key, additionalNumberArguments.get(key).getRawExpression());
         }
-        for(final String key : additionalBooleanArguments.keySet()){
+        for (final String key : additionalBooleanArguments.keySet()) {
             configuration.set(initialPath + ".specifics.additionalBooleans." + key, additionalBooleanArguments.get(key).getRawExpression());
         }
     }
@@ -429,10 +428,10 @@ public class ItemStackListAction extends Action {
         this.operator = arguments.get(1);
         this.itemStack = new ItemStack(Material.valueOf(arguments.get(2).toUpperCase(Locale.ROOT)), Integer.parseInt(arguments.get(3)));
 
-        if(arguments.size() >= 5){
+        if (arguments.size() >= 5) {
 
             Variable<?> variable = main.getVariablesManager().getVariableFromString(variableName);
-            if(variable == null || !variable.isCanSetValue() || variable.getVariableDataType() != VariableDataType.ITEMSTACKLIST){
+            if (variable == null || !variable.isCanSetValue() || variable.getVariableDataType() != VariableDataType.ITEMSTACKLIST) {
                 return;
             }
 
@@ -442,20 +441,20 @@ public class ItemStackListAction extends Action {
             int counterBooleans = 0;
             int counterBooleanFlags = 0;
 
-            for (String argument : arguments){
+            for (String argument : arguments) {
                 counter++;
-                if(counter >= 5){
-                    if(variable.getRequiredStrings().size() > counterStrings){
-                        additionalStringArguments.put(variable.getRequiredStrings().get(counter-5).getName(), argument);
+                if (counter >= 5) {
+                    if (variable.getRequiredStrings().size() > counterStrings) {
+                        additionalStringArguments.put(variable.getRequiredStrings().get(counter - 5).getIdentifier(), argument);
                         counterStrings++;
-                    } else if(variable.getRequiredNumbers().size() > counterNumbers){
-                        additionalNumberArguments.put(variable.getRequiredNumbers().get(counter - 5).getName(), new NumberExpression(main, argument));
+                    } else if (variable.getRequiredNumbers().size() > counterNumbers) {
+                        additionalNumberArguments.put(variable.getRequiredNumbers().get(counter - 5).getIdentifier(), new NumberExpression(main, argument));
                         counterNumbers++;
-                    } else if(variable.getRequiredBooleans().size()  > counterBooleans){
-                        additionalBooleanArguments.put(variable.getRequiredBooleans().get(counter - 5).getName(), new NumberExpression(main, argument));
+                    } else if (variable.getRequiredBooleans().size() > counterBooleans) {
+                        additionalBooleanArguments.put(variable.getRequiredBooleans().get(counter - 5).getIdentifier(), new NumberExpression(main, argument));
                         counterBooleans++;
-                    } else if(variable.getRequiredBooleanFlags().size()  > counterBooleanFlags){
-                        additionalBooleanArguments.put(variable.getRequiredBooleanFlags().get(counter - 5).getName(), new NumberExpression(main, argument));
+                    } else if (variable.getRequiredBooleanFlags().size() > counterBooleanFlags) {
+                        additionalBooleanArguments.put(variable.getRequiredBooleanFlags().get(counter - 5).name(), new NumberExpression(main, argument));
                         counterBooleanFlags++;
                     }
                 }

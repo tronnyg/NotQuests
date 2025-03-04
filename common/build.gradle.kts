@@ -16,9 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.JavaVersion.*
-
+import org.gradle.api.JavaVersion.VERSION_21
 
 
 group = "rocks.gravili.notquests"

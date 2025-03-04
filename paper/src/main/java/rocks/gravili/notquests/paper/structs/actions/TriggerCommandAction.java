@@ -18,14 +18,12 @@
 
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.npc.NQNPC;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
@@ -34,6 +32,11 @@ import rocks.gravili.notquests.paper.structs.Quest;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 import rocks.gravili.notquests.paper.structs.objectives.TriggerCommandObjective;
+
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 
 public class TriggerCommandAction extends Action {
 
@@ -44,25 +47,20 @@ public class TriggerCommandAction extends Action {
         super(main);
     }
 
-    public static void handleCommands(NotQuests main, PaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ActionFor actionFor) {
-        manager.command(builder
-                .argument(StringArgument.<CommandSender>newBuilder("Trigger Name").withSuggestionsProvider(
-                        (context, lastString) -> {
-                            final List<String> allArgs = context.getRawInput();
-                            main.getUtilManager().sendFancyCommandCompletion(context.getSender(), allArgs.toArray(new String[0]), "[Trigger Name]", "");
-
-                            ArrayList<String> completions = new ArrayList<>();
+    public static void handleCommands(NotQuests main, LegacyPaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ActionFor actionFor) {
+        manager.command(builder.required("Trigger Name", stringParser(), Description.of("Name of the trigger which should be triggered."), (context, lastString) -> {
+                            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Trigger Name]", "");
+                            ArrayList<Suggestion> completions = new ArrayList<>();
                             for (final Quest quest : main.getQuestManager().getAllQuests()) {
                                 for (final Objective objective : quest.getObjectives()) {
                                     if (objective instanceof final TriggerCommandObjective triggerCommandObjective) {
-                                        completions.add(triggerCommandObjective.getTriggerName());
+                                        completions.add(Suggestion.suggestion(triggerCommandObjective.getTriggerName()));
                                     }
                                 }
                             }
-
-                            return completions;
+                            return CompletableFuture.completedFuture(completions);
                         }
-                ).single().build(), ArgumentDescription.of("Name of the trigger which should be triggered."))
+                )
                 .handler((context) -> {
                     final String triggerName = context.get("Trigger Name");
 

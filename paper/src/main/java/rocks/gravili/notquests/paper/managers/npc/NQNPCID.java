@@ -1,8 +1,9 @@
 package rocks.gravili.notquests.paper.managers.npc;
 
-import java.util.UUID;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public class NQNPCID {
   private final int integerID; /*-1 = null*/

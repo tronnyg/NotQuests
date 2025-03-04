@@ -18,10 +18,11 @@
 
 package rocks.gravili.notquests.paper.managers.tags;
 
-import java.util.Locale;
 import org.jetbrains.annotations.NotNull;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.data.Category;
+
+import java.util.Locale;
 
 public class Tag {
   private final NotQuests main;

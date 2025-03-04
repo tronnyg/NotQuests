@@ -18,43 +18,30 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.common.managers.LogCategory;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.structs.ActiveObjective;
-import rocks.gravili.notquests.paper.structs.ActiveObjectiveHolder;
-import rocks.gravili.notquests.paper.structs.ActiveQuest;
-import rocks.gravili.notquests.paper.structs.Quest;
-import rocks.gravili.notquests.paper.structs.QuestPlayer;
+import rocks.gravili.notquests.paper.structs.*;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveHolder;
 import rocks.gravili.notquests.paper.structs.triggers.Trigger;
+
+import java.io.*;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 public class LanguageManager {
     private final NotQuests main;
@@ -78,6 +65,10 @@ public class LanguageManager {
 
     public LanguageManager(final NotQuests main) {
         this.main = main;
+    }
+
+    public String getOfflineOnline(OfflinePlayer offlinePlayer) {
+        return ((offlinePlayer.isOnline() ? ")<green>(online)</green>" : "<red>(offline)</red>"));
     }
 
 
