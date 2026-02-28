@@ -1,76 +1,75 @@
 ---
 chat:
-  wrong-command-usage: <error>Wrong command usage!
-  missing-permission: '<error>No permission! Required permission node: <highlight>%PERMISSION%'
-  too-many-arguments: <error>Too many arguments!
+  wrong-command-usage: <error>Utilizarea greșită a comenzii!
+  missing-permission: "<error>Fără permisiune! Permisiune necesară \nnodul: <highlight>%PERMISSION%"
+  too-many-arguments: <error>Prea multe argumente!
   quest-successfully-accepted: |2
 
-    <CENTER><main>[Quest Accepted]
+    <CENTER><main>[Misiune acceptată]
     <CENTER><highlight><BOLD>%QUESTNAME%
     <EMPTY>
-  quest-description: '<main>Quest description: <unimportant>%QUESTDESCRIPTION%'
-  quest-already-accepted: <error>Quest already accepted.
+  quest-description: '<main>Descrierea misiunii: <unimportant>%QUESTDESCRIPTION%'
+  quest-already-accepted: <error>Misiunea a fost deja acceptată.
   quest-failed: |2
 
-    <CENTER><negative>[Quest Failed]
-    <CENTER><highlight><BOLD>%QUESTNAME%
-    <EMPTY>
+    <CENTER><negative>[Misiune eșuată]
+    <CENTER><highlight><BOLD>%QUESTNAME%<EMPTY>
   quest-aborted: ''
   quest-completed-and-rewards-given: |2
 
-    <CENTER><positive>[Quest Completed]
+    <CENTER><positive>[Misiune finalizată]
     <CENTER><highlight><BOLD>%QUESTNAME%
     <EMPTY>
-  quest-completed-rewards-prefix: '    <highlight>Rewards:'
-  quest-completed-rewards-rewardformat: '    <highlight> - <unimportant>%reward%'
+  quest-completed-rewards-prefix: '    <highlight>Recompense:'
+  quest-completed-rewards-rewardformat: '    <highlight>-<unimportant>%reward%'
   quest-completed-rewards-suffix: <EMPTY>
-  quest-not-all-requirements-fulfilled: '<negative>You do not fulfill all the requirements this quest needs! Requirement still needed:'
-  action-not-all-conditions-fulfilled: '<negative>You do not fulfill all the conditions this action needs! Conditions still needed:'
-  missing-quest-description: <unimportant>This quest has no quest description.
-  objectives-label-after-quest-accepting: '<highlight>Objectives:'
+  quest-not-all-requirements-fulfilled: '<negative>Nu îndepliniți toate cerințele acestei misiuni! Cerință necesară:'
+  action-not-all-conditions-fulfilled: '<negative>Nu îndepliniți toate condițiile necesare pentru această acțiune! Condiții necesare în continuare:'
+  missing-quest-description: <unimportant>Această misiune nu are o descriere a misiunii.
+  objectives-label-after-quest-accepting: '<highlight>Obiective:'
   questpoints:
-    query: <main>You currently have <highlight>%QUESTPOINTS%</highlight> quest points.
-    none: <error>Seems like you don't have any quest points!
+    query: "<main>În prezent aveți\n<highlight>%QUESTPOINTS%</highlight> puncte de misiune."
+    none: <error>Se pare că nu ai niciun punct de misiune!
     notify-when-changed:
-      set: '<main>Your quest points have been set to <highlight>%NEWQUESTPOINTSAMOUNT%</highlight>.'
-      add: '<highlight>+%QUESTPOINTSTOADD% <success>quest points!'
-      remove: '<highlight>-%QUESTPOINTSTOREMOVE% <negative>quest points!'
-  no-quests-accepted: <error>Seems like you don't have any active quests!
-  quest-does-not-exist: <error>Quest <highlight>%QUESTNAME%</highlight> does not exist!
-  quest-not-found-or-does-not-exist: <error>Quest <highlight>%QUESTNAME%</highlight> not found or not active!
-  active-quests-label: '<highlight>Active quests:'
-  take-disabled: <error>Accepting or previewing the quest <highlight>%QUESTNAME%</highlight> is disabled.
-  abort-disabled: <error>Aborting the quest <highlight>%QUESTNAME%</highlight> is disabled.
-  quest-not-active-error: '<error>Error: <highlight>%QUESTNAME%</highlight> is not an active Quest!'
-  force-add-active-quest-accepted: '<success>Successfully accepted the quest (Forced).'
-  add-active-quest-player-object-not-found: '<warn>Error: Player object not found. Please report this to the plugin developer.'
-  reached-max-accepts-limit: '<red>You have accepted this quest too many times already. You can only accept it <highlight>%MAXACCEPTS%</highlight> times, but you have already accepted it <highlight>%ACCEPTEDAMOUNT%</highlight> times.'
-  reached-max-fails-limit: '<red>You have failed this quest too many times already. You can only fail it <highlight>%MAXFAILS%</highlight> times, but you have already failed it <highlight>%FAILEDAMOUNT%</highlight> times.'
-  reached-max-completions-limit: '<red>You have completed this quest too many times already. You can only complete it <highlight>%MAXCOMPLETIONS%</highlight> times, but you have already completed it <highlight>%COMPLETEDAMOUNT%</highlight> times.'
-  reached-max-active-quests-per-player-limit: '<red>You can not accept more than <highlight>%MAXACTIVEQUESTSPERPLAYER%</highlight> Quests.'
+      set: '<main>Punctele tale de misiune au fost setate la<highlight>%NEWQUESTPOINTSAMOUNT%</highlight>.'
+      add: '<highlight>+%QUESTPOINTSTOADD%<success>puncte de misiune!'
+      remove: '<highlight>-%QUESTPOINTSTOREMOVE%<negative>puncte de misiune!'
+  no-quests-accepted: <error>Se pare că nu ai nicio misiune activă!
+  quest-does-not-exist: "<error>Misiunea\n<highlight>%QUESTNAME%</highlight> nu există!"
+  quest-not-found-or-does-not-exist: "<error>Misiune\n<highlight>%QUESTNAME%</highlight> negăsită sau inactivă!"
+  active-quests-label: '<highlight>Misiuni active:'
+  take-disabled: <error>Acceptarea sau previzualizarea misiunii<highlight>%QUESTNAME%</highlight> este dezactivată.
+  abort-disabled: "<error>Abandonarea misiunii\n<highlight>%QUESTNAME%</highlight> este dezactivată."
+  quest-not-active-error: "<error>Eroare\n<highlight>%QUESTNAME%</highlight> nu este o misiune activă!"
+  force-add-active-quest-accepted: '<success>Ai acceptat cu succes misiunea (Forțată).'
+  add-active-quest-player-object-not-found: '<warn>Eroare: Obiectul playerului nu a fost găsit. Vă rugăm să raportați acest lucru dezvoltatorului pluginului.'
+  reached-max-accepts-limit: "<red>Ai acceptat deja această misiune de prea multe ori. Nu poți decât să o accepți\n<highlight>%MAXACCEPTS%</highlight> ori, dar ai acceptat deja\n<highlight>%ACCEPTEDAMOUNT%</highlight>ori."
+  reached-max-fails-limit: "<red>Ai eșuat deja această misiune de prea multe ori. Poți doar să o eșuezi.\n<highlight>%MAXFAILS%</highlight> Ori, dar deja ai eșuat\n<highlight>%FAILEDAMOUNT%</highlight> ori."
+  reached-max-completions-limit: "<red>Ai finalizat deja această misiune de prea multe ori. O poți finaliza doar\n<highlight>%MAXCOMPLETIONS%</highlight> ori, dar deja ai terminat-o\n<highlight>%COMPLETEDAMOUNT%</highlight> ori."
+  reached-max-active-quests-per-player-limit: "<red>Nu poți accepta mai mult de\n<highlight>%MAXACTIVEQUESTSPERPLAYER%</highlight> Misiuni."
   quest-on-cooldown:
-    minute: '<red>This quest is on a cooldown! You have to wait another <highlight>1 minute</highlight> until you can take it again.'
-    minutes: '<red>This quest is on a cooldown! You have to wait another <highlight>%MINUTES% minutes</highlight> until you can take it again.'
-    hour: '<red>This quest is on a cooldown! You have to wait another <highlight>1 hour</highlight> until you can take it again.'
-    hours: '<red>This quest is on a cooldown! You have to wait another <highlight>%HOURS% hours</highlight> until you can take it again.'
-    day: '<red>This quest is on a cooldown! You have to wait another <highlight>1 day</highlight> until you can take it again.'
-    days: '<red>This quest is on a cooldown! You have to wait another <highlight>%DAYS% days</highlight> until you can take it again.'
+    minute: '<red>Această misiune este în așteptare! Trebuie să mai aștepți încă <highlight> 1 minute</highlight>până când poți să o iei din nou.'
+    minutes: '<red>Această misiune este în așteptare! Trebuie să mai aștepți încă <highlight>%MINUTES% minute</highlight> până când poți să o iei din nou.'
+    hour: '<red>Această misiune este în așteptare! Trebuie să mai aștepți încă <highlight>1 oră</highlight> până când îl poți lua din nou.'
+    hours: '<red>Această misiune este în așteptare! Trebuie să mai aștepți încă <highlight>%HOURS% ore</highlight> până când îl poți lua din nou.'
+    day: '<red>Această misiune este în așteptare! Trebuie să mai aștepți încă <highlight>1 zi</highlight> până când îl poți lua din nou.'
+    days: '<red>Această misiune este în așteptare! Trebuie să mai aștepți încă <highlight>%DAYS% zile</highlight> până când poți să o iei din nou.'
   profiles:
-    list-current: '<highlight>Current profile: <main>%PROFILENAME% (%QUESTPOINTS% quest points)'
-    list-other-heading: '<highlight>Other profiles:'
-    list-other-none: '  <main>You have no more profiles.'
-    list-other: '  <highlight>- <main>%PROFILENAME% (%QUESTPOINTS% quest points)'
-    change-same-profile: '<error>You are already using that profile!'
-    change-profile-doesnt-exist: '<error>That profile does not exist.'
-    changed-successfully: '<success>You have successfully changed your profile from %OLDPROFILENAME% to <highlight>%NEWPROFILENAME%</highlight>!'
-    create-already-exists: '<error>A profile with the name <highlight>%NEWPROFILENAME%</highlight> already exists.'
-    create-invalid-characters: '<error>The profile name you provided contains invalid characters.'
-    created-successfully: '<success>You have successfully created the profile <highlight>%NEWPROFILENAME%</highlight>! To switch to it, use <highlight2>/nq profiles change %NEWPROFILENAME%</highlight2>'
+    list-current: "<highlight>Profil actual:\n<main>%PROFILENAME%(%QUESTPOINTS% puncte de misiune)"
+    list-other-heading: '<highlight>Alte profiluri:'
+    list-other-none: '  <main>Nu mai aveți profiluri.'
+    list-other: '  <highlight>-<main>%PROFILENAME%(%QUESTPOINTS% puncte de misiune)'
+    change-same-profile: '<error>Folosești deja profilul respectiv!'
+    change-profile-doesnt-exist: '<error>Profilul respectiv nu există.'
+    changed-successfully: '<success>Ți-ai schimbat cu succes profilul din %OLDPROFILENAME% către<highlight>%NEWPROFILENAME%</highlight>!'
+    create-already-exists: '<error>Un profil cu numele <highlight>%NEWPROFILENAME%</highlight> există deja.'
+    create-invalid-characters: '<error>Numele de profil pe care l-ați furnizat conține caractere nevalide.'
+    created-successfully: "<success>Ați creat cu succes profilul <highlight>%NEWPROFILENAME%</highlight>!\nPentru a comuta la acesta, utilizați <highlight2>/nq profiluri\nschimbă %NEWPROFILENAME%</highlight2>"
   conversations:
     choose-answer-prefix: |-
       <EMPTY>
-      <main>Choose your answer:</main>
-    choose-answer-answer-hover-text: '<highlight>Click to answer'
+      <main>Alege-ți răspunsul:</main>
+    choose-answer-answer-hover-text: ''
     ended-previous-conversation: '<main>You have ended your previous conversation!'
     speaker-line-format: '%SPEAKERCOLOR%[%SPEAKER%] <GRAY>%MESSAGE%'
     answer-option-line-format: ' <main>%OPTIONNUMBER%. <gray>%MESSAGE%'
