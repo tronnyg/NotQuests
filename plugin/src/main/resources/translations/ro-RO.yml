@@ -12,14 +12,13 @@ chat:
   quest-already-accepted: <error>Misiunea a fost deja acceptată.
   quest-failed: |2
 
-    <CENTER><negative>[Misiune eșuată]
+    <CENTER><negative>[Misiune Eșuată]
     <CENTER><highlight><BOLD>%QUESTNAME%<EMPTY>
   quest-aborted: ''
   quest-completed-and-rewards-given: |2
 
-    <CENTER><positive>[Misiune finalizată]
-    <CENTER><highlight><BOLD>%QUESTNAME%
-    <EMPTY>
+    <CENTER><positive>[Misiune Finalizată]
+    <CENTER><highlight><BOLD>%QUESTNAME%<EMPTY>
   quest-completed-rewards-prefix: '    <highlight>Recompense:'
   quest-completed-rewards-rewardformat: '    <highlight>-<unimportant>%reward%'
   quest-completed-rewards-suffix: <EMPTY>
@@ -69,132 +68,131 @@ chat:
     choose-answer-prefix: |-
       <EMPTY>
       <main>Alege-ți răspunsul:</main>
-    choose-answer-answer-hover-text: ''
-    ended-previous-conversation: '<main>You have ended your previous conversation!'
-    speaker-line-format: '%SPEAKERCOLOR%[%SPEAKER%] <GRAY>%MESSAGE%'
-    answer-option-line-format: ' <main>%OPTIONNUMBER%. <gray>%MESSAGE%'
+    choose-answer-answer-hover-text: '<highlight>Faceți clic pentru a răspunde'
+    ended-previous-conversation: '<main>Ai încheiat conversația anterioară!'
+    speaker-line-format: '%SPEAKERCOLOR%%SPEAKER%<GRAY>%MESSAGE%'
+    answer-option-line-format: ' <main>%OPTIONNUMBER%<gray>%MESSAGE%'
   objectives:
-    counter: '<highlight>%OBJECTIVEIDWITHSUBID%.</highlight> <main>%OBJECTIVENAME%:'
-    counterForObjectiveObjective: '<highlight>%OBJECTIVEIDWITHSUBID%.</highlight> <main>%OBJECTIVEHOLDERNAME%:'
+    counter: '<highlight>%OBJECTIVEIDWITHSUBID%</highlight><main>%OBJECTIVENAME%:'
+    counterForObjectiveObjective: '<highlight>%OBJECTIVEIDWITHSUBID%</highlight><main>%OBJECTIVEHOLDERNAME%:'
     subObjectivePrefixAppend: '    '
-    hidden: <highlight>%OBJECTIVEID%.</highlight> <unimportant><BOLD>[HIDDEN]
-    description: '    <veryUnimportant>└─ <unimportant>Description: <main>%OBJECTIVEDESCRIPTION%'
-    progress: '    <veryUnimportant>└─ <unimportant>Progress: <main>%ACTIVEOBJECTIVEPROGRESS% / %OBJECTIVEPROGRESSNEEDED%'
+    hidden: <highlight>%OBJECTIVEID%</highlight><unimportant><BOLD>[ASCUNS]
+    description: "    <veryUnimportant>└─\n<unimportant>Descriere:\n<main>%OBJECTIVEDESCRIPTION%"
+    progress: "    <veryUnimportant>└─\n<unimportant>Progres:\n<main>%ACTIVEOBJECTIVEPROGRESS% /\n%OBJECTIVEPROGRESSNEEDED%"
     successfully-completed: |2
 
-      <CENTER><success>[Objective Completed]
-      <CENTER><highlight><bold>%OBJECTIVENAME%</bold> <RESET><main>(%QUESTNAME%)
-      <EMPTY>
-    successfully-completed-rewards-prefix: '    <highlight>Rewards:'
-    successfully-completed-rewards-rewardformat: '    <highlight> - <unimportant>%reward%'
+      <CENTER><success>[Obiectiv Completat]
+      <CENTER><highlight><bold>%OBJECTIVENAME%</bold><RESET><main>(%QUESTNAME%)<EMPTY>
+    successfully-completed-rewards-prefix: '    <highlight>Recompense:'
+    successfully-completed-rewards-rewardformat: '    <highlight>-<unimportant>%reward%'
     successfully-completed-rewards-suffix: <EMPTY>
     taskDescription:
       global:
-        prefix: '    <veryUnimportant>└─ <unimportant>'
+        prefix: '    <veryUnimportant>└─<unimportant>'
         suffix: ''
       breakBlocks:
-        base: 'Break Blocks: <main>%BLOCKTOBREAK%'
+        base: 'Blocuri de pauză: <main>%BLOCKTOBREAK%'
       breed:
-        base: 'Breed Mobs: <main>%ENTITYTOBREED%'
+        base: 'Entități de rasă: <main>%ENTITYTOBREED%'
       pickupItems:
-        base: 'Pickup Items: <main>%ITEMTOPICKUPTYPE% %(%%ITEMTOPICKUPNAME%%)%'
+        base: 'Articole de ridicat: <main>%ITEMTOPICKUPTYPE% %(%%ITEMTOPICKUPNAME%%)%'
       consumeItems:
-        base: 'Consume Items: <main>%ITEMTOCONSUMETYPE% %(%%ITEMTOCONSUMENAME%%)%'
+        base: "Articole de consum:\n<main>%ITEMTOCONSUMETYPE% %(%%ITEMTOCONSUMENAME%%)%"
       craftItems:
-        base: 'Craft Items: <main>%ITEMTOCRAFTTYPE% %(%%ITEMTOCRAFTNAME%%)%'
+        base: 'Articole de artizanat: <main>%ITEMTOCRAFTTYPE% &(%%ITEMTOCRAFTNAME%%)%'
       deliverItems:
-        base: 'Deliver Items: <main>%ITEMTODELIVERTYPE% %(%%ITEMTODELIVERNAME%%(%'
-        deliver-to-npc: '      <GRAY>Deliver it to <WHITE>%NPCNAME%'
-        deliver-to-npc-not-available: '      <GRAY>The delivery NPC is currently not available!'
+        base: 'Livrați articole: <main>%ITEMTODELIVERTYPE%%(%%ITEMTODELIVERNAME%%(%'
+        deliver-to-npc: '      <GRAY>Livrați-l la <WHITE>%NPCNAME%'
+        deliver-to-npc-not-available: '      <GRAY>NPC-ul de livrare nu este disponibil momentan!'
       enchant:
-        base: 'Enchant Items with %ENCHANTMENT%: <main>%ITEMTOENCHANTTYPE% %(%%ITEMTOENCHANTNAME%%(%'
+        base: "Vrăjește obiecte cu %ENCHANTMENT%:<main>%ITEMTOENCHANTTYPE% %\n(%%ITEMTOENCHANTNAME%%(%"
       escortNPC:
-        base: 'Escort <main>%NPCNAME%</main> to <main>%DESTINATIONNPCNAME%'
+        base: 'Escorta <main>%NPCNAME%</main> către<main>%DESTINATIONNPCNAME%'
       fishItems:
-        base: 'Fish Items: <main>%ITEMTOFISHTYPE% %(%%ITEMTOFISHNAME%%)%'
+        base: 'Articole din pește: <main>%ITEMTOFISHTYPE% %(%%ITEMTOFISHNAME%%)%'
       killMobs:
-        base: 'Kill mobs: <main>%MOBTOKILL%'
+        base: 'Ucide Creaturi: <main>%MOBTOKILL%'
       otherQuest:
-        base: 'Complete Quest: <main>%OTHERQUESTNAME%'
+        base: 'Misiunea completă: <main>%OTHERQUESTNAME%'
       placeBlocks:
-        base: 'Place Blocks: <main>%BLOCKTOPLACE%'
+        base: 'Plasează blocuri: <main>%BLOCKTOPLACE%'
       reachLocation:
-        base: 'Reach Location: <main>%LOCATIONNAME%'
+        base: 'Locație de acces:<main>%LOCATIONNAME%'
       talkToNPC:
-        base: 'Talk to <main>%NAME%'
-        npc-not-available: '    <GRAY>The target NPC is currently not available!'
+        base: 'Vorbește cu <main>%NAME%'
+        npc-not-available: '    <GRAY>NPC-ul țintă nu este disponibil momentan!'
       triggerCommand:
-        base: 'Goal: <main>%TRIGGERNAME%'
+        base: 'Scop: <main>%TRIGGERNAME%'
       killEliteMobs:
-        base: 'Kill Elite Mob: <main>%ELITEMOBNAME%'
-        any: 'Kill any Elite Mob!'
+        base: 'Elimină Creaturile de Elită: <main>%ELITEMOBNAME%'
+        any: 'Elimină orice Creatură de Elită!'
       runCommand:
-        base: 'Run command: <main>%COMMANDTORUN%'
+        base: 'Executare comandă: <main>%COMMANDTORUN%'
       interact:
-        base: '%INTERACTTYPE% Location: <main>%COORDINATES% <main>in world %WORLDNAME%'
+        base: '%INTERACTTYPE% Locație:<main>%COORDINATES% <main>în lume%WORLDNAME%'
       jump:
-        base: 'Jump <main>%AMOUNTOFJUMPS%</main> times'
+        base: 'Salt <main>%AMOUNTOFJUMPS%</main>ori'
       objective:
         base: '%OBJECTIVEHOLDERNAME%'
       sneak:
-        base: 'Sneak <main>%AMOUNTOFSNEAKS%</main> times'
+        base: 'Furișat <main>%AMOUNTOFSNEAKS%</main>ori'
       smelt:
-        base: 'Smelt Items: <main>%ITEMTOSMELTTYPE% %(%%ITEMTOSMELTNAME%%)%'
+        base: 'Obiecte topite: <main>%ITEMTOSMELTTYPE% %(%%ITEMTOSMELTNAME%%)%'
       openBuriedTreasure:
-        base: 'Open buried treasures'
+        base: 'Deschide comori îngropate'
       shearSheep:
-        base: 'Shear <main>%AMOUNTOFSHEEP%</main> sheep'
+        base: 'Tunde <main>%AMOUNTOFSHEEP%</main>Oaie'
       townyReachResidentCount:
-        base: 'Reach resident amount: <main>%AMOUNT%'
+        base: 'Suma atinsă pentru rezidenți: <main>%AMOUNT%'
       townyNationReachTownCount:
-        base: 'Reach town amount with your nation: <main>%AMOUNT%'
+        base: 'Suma orașului atinsă cu națiunea ta:<main>%AMOUNT%'
       jobsRebornReachJobLevel:
-        base: 'Reach job level <main>%AMOUNT%</main> with job <main>%JOB%'
+        base: 'Atinge nivelul de job <main>%AMOUNT%</main>cu job-ul <main>%JOB%'
       SlimefunResearch:
-        base: 'Spend on research'
+        base: 'Cheltuieli pentru cercetare'
       ProjectKorraUseAbility:
-        base: 'Use Ability: <main>%ABILITY%'
+        base: 'Abilitatea de utilizare: <main>%ABILITY%'
       BetonQuestCompleteObjective:
-        base: 'Finish Objective: <main>%BETONQUESTOBJECTIVENAME%'
+        base: "Finalizare obiectiv:\n<main>%BETONQUESTOBJECTIVENAME%"
       ultimateJobsReachJobLevel:
-        base: 'Reach job level <main>%AMOUNT%</main> with job <main>%JOBID%'
+        base: 'Atinge nivelul de job <main>%AMOUNT%</main> cu job-ul <main>%JOBID%'
   conditions:
     boolean:
-      not-fulfilled: "<warn>Following needs to be %BOOLEANREQUIREMENT%: <highlight>%VARIABLESINGULAR%</highlight>."
-      variable-not-found: "<error>Error: variable <highlight>%VARIABLENAME%</highlight> not found. Report this to the Server owner."
-      wrong-operator: "<error>Error: variable operator <highlight>%OPERATOR%/highlight> is invalid. Report this to the Server owner."
+      not-fulfilled: "<warn>Următoarele trebuie să fie%BOOLEANREQUIREMENT%<highlight>%VARIABLESINGULAR%</highlight>."
+      variable-not-found: "<error>Eroare: variabilă\n<highlight>%VARIABLENAME%</highlight> Nu a fost găsit. Raportați acest lucru proprietarului serverului."
+      wrong-operator: "<error>Eroare: operator variabil\n<highlight>%OPERATOR%/highlight> este invalid. Raportați acest lucru proprietarului serverului."
 objective-tracking:
   actionbar-progress-update:
-    default: "<positive>%QUESTNAME%</positive> <unimportant>- <main>%OBJECTIVENAME%</main> <unimportant>(<positive>%ACTIVEOBJECTIVEPROGRESS% <unimportant>/ <main>%OBJECTIVEPROGRESSNEEDED% <unimportant>- <highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
-    only-one-max-progress: "<positive>%QUESTNAME%</positive> <unimportant>- <main>%OBJECTIVENAME%</main> <unimportant>(<highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
+    default: "<positive>%QUESTNAME%</positive> <unimportant>-<main>%OBJECTIVENAME%</main><unimportant>(<positive>%ACTIVEOBJECTIVEPROGRESS%<unimportant>/ <main>%OBJECTIVEPROGRESSNEEDED%<unimportant>-<highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
+    only-one-max-progress: "<positive>%QUESTNAME%</positive> <unimportant>-<main>%OBJECTIVENAME%</main><unimportant>(<highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
   bossbar-progress-update:
-    default: "<positive>%QUESTNAME%</positive> <unimportant>- <main>%OBJECTIVENAME%</main> <unimportant>(<positive>%ACTIVEOBJECTIVEPROGRESS% <unimportant>/ <main>%OBJECTIVEPROGRESSNEEDED% <unimportant>- <highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
-    only-one-max-progress: "<positive>%QUESTNAME%</positive> <unimportant>- <main>%OBJECTIVENAME%</main> <unimportant>(<highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
+    default: "<positive>%QUESTNAME%</positive> <unimportant>-<main>%OBJECTIVENAME%</main><unimportant>(<positive>%ACTIVEOBJECTIVEPROGRESS%<unimportant>/ <main>%OBJECTIVEPROGRESSNEEDED%<unimportant>-<highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
+    only-one-max-progress: "<positive>%QUESTNAME%</positive> <unimportant>-<main>%OBJECTIVENAME%</main><unimportant>(<highlight>%OBJECTIVEPROGRESSPERCENTAGE%%<unimportant>)"
 titles:
   quest-accepted:
-    title: <main>Quest accepted
+    title: <main>Misiune acceptată
     subtitle: <highlight>%QUESTNAME%
   quest-completed:
-    title: <positive>Quest Completed
+    title: <positive>Misiune Finalizată
     subtitle: <highlight>%QUESTNAME%
   quest-failed:
-    title: <negative>Quest Failed
+    title: <negative>Misiune Eșuată
     subtitle: <highlight>%QUESTNAME%
 placeholders:
   questcooldownleftformatted:
     prefix: ''
     minute: '1 minute'
-    minutes: '%MINUTES% minutes'
-    hour: '1 hour'
-    hours: '%HOURS% hours'
-    day: '1 day'
-    days: '%DAYS% days'
+    minutes: '%MINUTES% Minute'
+    hour: '1 Oră'
+    hours: '%HOURS% Ore'
+    day: '1 zi'
+    days: '%DAYS% Zile'
     no-cooldown: ''
 gui:
   main:
-    title: '                <highlight2>Quests'
+    title: '                <highlight2>Misiuni'
     backgroundFill:
-      material: 'BLACK_STAINED_GLASS_PANE'
+      material: 'STICLĂ_NEAGRA_VĂLUCITĂ'
     background:
       '1':
         minX: 0
@@ -218,56 +216,56 @@ gui:
         maxY: 5
     button:
       questpoints:
-        name: "<highlight>Quest Points"
+        name: "<highlight>Puncte de misiune"
         lore:
-          - "<main>Current quest points: <highlight2>%QUESTPOINTS%"
+          - "<main>Puncte de misiune actuale: <highlight2>%QUESTPOINTS%"
         x: 8
         y: 0
       takequest:
-        name: "<positive>Take a Quest"
+        name: "<positive>Ia o Misiune"
         lore:
-          - "<unimportant>Start a new Quest!"
+          - "<unimportant>Începe o nouă Misiune!"
           - ""
-          - "<veryUnimportant>Some Quests cannot be"
-          - "<veryUnimportant>started like this."
+          - "<veryUnimportant>Unele Misiuni nu pot fi"
+          - "<veryUnimportant>A început așa."
         x: 0
         y: 1
       abortquest:
-        name: "<negative>Abort a Quest"
+        name: "<negative>Anulează o misiune"
         lore:
           - ""
-          - "<veryUnimportant>Aborting a Quest may"
-          - "<veryUnimportant>lead to punishments."
+          - "<veryUnimportant>Anularea unei Misiuni poate"
+          - "<veryUnimportant>Duce la pedepse."
         x: 0
         y: 2
       activequests:
-        name: "<highlight>Active Quests"
+        name: "<highlight>Misiuni Active"
         lore:
           - ""
-          - "<veryUnimportant>Shows all of your"
-          - "<veryUnimportant>active Quests."
+          - "<veryUnimportant>Arată toate ale tale"
+          - "<veryUnimportant>Misiuni active."
         x: 0
         y: 3
   activeQuests:
-    title: '             <highlight2>Active Quests'
+    title: '             <highlight2>Misiuni Active'
     button:
       activeQuestButton:
-        name: "<highlight>%QUESTNAME% <positive>[ACTIVE]"
+        name: "<highlight>%QUESTNAME% <positive>[ACTIV]"
         lore:
-          - "<unimportant>Progress: <positive>%COMPLETEDOBJECTIVESCOUNT% <unimportant>/ <main>%ALLOBJECTIVESCOUNT%"
-          - "<main>Click to see details!"
-  reward-hidden-text: . <unimportant>[HIDDEN]
+          - "<unimportant>Progres:<positive>%COMPLETEDOBJECTIVESCOUNT% <unimportant>/<main>%ALLOBJECTIVESCOUNT%"
+          - "<main>Click pentru a vedea detalii!"
+  reward-hidden-text: <unimportant>[ASCUNS]
   availableQuests:
-    title: '         <highlight2>Available Quests'
+    title: '         <highlight2>Misiuni Disponibile'
     button:
       questPreview:
         name-if-not-accepted: "<highlight>%QUESTNAME%"
-        name-if-accepted: "<highlight>%QUESTNAME% <reset><positive>[ACCEPTED]"
+        name-if-accepted: "<highlight>%QUESTNAME%<reset><positive>[ACCEPTAT]"
         lore:
           - "<veryUnimportant>%WRAPPEDQUESTDESCRIPTION%"
-          - "<main>Click to open Quest!"
+          - "<main>Clic pentru a deschide Misiunea!"
   takeQuestChoose:
-    title: <highlight2>Which Quest do you want to take?
+    title: <highlight2>Ce misiune vrei să iei?
     size:
       minX: 3
       minY: 1
@@ -276,39 +274,39 @@ gui:
     button:
       questPreview:
         name-if-not-accepted: "<highlight>%QUESTNAME%"
-        name-if-accepted: "<highlight>%QUESTNAME% <reset><positive>[ACCEPTED]"
+        name-if-accepted: "<highlight>%QUESTNAME% <reset><positive>[ACCEPTAT]"
         lore:
           - "<veryUnimportant>%WRAPPEDQUESTDESCRIPTION%"
-          - "<main>Click to preview Quest!"
+          - "<main>Clic pentru a previzualiza Misiunea!"
   abortQuestChoose:
-    title: '  <highlight2>Active Quests you can abort'
+    title: '  <highlight2>Misiuni active pe care le poți anula'
     button:
       abortQuestPreview:
-        name: "<highlight>%QUESTNAME% <positive>[ACTIVE]"
+        name: "<highlight>%QUESTNAME% <positive>[ACTIV]"
         lore:
-          - "<unimportant>Progress: <positive>%COMPLETEDOBJECTIVESCOUNT% <unimportant>/ <main>%ALLOBJECTIVESCOUNT%"
-          - "<negative>Click to abort Quest!"
+          - "<unimportant>Progres:<positive>%COMPLETEDOBJECTIVESCOUNT% <unimportant>/<main>%ALLOBJECTIVESCOUNT%"
+          - "<negative>Apasă pentru a anula misiunea!"
   abortQuest:
-    title: '         <negative>Abort Confirmation'
+    title: '         <negative>Anulare confirmare'
     button:
       confirmAbort:
-        name: "<highlight>%QUESTNAME% <positive>[ACTIVE]"
+        name: "<highlight>%QUESTNAME% <positive>[ACTIV]"
         lore:
-          - "<unimportant>Progress: <positive>%COMPLETEDOBJECTIVESCOUNT% <unimportant>/ <main>%ALLOBJECTIVESCOUNT%"
-          - "<negative>Click to abort the quest <highlight>%QUESTNAME%</highlight>!"
+          - "<unimportant>Progres:<positive>%COMPLETEDOBJECTIVESCOUNT% <unimportant>/<main>%ALLOBJECTIVESCOUNT%"
+          - "<negative>Faceți clic pentru a abandona misiunea<highlight>%QUESTNAME%</highlight>!"
         x: 3
         y: 1
       cancelAbort:
-        name: "<positive>Click to NOT abort this quest"
+        name: "<positive>Clic pentru a NU abandona această misiune"
         lore:
-          - "<positive>and cancel this action"
+          - "<positive>Și anulați această acțiune"
         x: 5
         y: 1
   previewQuest:
-    title: <highlight2>Quest Preview
+    title: <highlight2>Previzualizare misiune
     button:
       description:
-        name: "<highlight>Description"
+        name: "<highlight>Descriere"
         lore:
           - "<veryUnimportant>%WRAPPEDQUESTDESCRIPTION%"
         lore-if-empty:
@@ -316,15 +314,15 @@ gui:
         x: 2
         y: 0
       rewards:
-        name: "<positive>Rewards"
+        name: "<positive>Recompense"
         lore:
           - "<WHITE>%QUESTREWARDS%"
         lore-if-empty:
-          - "<veryUnimportant>None or hidden"
+          - "<veryUnimportant>Niciunul sau ascuns"
         x: 4
         y: 0
       requirements:
-        name: "<negative>Requirements"
+        name: "<negative>Cerințe"
         lore:
           - "<WHITE>%QUESTREQUIREMENTS%"
         lore-if-empty:
@@ -334,48 +332,48 @@ gui:
       confirmTake:
         name: "<highlight>%QUESTNAME%"
         lore:
-          - "<positive>Click to take the quest <highlight>%QUESTNAME%"
+          - "<positive>Faceți clic pentru a îndeplini misiunea <highlight>%QUESTNAME%"
         x: 3
         y: 2
       cancelTake:
-        name: "<negative>Click to NOT take this quest"
+        name: "<negative>Apasă pentru a NU participa la această misiune"
         lore:
-          - "<negative>and cancel this action"
+          - "<negative>Și anulați această acțiune"
         x: 5
         y: 2
   progress:
-    title: <highlight2>Details for Quest
+    title: <highlight2>Detalii pentru Misiune
     button:
       unlockedObjective:
-        name: "<highlight2>%ACTIVEOBJECTIVEID%. <highlight>%OBJECTIVENAME%"
+        name: "<highlight2>%ACTIVEOBJECTIVEID%<highlight>%OBJECTIVENAME%"
         lore:
-          - "<main><BOLD>ACTIVE</BOLD>"
+          - "<main><BOLD>ACTIV</BOLD>"
           - "<veryUnimportant>%WRAPPEDOBJECTIVEDESCRIPTION%"
           - "<unimportant>%OBJECTIVETASKDESCRIPTION%"
           - ""
-          - "<unimportant>Progress: <positive>%ACTIVEOBJECTIVEPROGRESS% <unimportant>/ <main>%OBJECTIVEPROGRESSNEEDED%"
+          - "<unimportant>Realizare:<positive>%ACTIVEOBJECTIVEPROGRESS% <unimportant>/<main>%OBJECTIVEPROGRESSNEEDED%"
         lore-if-description-empty:
-          - "<main><BOLD>ACTIVE</BOLD>"
-          - "<veryUnimportant>No Description"
+          - "<main><BOLD>ACTIV</BOLD>"
+          - "<veryUnimportant>Fără Descriere"
           - "<unimportant>%OBJECTIVETASKDESCRIPTION%"
           - ""
-          - "<unimportant>Progress: <positive>%ACTIVEOBJECTIVEPROGRESS% <unimportant>/ <main>%OBJECTIVEPROGRESSNEEDED%"
+          - "<unimportant>Realizare:<positive>%ACTIVEOBJECTIVEPROGRESS% <unimportant>/<main>%OBJECTIVEPROGRESSNEEDED%"
       lockedObjective:
-        name: "<highlight2>%ACTIVEOBJECTIVEID%. <unimportant><BOLD>[HIDDEN]"
+        name: "<highlight2>%ACTIVEOBJECTIVEID%. \n<unimportant><BOLD>[ASCUNS]"
         lore:
-          - "<warn>This objective has not yet"
-          - "<warn>been unlocked!"
+          - "<warn>Acest obiectiv nu a fost încă"
+          - "<warn>A fost deblocat!"
       completedObjective:
-        name: "<highlight2><strikethrough>%ACTIVEOBJECTIVEID%. <positive><strikethrough>%OBJECTIVENAME%"
+        name: "<highlight2><strikethrough>%ACTIVEOBJECTIVEID%.\n<positive><strikethrough>%OBJECTIVENAME%"
         lore:
-          - "<positive><BOLD>COMPLETED</BOLD>"
+          - "<positive><BOLD>FINALIZAT</BOLD>"
           - "<veryUnimportant><strikethrough>%WRAPPEDOBJECTIVEDESCRIPTION%"
           - "<veryUnimportant><strikethrough>%COMPLETEDOBJECTIVETASKDESCRIPTION%"
           - ""
-          - "<unimportant><strikethrough>Progress: <positive><strikethrough>%ACTIVEOBJECTIVEPROGRESS% <unimportant><strikethrough>/ <positive><strikethrough>%OBJECTIVEPROGRESSNEEDED%"
+          - "<unimportant><strikethrough>Realizare:\n<positive><strikethrough>%ACTIVEOBJECTIVEPROGRESS%<unimportant><strikethrough>/<positive><strikethrough>%OBJECTIVEPROGRESSNEEDED%"
         lore-if-description-empty:
-          - "<positive><BOLD>COMPLETED</BOLD>"
-          - "<veryUnimportant><strikethrough>No Description"
+          - "<positive><BOLD>FINALIZAT</BOLD>"
+          - "<veryUnimportant><strikethrough>Fără Descriere"
           - "<veryUnimportant><strikethrough>%COMPLETEDOBJECTIVETASKDESCRIPTION%"
           - ""
-          - "<unimportant><strikethrough>Progress: <positive><strikethrough>%ACTIVEOBJECTIVEPROGRESS% <unimportant><strikethrough>/ <positive><strikethrough>%OBJECTIVEPROGRESSNEEDED%"
+          - "<unimportant><strikethrough>Realizare:\n<positive><strikethrough>%ACTIVEOBJECTIVEPROGRESS%<unimportant><strikethrough>/\n<positive><strikethrough>%OBJECTIVEPROGRESSNEEDED%"
