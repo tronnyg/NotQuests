@@ -87,14 +87,6 @@ repositories {
         }
     }
 
-    maven("https://betonquest.org/nexus/repository/betonquest/"){
-        content {
-            includeGroup("org.betonquest")
-        }
-        metadataSources {
-            artifact()
-        }
-    }
 
     maven("https://maven.enginehub.org/repo/"){
         content {
@@ -228,7 +220,6 @@ bukkit {
         "PlaceholderAPI",
         "MythicMobs",
         "EliteMobs",
-        "BetonQuest",
         "WorldEdit",
         "Slimefun",
         "LuckPerms",

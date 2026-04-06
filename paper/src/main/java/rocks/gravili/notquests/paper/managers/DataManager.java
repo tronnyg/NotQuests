@@ -1082,10 +1082,6 @@ public class DataManager {
                 true
         ));
 
-        configuration.setIntegrationBetonQuestEnabled(getGeneralConfigBoolean(
-                "integrations.betonquest.enabled",
-                true
-        ));
 
         configuration.setIntegrationWorldEditEnabled(getGeneralConfigBoolean(
                 "integrations.worldedit.enabled",

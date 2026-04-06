@@ -23,7 +23,6 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.events.hooks.*;
-import rocks.gravili.notquests.paper.managers.integrations.betonquest.BetonQuestManager;
 import rocks.gravili.notquests.paper.managers.integrations.citizens.CitizensManager;
 import rocks.gravili.notquests.paper.placeholders.QuestPlaceholders;
 
@@ -48,7 +47,6 @@ public class IntegrationsManager {
   private boolean worldEditEnabled = false;
   private boolean eliteMobsEnabled = false;
   private boolean placeholderAPIEnabled = false;
-  private boolean betonQuestEnabled = false;
   private boolean mythicMobsEnabled = false;
   private boolean ecoBossesEnabled = false;
   private boolean ultimateJobsEnabled = false;
@@ -61,7 +59,6 @@ public class IntegrationsManager {
   private VaultManager vaultManager;
   private MythicMobsManager mythicMobsManager;
   private CitizensManager citizensManager;
-  private BetonQuestManager betonQuestManager;
   private WorldEditManager worldEditManager;
   private SlimefunManager slimefunManager;
   private LuckpermsManager luckpermsManager;
@@ -188,19 +185,6 @@ public class IntegrationsManager {
                       .registerEvents(new EliteMobsEvents(main), main.getMain());
                 }));
 
-    integrations.add(
-        new Integration(main, "BetonQuest")
-            .setEnableCondition(() -> main.getConfiguration().isIntegrationBetonQuestEnabled())
-            .setRunWhenEnabled(
-                () -> {
-                  betonQuestEnabled = true;
-                  betonQuestManager = new BetonQuestManager(main);
-                  main.getMain()
-                      .getServer()
-                      .getPluginManager()
-                      .registerEvents(new BetonQuestEvents(main), main.getMain());
-                  return true;
-                }));
 
     integrations.add(
         new Integration(main, "WorldEdit")
@@ -460,10 +444,6 @@ public class IntegrationsManager {
     return placeholderAPIEnabled;
   }
 
-  public final boolean isBetonQuestEnabled() {
-    return betonQuestEnabled;
-  }
-
   public final boolean isWorldEditEnabled() {
     return worldEditEnabled;
   }
@@ -504,10 +484,6 @@ public class IntegrationsManager {
 
   public final EcoBossesManager getEcoBossesManager() {
     return ecoBossesManager;
-  }
-
-  public final BetonQuestManager getBetonQuestManager() {
-    return betonQuestManager;
   }
 
   public final WorldEditManager getWorldEditManager() {

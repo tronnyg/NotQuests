@@ -159,9 +159,6 @@ public class VariablesManager {
             registerVariable("ProjectKorraIsBender", ProjectKorraIsBenderVariable.class);
         }
 
-        if (main.getIntegrationsManager().isBetonQuestEnabled()) {
-            registerVariable("BetonQuestCondition", BetonQuestConditionVariable.class);
-        }
 
         if (main.getIntegrationsManager().isFloodgateEnabled()) {
             registerVariable("FloodgateIsFloodgatePlayer", FloodgateIsFloodgatePlayerVariable.class);

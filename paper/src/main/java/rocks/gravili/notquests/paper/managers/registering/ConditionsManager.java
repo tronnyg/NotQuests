@@ -84,10 +84,6 @@ public class ConditionsManager {
         registerCondition("List", ListCondition.class);
         registerCondition("ItemStackList", ItemStackListCondition.class);
 
-        /*if(main.getIntegrationsManager().isBetonQuestEnabled()){
-            registerCondition("BetonQuestCheckCondition", BetonQuestCheckConditionCondition.class);
-            registerCondition("BetonQuestCheckInlineCondition", BetonQuestCheckInlineConditionCondition.class);
-        }*/
 
     }
 

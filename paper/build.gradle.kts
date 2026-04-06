@@ -72,7 +72,6 @@ repositories {
             includeGroup("com.github.UlrichBR")
             includeGroup("com.github.Slimefun")
             includeGroup("net.citizensnpcs")
-            includeGroup("org.betonquest")
         }
         metadataSources {
             artifact()
@@ -92,11 +91,6 @@ repositories {
         }
     }
 
-    maven("https://nexus.betonquest.org/repository/betonquest/") {
-        content {
-            includeGroup("org.betonquest")
-        }
-    }
 
     maven("https://maven.enginehub.org/repo/") {
         content {
@@ -136,7 +130,6 @@ repositories {
     }
 
     maven("https://repo.xenondevs.xyz/releases")
-    maven("https://nexus.betonquest.org/repository/betonquest/")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://repo.magmaguy.com/releases")
     //mavenLocal()
@@ -161,7 +154,6 @@ dependencies {
     compileOnly(files("libs/ProjectKorra-1.11.3.jar"))
 
 
-    compileOnly(files("libs/BetonQuest.jar"));
 
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")

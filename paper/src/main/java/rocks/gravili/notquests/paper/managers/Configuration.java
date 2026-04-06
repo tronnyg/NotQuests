@@ -119,7 +119,6 @@ public class Configuration {
   private boolean integrationPlaceholderAPIEnabled = true;
   private boolean integrationMythicMobsEnabled = true;
   private boolean integrationEliteMobsEnabled = true;
-  private boolean integrationBetonQuestEnabled = true;
   private boolean integrationWorldEditEnabled = true;
   private boolean integrationSlimeFunEnabled = true;
   private boolean integrationLuckPermsEnabled = true;
@@ -747,14 +746,6 @@ public class Configuration {
 
   public void setIntegrationEliteMobsEnabled(boolean integrationEliteMobsEnabled) {
     this.integrationEliteMobsEnabled = integrationEliteMobsEnabled;
-  }
-
-  public boolean isIntegrationBetonQuestEnabled() {
-    return integrationBetonQuestEnabled;
-  }
-
-  public void setIntegrationBetonQuestEnabled(boolean integrationBetonQuestEnabled) {
-    this.integrationBetonQuestEnabled = integrationBetonQuestEnabled;
   }
 
   public boolean isIntegrationWorldEditEnabled() {

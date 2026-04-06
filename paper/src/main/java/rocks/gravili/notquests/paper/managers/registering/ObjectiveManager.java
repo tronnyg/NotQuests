@@ -29,7 +29,6 @@ import org.incendo.cloud.paper.PaperCommandManager;
 import org.jetbrains.annotations.NotNull;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.objectives.*;
-import rocks.gravili.notquests.paper.structs.objectives.hooks.betonquest.BetonQuestObjectiveStateChangeObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.citizens.EscortNPCObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.elitemobs.KillEliteMobsObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.jobsreborn.JobsRebornReachJobLevelObjective;
@@ -105,10 +104,6 @@ public class ObjectiveManager {
         // ProjectKorra
         registerObjective("ProjectKorraUseAbility", ProjectKorraUseAbilityObjective.class);
 
-        if (main.getIntegrationsManager().isBetonQuestEnabled()) {
-            registerObjective(
-                    "BetonQuestObjectiveStateChange", BetonQuestObjectiveStateChangeObjective.class);
-        }
 
         if (main.getIntegrationsManager().isUltimateJobsEnabled()) {
             registerObjective("UltimateJobsReachJobLevel", UltimateJobsReachJobLevelObjective.class);
