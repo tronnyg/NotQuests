@@ -1,7 +1,7 @@
 package rocks.gravili.notquests.paper.commands.category.admin.category;
 
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;

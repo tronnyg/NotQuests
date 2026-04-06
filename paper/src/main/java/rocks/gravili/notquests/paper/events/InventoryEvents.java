@@ -29,6 +29,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.gui.GuiContext;
 
 public class InventoryEvents implements Listener {
     private final NotQuests main;
@@ -66,7 +67,9 @@ public class InventoryEvents implements Listener {
         final ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             if (itemInHand.isSimilar(main.getConfiguration().journalItem)) {
-                main.getGuiManager().showActiveQuestsGUI(main.getQuestPlayerManager().getActiveQuestPlayer(player.getUniqueId()));
+                final var guiContext = new GuiContext();
+                guiContext.setPlayer(player);
+                main.getGuiService().showGui("main-active", player, guiContext);
             }
         }
     }

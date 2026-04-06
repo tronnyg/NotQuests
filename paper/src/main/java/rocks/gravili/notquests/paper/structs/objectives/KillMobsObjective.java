@@ -39,8 +39,6 @@ public class KillMobsObjective extends Objective {
   private String nameTagContainsAny = "";
   private String nameTagEquals = "";
 
-  private String projectKorraAbility = "";
-
   public KillMobsObjective(NotQuests main) {
     super(main);
   }
@@ -56,11 +54,6 @@ public class KillMobsObjective extends Objective {
             .required("amount", integerParser(1), Description.of("Amount of kills needed"))
             .flag(main.getCommandManager().nametag_equals)
             .flag(main.getCommandManager().nametag_containsany);
-
-    if (main.getIntegrationsManager().isProjectKorraEnabled()) {
-      addObjectiveBuilder =
-          addObjectiveBuilder.flag(main.getCommandManager().withProjectKorraAbilityFlag);
-    }
 
     addObjectiveBuilder =
         addObjectiveBuilder.handler(
@@ -87,14 +80,6 @@ public class KillMobsObjective extends Objective {
               // Add flags
               killMobsObjective.setNameTagEquals(nametag_equals);
               killMobsObjective.setNameTagContainsAny(nametag_containsany);
-
-              if (main.getIntegrationsManager().isProjectKorraEnabled()) {
-                final String abilityName =
-                    context
-                        .flags()
-                        .getValue(main.getCommandManager().withProjectKorraAbilityFlag, "");
-                killMobsObjective.setProjectKorraAbility(abilityName);
-              }
 
               main.getObjectiveManager().addObjective(killMobsObjective, context, level);
 
@@ -135,10 +120,6 @@ public class KillMobsObjective extends Objective {
     if (!getNameTagEquals().isBlank()) {
       configuration.set(initialPath + ".extras.nameTagEquals", getNameTagEquals());
     }
-
-    if (!projectKorraAbility.isBlank()) {
-      configuration.set(initialPath + ".extras.projectKorraAbility", getProjectKorraAbility());
-    }
   }
 
   @Override
@@ -151,14 +132,6 @@ public class KillMobsObjective extends Objective {
       final ActiveObjective activeObjective,
       final boolean lockedOrCompletedDuringPluginStartupQuestLoadingProcess,
       final boolean completed) {}
-
-  public final String getProjectKorraAbility() {
-    return projectKorraAbility;
-  }
-
-  public void setProjectKorraAbility(final String projectKorraAbility) {
-    this.projectKorraAbility = projectKorraAbility;
-  }
 
   public final String getMobToKill() {
     return mobToKillType;
@@ -196,8 +169,5 @@ public class KillMobsObjective extends Objective {
     if (!nameTagEquals.isBlank()) {
       setNameTagEquals(nameTagEquals);
     }
-
-    setProjectKorraAbility(
-        configuration.getString(initialPath + ".extras.projectKorraAbility", ""));
   }
 }

@@ -42,7 +42,7 @@ public class IntegrationsManager {
   private boolean slimefunEnabled = false;
   private boolean townyEnabled = false;
   private boolean jobsRebornEnabled = false;
-  private boolean projectKorraEnabled = false;
+
   private boolean luckpermsEnabled = false;
   private boolean worldEditEnabled = false;
   private boolean eliteMobsEnabled = false;
@@ -62,7 +62,7 @@ public class IntegrationsManager {
   private WorldEditManager worldEditManager;
   private SlimefunManager slimefunManager;
   private LuckpermsManager luckpermsManager;
-  private ProjectKorraManager projectKorraManager;
+
   private EcoBossesManager ecoBossesManager;
   private FloodgateManager floodgateManager;
 
@@ -294,23 +294,6 @@ public class IntegrationsManager {
                 }));
 
     integrations.add(
-        new Integration(main, "ProjectKorra")
-            .setEnableCondition(() -> main.getConfiguration().isIntegrationProjectKorraEnabled())
-            .setRunWhenEnabled(
-                () -> {
-                  projectKorraManager = new ProjectKorraManager(main);
-                  projectKorraEnabled = true;
-                  return true;
-                })
-            .setRunWhenRegisteringEventsOnTime(
-                () -> {
-                  main.getMain()
-                      .getServer()
-                      .getPluginManager()
-                      .registerEvents(new ProjectKorraEvents(main), main.getMain());
-                }));
-
-    integrations.add(
         new Integration(main, "Floodgate")
             .setEnableCondition(() -> main.getConfiguration().isIntegrationFloodgateEnabled())
             .setRunWhenEnabled(
@@ -462,10 +445,6 @@ public class IntegrationsManager {
     return jobsRebornEnabled;
   }
 
-  public final boolean isProjectKorraEnabled() {
-    return projectKorraEnabled;
-  }
-
   public final boolean isEcoBossesEnabled() {
     return ecoBossesEnabled;
   }
@@ -496,10 +475,6 @@ public class IntegrationsManager {
 
   public final CitizensManager getCitizensManager() {
     return citizensManager;
-  }
-
-  public final ProjectKorraManager getProjectKorraManager() {
-    return projectKorraManager;
   }
 
   public final FloodgateManager getFloodgateManager() {

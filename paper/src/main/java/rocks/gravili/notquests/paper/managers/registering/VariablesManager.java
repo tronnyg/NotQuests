@@ -153,13 +153,6 @@ public class VariablesManager {
             registerVariable("TownyNationName", TownyNationNameVariable.class);
         }
 
-        if (main.getIntegrationsManager().isProjectKorraEnabled()) {
-            registerVariable("ProjectKorraElements", ProjectKorraElementsVariable.class);
-            registerVariable("ProjectKorraSubElements", ProjectKorraSubElementsVariable.class);
-            registerVariable("ProjectKorraIsBender", ProjectKorraIsBenderVariable.class);
-        }
-
-
         if (main.getIntegrationsManager().isFloodgateEnabled()) {
             registerVariable("FloodgateIsFloodgatePlayer", FloodgateIsFloodgatePlayerVariable.class);
         }

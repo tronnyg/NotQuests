@@ -22,7 +22,8 @@ plugins {
 
     id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper")
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    id("de.eldoria.plugin-yml.bukkit") version "0.9.0"
+    id("de.eldoria.plugin-yml.paper") version "0.9.0"
 }
 
 
@@ -66,7 +67,6 @@ repositories {
             includeGroup("com.github.retrooper.packetevents")
             includeGroup("io.github.retrooper")
             includeGroup("com.github.AlessioGr")
-            includeGroup("com.github.AlessioGr.packetevents")
             includeGroup("com.github.TownyAdvanced")
             includeGroup("com.github.Zrips")
         }
@@ -118,8 +118,8 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("26.1.1.build.29-alpha")
 
-    implementation(project(path= ":common", configuration= "shadow"))
-    implementation(project(path= ":paper", configuration= "shadow"))
+    implementation(project(path= ":common", configuration= "shadowRuntimeElements"))
+    implementation(project(path= ":paper", configuration= "shadowRuntimeElements"))
 
     //implementation(project(":spigot"))
     //implementation(project(":paper"))
@@ -155,17 +155,7 @@ tasks {
 
         archiveClassifier.set("")
 
-        //relocate("rocks.gravili.notquests.spigot", "$shadowPath.spigot")
-        //relocate("rocks.gravili.notquests.paper", "$shadowPath.paper")
         relocate("io.papermc.lib", "$shadowPath.paperlib")
-
-        dependencies {
-            include(dependency(":common"))
-            include(dependency(":paper"))
-            include(dependency("io.papermc:paperlib:"))
-        }
-        //archiveBaseName.set("notquests")
-        //archiveClassifier.set(null)
     }
 
 
@@ -185,17 +175,17 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.11-rc3")
+        minecraftVersion("26.1.1")
     }
 
     register<Copy>("copyToServer") {
         val path = System.getenv("PLUGIN_DIR")
-        if (path.toString().isEmpty()) {
+        if (path.isNullOrEmpty()) {
             println("No environment variable PLUGIN_DIR set")
             return@register
         }
         from(reobfJar)
-        destinationDir = File(path.toString())
+        destinationDir = File(path)
     }
 }
 
@@ -206,7 +196,7 @@ bukkit {
     name = "NotQuests"
     version = rootProject.version.toString()
     main = "rocks.gravili.notquests.Main"
-    apiVersion = "1.21.11"
+    apiVersion = "26.1.1"
     authors = listOf("AlessioGr")
     description = "Flexible, open, GUI Quest Plugin for Minecraft"
     website = "https://www.notquests.com"
@@ -214,6 +204,8 @@ bukkit {
         "ProtocolLib",
         "ProtocolSupport",
         "ViaVersion",
+        "ViaBackwards",
+        "ViaRewind",
         "Geyser-Spigot",
         "Citizens",
         "Vault",
@@ -225,7 +217,7 @@ bukkit {
         "LuckPerms",
         "Towny",
         "Jobs",
-        "ProjectKorra",
+
         "EcoBosses",
         "eco",
         "UltimateJobs",
@@ -256,4 +248,78 @@ bukkit {
             description = "Gives the player permission to use the /notquests profiles command, and to create, delete and switch profiles."
         }
     }
+}
+
+paper {
+    name = "NotQuests"
+    version = rootProject.version.toString()
+    main = "rocks.gravili.notquests.Main"
+    apiVersion = "26.1.1"
+    authors = listOf("AlessioGr")
+    description = "Flexible, open, GUI Quest Plugin for Minecraft"
+    website = "https://www.notquests.com"
+
+    serverDependencies {
+        register("ProtocolLib") {
+            required = false
+        }
+        register("ProtocolSupport") {
+            required = false
+        }
+        register("ViaVersion") {
+            required = false
+        }
+        register("ViaBackwards") {
+            required = false
+        }
+        register("ViaRewind") {
+            required = false
+        }
+        register("Geyser-Spigot") {
+            required = false
+        }
+        register("Citizens") {
+            required = false
+        }
+        register("Vault") {
+            required = false
+        }
+        register("PlaceholderAPI") {
+            required = false
+        }
+        register("MythicMobs") {
+            required = false
+        }
+        register("EliteMobs") {
+            required = false
+        }
+        register("WorldEdit") {
+            required = false
+        }
+        register("Slimefun") {
+            required = false
+        }
+        register("LuckPerms") {
+            required = false
+        }
+        register("Towny") {
+            required = false
+        }
+        register("Jobs") {
+            required = false
+        }
+        register("EcoBosses") {
+            required = false
+        }
+        register("eco") {
+            required = false
+        }
+        register("UltimateJobs") {
+            required = false
+        }
+        register("Floodgate") {
+            required = false
+        }
+    }
+
 }

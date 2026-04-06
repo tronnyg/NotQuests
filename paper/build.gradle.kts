@@ -55,23 +55,24 @@ repositories {
         }
     }
 
+    maven("https://repo.codemc.io/repository/maven-releases/") {
+        content {
+            includeGroup("com.github.retrooper")
+        }
+    }
+
     maven("https://jitpack.io") {
         content {
             includeGroup("com.github.MilkBowl")
             includeGroup("com.github.TheBusyBiscuit")
-            includeGroup("com.github.retrooper")
-            includeGroup("com.github.retrooper.packetevents")
-            includeGroup("io.github.retrooper")
-            includeGroup("com.github.AlessioGr")
-            includeGroup("com.github.AlessioGr.packetevents")
             includeGroup("com.github.TownyAdvanced")
             includeGroup("com.github.Zrips")
             includeGroup("com.willfp")
             includeGroup("com.github.war-systems")
-            includeGroup("com.github.MilkBowl")
             includeGroup("com.github.UlrichBR")
             includeGroup("com.github.Slimefun")
             includeGroup("net.citizensnpcs")
+            includeGroup("com.github.Redempt")
         }
         metadataSources {
             artifact()
@@ -140,6 +141,9 @@ dependencies {
     implementation(project(path = ":common", configuration = "shadow"))
     paperweight.paperDevBundle("26.1.1.build.29-alpha")
 
+    compileOnly("org.projectlombok:lombok:1.18.44")
+    annotationProcessor("org.projectlombok:lombok:1.18.44")
+
     compileOnly("net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
@@ -151,8 +155,6 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.3.0-SNAPSHOT")
     compileOnly("com.magmaguy:EliteMobs:9.1.9")
     compileOnly(files("libs/EliteMobs-8.7.11.jar"))
-    compileOnly(files("libs/ProjectKorra-1.11.3.jar"))
-
 
 
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
@@ -175,21 +177,18 @@ dependencies {
     implementation("net.kyori:adventure-api:4.18.0") {}
 
     //CloudCommands
-    implementation("org.incendo:cloud-paper:2.0.0-beta.14") {
+    implementation("org.incendo:cloud-paper:2.0.0-SNAPSHOT") {
         exclude(group = "org.incendo.cloud", module = "cloud-bukkit")
     }
-    implementation("org.incendo:cloud-minecraft-extras:2.0.0-beta.14")
+    implementation("org.incendo:cloud-minecraft-extras:2.0.0-SNAPSHOT")
 
     //Else it errors:
     implementation("io.leangen.geantyref:geantyref:1.3.13")
 
     //InvUI
-    implementation("xyz.xenondevs.invui:invui:1.38")
+    implementation("xyz.xenondevs.invui:invui:2.0.0-RC.1")
 
-    //implementation 'com.github.retrooper.packetevents:bukkit:2.0-SNAPSHOT'
-    implementation("com.github.AlessioGr.packetevents:bukkit:2.0-SNAPSHOT")
-
-    //implementation("com.jeff_media:SpigotUpdateChecker:3.0.3") // TODO: repo dead, replace with direct API check
+    implementation("com.github.retrooper:packetevents-spigot:2.12.0")
 
 
     implementation("commons-io:commons-io:2.11.0")
@@ -250,30 +249,26 @@ tasks {
 
 
         dependencies {
-            include(dependency("commons-io:commons-io:"))
-            include(dependency("xyz.xenondevs.invui:"))
+            include(dependency("commons-io:commons-io:.*"))
+            include(dependency("xyz.xenondevs.invui:.*:.*"))
 
-            include(dependency("org.incendo:"))
-            include(dependency("io.leangen.geantyref:"))
-            include(dependency("me.lucko:"))
+            include(dependency("org.incendo:.*:.*"))
+            include(dependency("io.leangen.geantyref:.*:.*"))
+            include(dependency("me.lucko:.*:.*"))
 
-            include(dependency("com.github.retrooper.packetevents:"))
+            include(dependency("com.github.retrooper:.*:.*"))
+            include(dependency("io.github.retrooper:.*:.*"))
 
-            include(dependency("com.github.AlessioGr.packetevents:"))
+            include(dependency("net.kyori:adventure-text-serializer-bungeecord:.*"))
 
-            include(dependency("net.kyori:adventure-text-serializer-bungeecord:"))
+            include(dependency("com.github.Redempt:.*:.*"))
 
-            include(dependency("com.github.Redempt:Crunch:"))
+            include(dependency("com.fasterxml.jackson.dataformat:.*:.*"))
+            include(dependency("com.fasterxml.jackson.core:.*:.*"))
 
-            include(dependency("com.fasterxml.jackson.dataformat:"))
-            include(dependency("com.fasterxml.jackson.core:"))
+            include(dependency("org.apache.httpcomponents:.*:.*"))
 
-            include(dependency("org.apache.httpcomponents:"))
-
-            include(dependency("com.zaxxer:"))
-
-            //include(dependency("com.jeff_media:SpigotUpdateChecker:"))
-
+            include(dependency("com.zaxxer:.*:.*"))
         }
 
 
@@ -296,6 +291,6 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.11-rc3")
+        minecraftVersion("26.1.1")
     }
 }

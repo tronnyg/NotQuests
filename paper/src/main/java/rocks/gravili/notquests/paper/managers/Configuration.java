@@ -125,7 +125,6 @@ public class Configuration {
   private boolean integrationUltimateClansEnabled = true;
   private boolean integrationTownyEnabled = true;
   private boolean integrationJobsRebornEnabled = true;
-  private boolean integrationProjectKorraEnabled = true;
   private boolean integrationEcoBossesEnabled = true;
   private boolean integrationUltimateJobsEnabled = true;
 
@@ -794,14 +793,6 @@ public class Configuration {
 
   public void setIntegrationJobsRebornEnabled(boolean integrationJobsRebornEnabled) {
     this.integrationJobsRebornEnabled = integrationJobsRebornEnabled;
-  }
-
-  public boolean isIntegrationProjectKorraEnabled() {
-    return integrationProjectKorraEnabled;
-  }
-
-  public void setIntegrationProjectKorraEnabled(boolean integrationProjectKorraEnabled) {
-    this.integrationProjectKorraEnabled = integrationProjectKorraEnabled;
   }
 
   public boolean isIntegrationEcoBossesEnabled() {

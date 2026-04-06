@@ -77,12 +77,11 @@ public class NotQuests extends NotQuestsMainAbstract<Component, CommandSender> {
     private CommandManager commandManager;
     private ConversationManager conversationManager;
     private PacketManager packetManager;
-    private UpdateManager updateManager;
-    private GUIManager guiManager;
     private BackupManager backupManager;
     private MessageManager messageManager;
     private TagManager tagManager;
     private ItemsManager itemsManager;
+    private UpdateManager updateManager;
 
     //Registering Managers
     private GuiService guiService;
@@ -180,7 +179,6 @@ public class NotQuests extends NotQuestsMainAbstract<Component, CommandSender> {
 
         languageManager = new LanguageManager(this);
 
-        updateManager = new UpdateManager(this);
 
         reloadGuis();
 
@@ -215,7 +213,6 @@ public class NotQuests extends NotQuestsMainAbstract<Component, CommandSender> {
         actionManager = new ActionManager(this);
         triggerManager = new TriggerManager(this);
 
-        guiManager = new GUIManager(this);
 
         variablesManager.alreadyFullRegisteredVariables.addAll(variablesManager.getVariableIdentifiers());
 
@@ -253,13 +250,12 @@ public class NotQuests extends NotQuestsMainAbstract<Component, CommandSender> {
         if (getDataManager().isLoadingEnabled()) {
             integrationsManager.enableIntegrationsAfterDataLoad();
 
-            //Update Checker
-            updateManager.checkForPluginUpdates();
 
             conversationManager = new ConversationManager(this);
 
             setupBStats();
 
+            updateManager = new UpdateManager(this);
 
         }
 
@@ -519,14 +515,6 @@ public class NotQuests extends NotQuestsMainAbstract<Component, CommandSender> {
         return packetManager;
     }
 
-    public UpdateManager getUpdateManager() {
-        return updateManager;
-    }
-
-    public GUIManager getGuiManager() {
-        return guiManager;
-    }
-
     public BackupManager getBackupManager() {
         return backupManager;
     }
@@ -581,5 +569,9 @@ public class NotQuests extends NotQuestsMainAbstract<Component, CommandSender> {
 
     public GuiService getGuiService() {
         return guiService;
+    }
+
+    public UpdateManager getUpdateManager() {
+        return updateManager;
     }
 }

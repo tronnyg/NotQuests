@@ -1,22 +1,30 @@
 package rocks.gravili.notquests.paper.gui.item;
 
-
-import xyz.xenondevs.invui.gui.PagedGui;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
+import xyz.xenondevs.invui.Click;
+import xyz.xenondevs.invui.item.AbstractPagedGuiBoundItem;
 import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.ItemWrapper;
-import xyz.xenondevs.invui.item.impl.controlitem.PageItem;
 
-public class PageBackItem extends PageItem {
-
-    private ItemWrapper itemWrapper;
+public class PageBackItem extends AbstractPagedGuiBoundItem {
+    private final ItemWrapper itemWrapper;
 
     public PageBackItem(ItemWrapper itemWrapper) {
-        super(false);
         this.itemWrapper = itemWrapper;
     }
 
     @Override
-    public ItemProvider getItemProvider(PagedGui gui) {
+    public ItemProvider getItemProvider(@NotNull Player player) {
         return itemWrapper;
+    }
+
+    @Override
+    public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull Click click) {
+        var gui = getGui();
+        if (gui != null && gui.getPage() > 0) {
+            gui.setPage(gui.getPage() - 1);
+        }
     }
 }

@@ -22,7 +22,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -1113,11 +1113,6 @@ public class DataManager {
                 true
         ));
 
-        configuration.setIntegrationProjectKorraEnabled(getGeneralConfigBoolean(
-                "integrations.project-korra.enabled",
-                true
-        ));
-
         configuration.setIntegrationEcoBossesEnabled(getGeneralConfigBoolean(
                 "integrations.ecoBosses.enabled",
                 true
@@ -1233,7 +1228,7 @@ public class DataManager {
 
         main.getLogManager().info("Detected version: " + Bukkit.getBukkitVersion() + " <highlight>(Paper)");
 
-        if (!Bukkit.getBukkitVersion().contains("1.21")) {
+        if (!Bukkit.getBukkitVersion().contains("26.")) {
             if (!configuration.isPacketMagicUnsafeDisregardVersion()) {
                 configuration.setPacketMagic(false);
                 main.getLogManager().info("Packet magic has been disabled, because you are using an unsupported bukkit version...");
@@ -1256,7 +1251,6 @@ public class DataManager {
                 "general.update-checker.notify-ops-in-chat",
                 true
         ));
-
 
         configuration.setConversationAllowAnswerNumberInChat(getGeneralConfigBoolean(
             "conversations.interaction-handlers.clickable-text.allow-selecting-option-by-typing-number-in-chat",

@@ -32,7 +32,7 @@ import rocks.gravili.notquests.paper.structs.objectives.*;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.citizens.EscortNPCObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.elitemobs.KillEliteMobsObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.jobsreborn.JobsRebornReachJobLevelObjective;
-import rocks.gravili.notquests.paper.structs.objectives.hooks.projectkorra.ProjectKorraUseAbilityObjective;
+
 import rocks.gravili.notquests.paper.structs.objectives.hooks.slimefun.SlimefunResearchObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.towny.TownyNationReachTownCountObjective;
 import rocks.gravili.notquests.paper.structs.objectives.hooks.towny.TownyReachResidentCountObjective;
@@ -100,10 +100,6 @@ public class ObjectiveManager {
 
         // Jobs
         registerObjective("JobsRebornReachJobLevel", JobsRebornReachJobLevelObjective.class);
-
-        // ProjectKorra
-        registerObjective("ProjectKorraUseAbility", ProjectKorraUseAbilityObjective.class);
-
 
         if (main.getIntegrationsManager().isUltimateJobsEnabled()) {
             registerObjective("UltimateJobsReachJobLevel", UltimateJobsReachJobLevelObjective.class);

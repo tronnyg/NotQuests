@@ -96,7 +96,6 @@ public class CommandManager {
 
     public CommandFlag<String> triggerWorldString;
     public CommandFlag<Long> minimumTimeAfterCompletion;
-    public CommandFlag<String> withProjectKorraAbilityFlag;
     private LegacyPaperCommandManager<CommandSender> commandManager;
     // Builders
     private Command.Builder<CommandSender> adminCommandBuilder;
@@ -262,20 +261,6 @@ public class CommandManager {
                         }))
                 .withDescription(Description.of("Enter minimum time you have to wait after completion."))
                 .build(); // 0 = Quest
-
-        if (main.getIntegrationsManager().isProjectKorraEnabled()) {
-            withProjectKorraAbilityFlag = CommandFlag.builder("withProjectKorraAbility")
-                    .withComponent(TypedCommandComponent.builder("withProjectKorraAbility", stringParser())
-                            .suggestionProvider((context, lastString) -> {
-                                main.getUtilManager().sendFancyCommandCompletion((CommandSender) context.sender(), lastString.input().split(" "), "[Ability Name / 'ALL']", "");
-                                ArrayList<Suggestion> completions = new ArrayList<>();
-                                completions.add(Suggestion.suggestion("ALL"));
-                                completions.addAll(main.getIntegrationsManager().getProjectKorraManager().getAbilityCompletions().stream().map(Suggestion::suggestion).toList());
-                                return CompletableFuture.completedFuture(completions);
-                            }))
-                    .withDescription(Description.of("Project Korra Ability"))
-                    .build();
-        }
 
         categoryFlag = CommandFlag.builder("category")
                 .withComponent(TypedCommandComponent.builder("category", categoryParser(main))

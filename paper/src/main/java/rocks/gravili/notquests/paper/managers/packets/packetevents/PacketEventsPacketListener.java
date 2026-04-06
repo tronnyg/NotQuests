@@ -19,12 +19,12 @@
 package rocks.gravili.notquests.paper.managers.packets.packetevents;
 
 import com.github.retrooper.packetevents.event.PacketListener;
-import com.github.retrooper.packetevents.event.impl.PacketSendEvent;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.chat.ChatTypes;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChatMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.entity.Player;
 import rocks.gravili.notquests.paper.NotQuests;
 
@@ -37,24 +37,13 @@ public class PacketEventsPacketListener implements PacketListener {
     this.main = main;
   }
 
-  /*  private Class<?> getNMSClass(final String className) {
-      try {
-          return Class.forName("net.minecraft.server." + className);
-
-      } catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
-      }
-  }*/
-
   public void handleMainChatHistorySavingLogic(
-      final WrapperPlayServerChatMessage wrapperPlayServerChatMessage, final Player player) {
-    Component component;
-    try {
-      component =
-          GsonComponentSerializer.builder()
-              .build()
-              .deserialize(wrapperPlayServerChatMessage.getChatComponentJson());
+      final Component component, final Player player) {
+    if (component == null) {
+      return;
+    }
 
+    try {
       final ArrayList<Component> convHist =
           main.getConversationManager().getConversationChatHistory().get(player.getUniqueId());
       if (convHist != null && convHist.contains(component)) {
@@ -70,70 +59,41 @@ public class PacketEventsPacketListener implements PacketListener {
         hist.add(component);
       }
 
-      /*main.getLogManager()
-          .debug(
-              "Registering chat message with position: "
-                  + wrapperPlayServerChatMessage.getPosition()
-                  + " and packet ID: "
-                  + wrapperPlayServerChatMessage.getPacketId()
-                  + ". Message: "
-                  + MiniMessage.builder().build().serialize(component));*/
       int toRemove = hist.size() - main.getConversationManager().getMaxChatHistory();
       if (toRemove > 0) {
-        // main.getLogManager().log(Level.WARNING, "ToRemove: " + i);
         hist.subList(0, toRemove).clear();
       }
-      // main.getLogManager().log(Level.WARNING, "After: " + hist.size());
 
       main.getConversationManager().getChatHistory().put(player.getUniqueId(), hist);
-
     } catch (Exception ignored) {
-
     }
-    // if (component != null) {
-    // main.getLogManager().log(Level.INFO, "E " +
-    // LegacyComponentSerializer.legacyAmpersand().serialize(component));
-    // }
-
   }
 
   @Override
   public void onPacketSend(PacketSendEvent event) {
     if (event.getPacketType() == PacketType.Play.Server.CHAT_MESSAGE) {
 
-      WrapperPlayServerChatMessage wrapperPlayServerChatMessage =
-          new WrapperPlayServerChatMessage(event);
+      WrapperPlayServerChatMessage wrapper = new WrapperPlayServerChatMessage(event);
+      var message = wrapper.getMessage();
 
-      if (wrapperPlayServerChatMessage.getPosition()
-          == WrapperPlayServerChatMessage.ChatPosition.GAME_INFO) { // Skip actionbar messages
+      // Skip actionbar messages
+      if (message.getType() == ChatTypes.GAME_INFO) {
         return;
       }
 
-      if (wrapperPlayServerChatMessage.getChatComponentJson() != null
-          && !wrapperPlayServerChatMessage.getChatComponentJson().contains("fg9023zf729ofz")) {
-        Player player = (Player) event.getPlayer();
+      Component component = message.getChatContent();
+      if (component == null) {
+        return;
+      }
 
-        handleMainChatHistorySavingLogic(wrapperPlayServerChatMessage, player);
+      Player player = (Player) event.getPlayer();
 
-      } else if (wrapperPlayServerChatMessage.getChatComponentJson() != null
-          && wrapperPlayServerChatMessage.getChatComponentJson().contains("fg9023zf729ofz")) {
-        // main.getLogManager().log(Level.INFO, "replay");
-        Component component;
-        try {
-          component =
-              GsonComponentSerializer.builder()
-                  .build()
-                  .deserialize(wrapperPlayServerChatMessage.getChatComponentJson());
+      // Check for the conversation replay marker
+      String plainText = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+          .plainText().serialize(component);
 
-          component =
-              component.replaceText(
-                  TextReplacementConfig.builder()
-                      .match("fg9023zf729ofz")
-                      .replacement(Component.text(""))
-                      .build());
-
-        } catch (Exception ignored) {
-        }
+      if (!plainText.contains("fg9023zf729ofz")) {
+        handleMainChatHistorySavingLogic(component, player);
       }
     }
   }
