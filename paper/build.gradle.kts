@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.JavaVersion.VERSION_21
+import org.gradle.api.JavaVersion.VERSION_25
 
 
 plugins {
@@ -28,9 +28,9 @@ group = "rocks.gravili.notquests"
 version = rootProject.version
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-    sourceCompatibility = VERSION_21
-    targetCompatibility = VERSION_21
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
+    sourceCompatibility = VERSION_25
+    targetCompatibility = VERSION_25
 }
 
 repositories {
@@ -40,12 +40,6 @@ repositories {
         content {
             includeGroup("io.papermc.paper")
             includeGroup("net.kyori")
-        }
-    }
-
-    maven("https://repo.jeff-media.com/public/") {
-        content {
-            includeGroup("com.jeff_media")
         }
     }
 
@@ -91,12 +85,6 @@ repositories {
         }
     }
 
-    /*maven("https://repo.minebench.de/"){
-        content {
-            includeGroup("de.themoep")
-        }
-    }*/
-
     maven("https://mvn.lumine.io/repository/maven-public/") {
         content {
             includeGroup("io.lumine.xikage")
@@ -121,14 +109,7 @@ repositories {
 
     maven("https://oss.sonatype.org/content/repositories/snapshots") {
         content {
-            includeGroup("org.incendo.interfaces")
             includeGroup("org.incendo")
-        }
-    }
-
-    maven("https://repo.thbn.me/snapshots") {
-        content {
-            includeGroup("org.incendo.interfaces")
         }
     }
 
@@ -153,36 +134,34 @@ repositories {
             includeGroup("org.geysermc.geyser")
         }
     }
-    maven("https://repo.dmulloy2.net/repository/public/") {
-        content {
-            includeGroup("com.comphenix.packetwrapper")
-        }
-    }
+
+    maven("https://repo.xenondevs.xyz/releases")
+    maven("https://nexus.betonquest.org/repository/betonquest/")
+    maven("https://maven.citizensnpcs.co/repo")
+    maven("https://repo.magmaguy.com/releases")
     //mavenLocal()
 
 }
 
 dependencies {
-    implementation(project(path= ":common", configuration= "shadow"))
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
-    //compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT!!")
-    //implementation("de.themoep:inventorygui:1.5-SNAPSHOT")
+    implementation(project(path = ":common", configuration = "shadow"))
+    paperweight.paperDevBundle("26.1.1.build.29-alpha")
 
-    compileOnly("org.projectlombok:lombok:1.18.24")
-
-    compileOnly("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
-    //compileOnly(files("libs/citizens-2.0.34-b3410.jar"))
+    compileOnly("net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT") {
+        exclude(group = "*", module = "*")
+    }
 
     compileOnly("me.clip:placeholderapi:2.11.5")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 
 
     compileOnly("io.lumine:Mythic-Dist:5.3.0-SNAPSHOT")
-    compileOnly(files("libs/EliteMobs-9.3.2.jar")) // No Repo existent
-    compileOnly(files("libs/ProjectKorra-1.11.2.jar")) // No Repo existent
+    compileOnly("com.magmaguy:EliteMobs:9.1.9")
+    compileOnly(files("libs/EliteMobs-8.7.11.jar"))
+    compileOnly(files("libs/ProjectKorra-1.11.3.jar"))
 
 
-    compileOnly(files("libs/betonquest-2.2.1.jar"))
+    compileOnly(files("libs/BetonQuest.jar"));
 
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
@@ -191,14 +170,11 @@ dependencies {
 
     compileOnly("net.luckperms:api:5.4")
 
-    //compileOnly "com.github.NEZNAMY:TAB:2.9.2"
     compileOnly("com.github.TownyAdvanced:Towny:0.98.4.4")
 
     compileOnly("com.github.Zrips:Jobs:v4.17.2")
 
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
-
-
 
 
     //Shaded
@@ -207,35 +183,21 @@ dependencies {
     implementation("net.kyori:adventure-api:4.18.0") {}
 
     //CloudCommands
-    implementation("org.incendo:cloud-paper:2.0.0-beta.10") {
+    implementation("org.incendo:cloud-paper:2.0.0-beta.14") {
         exclude(group = "org.incendo.cloud", module = "cloud-bukkit")
     }
-    implementation("org.incendo:cloud-minecraft-extras:2.0.0-beta.10")
+    implementation("org.incendo:cloud-minecraft-extras:2.0.0-beta.14")
 
     //Else it errors:
     implementation("io.leangen.geantyref:geantyref:1.3.13")
-    //Interfaces
-    implementation("org.incendo.interfaces:interfaces-core:1.0.0-SNAPSHOT")
 
-    implementation("org.incendo.interfaces:interfaces-paper:1.0.0-SNAPSHOT") {
-        exclude(group = "com.destroystokyo.paper", module = "paper-api")
-    }
-
-    //compileOnly("com.mojang:brigadier:1.0.18")
-
+    //InvUI
+    implementation("xyz.xenondevs.invui:invui:1.38")
 
     //implementation 'com.github.retrooper.packetevents:bukkit:2.0-SNAPSHOT'
     implementation("com.github.AlessioGr.packetevents:bukkit:2.0-SNAPSHOT")
 
-    implementation("com.jeff_media:SpigotUpdateChecker:3.0.3")
-
-
-    //implementation 'commons-io:commons-io:2.11.0'
-    //implementation 'org.apache.commons:commons-text:1.9'
-    //implementation 'org.apache.commons:commons-lang3:3.12.0'
-    //implementation 'org.apache.commons:commons-lang:3.1'
-
-    //implementation("io.netty:netty-all:4.1.74.Final")
+    //implementation("com.jeff_media:SpigotUpdateChecker:3.0.3") // TODO: repo dead, replace with direct API check
 
 
     implementation("commons-io:commons-io:2.11.0")
@@ -244,8 +206,7 @@ dependencies {
     compileOnly(files("libs/EcoBosses-v8.78.0.jar"))
     compileOnly("com.willfp:eco:6.38.3")
 
-    compileOnly(files("libs/ProjectKorra-1.11.2.jar")) // No Repo existent
-    compileOnly(files("libs/EliteMobs.jar")) // No Repo existent
+    compileOnly(files("libs/znpcs-4.8.jar"))
 
 
     implementation("com.github.Redempt:Crunch:2.0.3")
@@ -281,13 +242,9 @@ tasks {
         relocate("io.github.retrooper.packetevents", "$shadowPath.packetevents.bukkit")
         relocate("com.github.retrooper.packetevents", "$shadowPath.packetevents.api")
 
-        //Packet Stuff
-        // relocate('net.kyori.adventure.text.serializer.bungeecord', path.concat('.kyori.bungeecord'))
-        //relocate('net.kyori.adventure.platform.bukkit', path.concat('.kyori.platform-bukkit'))
         relocate("net.kyori.adventure.text.serializer.bungeecord", "$shadowPath.kyori.bungeecord")
 
-
-        relocate("org.incendo.interfaces", "$shadowPath.interfaces")
+        relocate("xyz.xenondevs.invui", "$shadowPath.invui")
 
         relocate("redempt.crunch", "$shadowPath.crunch")
 
@@ -297,26 +254,21 @@ tasks {
 
         relocate("com.zaxxer.hikari", "$shadowPath.hikari")
 
-        relocate("com.jeff_media.updatechecker", "$shadowPath.updatechecker")
+        //relocate("com.jeff_media.updatechecker", "$shadowPath.updatechecker")
 
 
         dependencies {
-            //include(dependency('org.apache.commons:')
             include(dependency("commons-io:commons-io:"))
+            include(dependency("xyz.xenondevs.invui:"))
 
-            //include(dependency('io.papermc:paperlib')
-            //include(dependency("de.themoep:inventorygui:1.5-SNAPSHOT"))
             include(dependency("org.incendo:"))
             include(dependency("io.leangen.geantyref:"))
             include(dependency("me.lucko:"))
 
             include(dependency("com.github.retrooper.packetevents:"))
-            //include(dependency('io.github.retrooper.packetevents:')
 
             include(dependency("com.github.AlessioGr.packetevents:"))
-            include(dependency("org.incendo.interfaces:"))
 
-            //include(dependency('net.kyori:adventure-platform-bukkit:')
             include(dependency("net.kyori:adventure-text-serializer-bungeecord:"))
 
             include(dependency("com.github.Redempt:Crunch:"))
@@ -328,49 +280,30 @@ tasks {
 
             include(dependency("com.zaxxer:"))
 
-            include(dependency("com.jeff_media:SpigotUpdateChecker:"))
+            //include(dependency("com.jeff_media:SpigotUpdateChecker:"))
 
         }
 
 
-        //archiveBaseName.set("notquests")
         archiveClassifier.set("")
 
-
-        //  configurations.forEach { println("E: " + it.toString()) }
-
-        // println("Size: " + configurations.size)
-
     }
-
-    // Run reobfJar on build
-    //build {
-    //    dependsOn(shadowJar)
-    //}
-
-
-
-
-    /*shadowJar {
-        dependsOn(reobfJar)
-    }*/
 
     compileJava {
         mustRunAfter(":common:jar")
 
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(25)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
     }
+
     processResources {
         filteringCharset = Charsets.UTF_8.name()
     }
+
     runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.1")
+        minecraftVersion("1.21.11-rc3")
     }
 }

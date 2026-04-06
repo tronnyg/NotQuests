@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.JavaVersion.VERSION_21
+import org.gradle.api.JavaVersion.VERSION_25
 
 plugins {
     `java-library`
     `maven-publish`
-    id("com.gradleup.shadow") version "8.3.1"
-    id("io.papermc.paperweight.userdev") version "1.7.3"
-    id("xyz.jpenilla.run-paper") version "2.2.4" // Adds runServer and runMojangMappedServer tasks for testing
+    id("com.gradleup.shadow") version "9.4.1"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 subprojects {
@@ -40,14 +40,14 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.1.build.29-alpha")
 }
 
 java {
     // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 11 installed for example.
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-    sourceCompatibility = VERSION_21
-    targetCompatibility = VERSION_21
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    sourceCompatibility = VERSION_25
+    targetCompatibility = VERSION_25
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
@@ -68,7 +68,7 @@ tasks {
     //}
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(25)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -80,7 +80,7 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.1")
+        minecraftVersion("1.21.11-rc3")
     }
 }
 

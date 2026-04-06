@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.JavaVersion.VERSION_21
+import org.gradle.api.JavaVersion.VERSION_25
 
 plugins {
 
@@ -30,9 +30,9 @@ group = "rocks.gravili.notquests"
 version = rootProject.version
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-    sourceCompatibility = VERSION_21
-    targetCompatibility = VERSION_21
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    sourceCompatibility = VERSION_25
+    targetCompatibility = VERSION_25
 }
 
 repositories {
@@ -124,7 +124,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.1.build.29-alpha")
 
     implementation(project(path= ":common", configuration= "shadow"))
     implementation(project(path= ":paper", configuration= "shadow"))
@@ -181,7 +181,7 @@ tasks {
         dependsOn(":common:jar", ":paper:jar", ":paper:build")
 
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(25)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -193,22 +193,19 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.1")
+        minecraftVersion("1.21.11-rc3")
+    }
+
+    register<Copy>("copyToServer") {
+        val path = System.getenv("PLUGIN_DIR")
+        if (path.toString().isEmpty()) {
+            println("No environment variable PLUGIN_DIR set")
+            return@register
+        }
+        from(reobfJar)
+        destinationDir = File(path.toString())
     }
 }
-
-/*publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "rocks.gravili.notquests"
-            artifactId = "NotQuests"
-            version = "4.0.0-dev"
-
-            from(components["java"])
-        }
-    }
-}*/
-
 
 
 
@@ -217,9 +214,9 @@ bukkit {
     name = "NotQuests"
     version = rootProject.version.toString()
     main = "rocks.gravili.notquests.Main"
-    apiVersion = "1.21"
+    apiVersion = "1.21.11"
     authors = listOf("AlessioGr")
-    description = "Flexible, open, GUI Quest Plugin for Minecraft 1.21.1"
+    description = "Flexible, open, GUI Quest Plugin for Minecraft"
     website = "https://www.notquests.com"
     softDepend = listOf(
         "ProtocolLib",
