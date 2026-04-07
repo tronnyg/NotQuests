@@ -822,7 +822,7 @@ public class AdminEditCommands {
         //Builder: qa edit questname objectives edit <Objective ID> objectives
         //adminEditObjectivesBuilderWithLevels: qa edit questname objectives edit <Objective ID> objectives edit <Objective ID 2>
 
-        final Command.Builder<CommandSender> adminEditObjectivesBuilderWithLevels = builder.literal("edit").required("objective", objectiveParser(main, level), Description.of(objectiveIDIdentifier));
+        final Command.Builder<CommandSender> adminEditObjectivesBuilderWithLevels = builder.literal("edit").required(objectiveIDIdentifier, objectiveParser(main, level), Description.of(objectiveIDIdentifier));
         handleEditObjectives(adminEditObjectivesBuilderWithLevels, level);
     }
 

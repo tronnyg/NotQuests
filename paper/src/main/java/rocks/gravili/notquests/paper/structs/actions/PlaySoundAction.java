@@ -1,5 +1,7 @@
 package rocks.gravili.notquests.paper.structs.actions;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -75,8 +77,9 @@ public class PlaySoundAction extends Action {
         manager.command(builder.required("Sound", stringParser(), Description.of("Name of the sound which should be played"), (context, lastString) -> {
                             main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Sound name]", "");
                             final ArrayList<Suggestion> completions = new ArrayList<>();
-                            for (final Sound sound : Sound.values()) {
-                                completions.add(Suggestion.suggestion(sound.getKey().asString()));
+                            final var soundRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
+                            for (final Sound sound : soundRegistry) {
+                                completions.add(Suggestion.suggestion(soundRegistry.getKeyOrThrow(sound).asString()));
                             }
                             return CompletableFuture.completedFuture(completions);
                         }

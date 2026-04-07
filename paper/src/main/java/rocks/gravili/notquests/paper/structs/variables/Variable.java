@@ -18,7 +18,6 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
@@ -51,11 +50,8 @@ public abstract class Variable<T> {
     private final ArrayList<String> setOnlyRequiredValues = new ArrayList<>(); //TODO: Implement
     private final ArrayList<String> getOnlyRequiredValues = new ArrayList<>(); //TODO: Implement
     private final VariableDataType variableDataType;
-    @Setter
     private HashMap<String, String> additionalStringArguments;
-    @Setter
     private HashMap<String, NumberExpression> additionalNumberArguments;
-    @Setter
     private HashMap<String, NumberExpression> additionalBooleanArguments;
     private boolean canSetValue = false;
 

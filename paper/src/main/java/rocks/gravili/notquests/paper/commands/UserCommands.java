@@ -402,7 +402,7 @@ public class UserCommands {
                             final QuestPlayer questPlayer = main.getQuestPlayerManager().getOrCreateQuestPlayer(player.getUniqueId());
                             final var guiContext = new GuiContext();
                             guiContext.setPlayer(player);
-                            main.getGuiService().showGui("main-take", player, guiContext);
+                            main.getGuiService().showGui("main-base", player, guiContext);
                         }));
 
         manager.command(builder.literal("take")
