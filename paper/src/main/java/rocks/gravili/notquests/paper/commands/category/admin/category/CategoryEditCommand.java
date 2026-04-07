@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 import static rocks.gravili.notquests.paper.commands.arguments.CategoryParser.categoryParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
@@ -96,7 +97,7 @@ public class CategoryEditCommand extends BaseCommand {
         commandManager.command(builder.literal("predefinedProgressOrder")
                 .literal("set")
                 .literal("custom", Description.description("Sets a predefined order in which the quests need to be progressed in this category."))
-                .required("order", stringParser(),
+                .required("order", greedyStringParser(),
                         (context, input) -> {
                             notQuests.getUtilManager().sendFancyCommandCompletion(context.sender(), input.input().split(" "), "<Enter custom order (numbers of objective IDs separated by space)>", "");
                             ArrayList<Suggestion> completions = new ArrayList<>();
@@ -110,8 +111,8 @@ public class CategoryEditCommand extends BaseCommand {
                         })
                 .handler((context) -> {
                     final Category category = context.get("category");
-                    final String[] order = context.get("order");
-                    final String orderString = String.join(" ", order);
+                    final String orderString = context.get("order");
+                    final String[] order = orderString.split(" ");
                     final ArrayList<String> orderParsed = new ArrayList<>();
                     Collections.addAll(orderParsed, order);
 
@@ -130,7 +131,7 @@ public class CategoryEditCommand extends BaseCommand {
                     final Category category = context.get("category");
 
                     context.sender().sendMessage(notQuests.parse(
-                            "<notQuests>Current display name of Category <highlight>" + category.getCategoryFullName() + "</highlight>: <highlight2>"
+                            "<main>Current display name of Category <highlight>" + category.getCategoryFullName() + "</highlight>: <highlight2>"
                                     + category.getDisplayName()
                     ));
                 }));

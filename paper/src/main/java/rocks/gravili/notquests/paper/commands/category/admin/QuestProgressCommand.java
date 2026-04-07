@@ -38,13 +38,13 @@ public class QuestProgressCommand extends BaseCommand {
         if (questPlayer != null) {
             if (activeQuest != null) {
                 sender.sendMessage(notQuests.parse(
-                        "<notQuests>Completed Objectives for Quest <highlight>" + activeQuest.getQuest().getIdentifier() + "</highlight> of player <highlight2>"
+                        "<main>Completed Objectives for Quest <highlight>" + activeQuest.getQuest().getIdentifier() + "</highlight> of player <highlight2>"
                                 + offlinePlayer.getName() + "</highlight2> <green>(online)</green>:"
                 ));
                 notQuests.getQuestManager().sendCompletedObjectivesAndProgress(questPlayer, activeQuest);
 
                 sender.sendMessage(notQuests.parse(
-                        "<notQuests>>Active Objectives for Quest <highlight>" + activeQuest.getQuest().getIdentifier() + "</highlight> of player <highlight2>"
+                        "<main>>Active Objectives for Quest <highlight>" + activeQuest.getQuest().getIdentifier() + "</highlight> of player <highlight2>"
                                 + offlinePlayer.getName() + "</highlight2>" + getOfflineOnline(offlinePlayer) + ":"
                 ));
                 notQuests.getQuestManager().sendActiveObjectivesAndProgress(questPlayer, activeQuest, 0);
@@ -54,10 +54,10 @@ public class QuestProgressCommand extends BaseCommand {
                 sender.sendMessage(notQuests.parse(
                         "<error>Quest was not found or active!"
                 ));
-                sender.sendMessage(notQuests.parse("<notQuests>Active quests of player <highlight>" + offlinePlayer.getName() + "</highlight> <green>(online)</green>:"));
+                sender.sendMessage(notQuests.parse("<main>Active quests of player <highlight>" + offlinePlayer.getName() + "</highlight> <green>(online)</green>:"));
                 int counter = 1;
                 for (ActiveQuest activeQuest1 : questPlayer.getActiveQuests()) {
-                    sender.sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <notQuests>" + activeQuest1.getQuest().getIdentifier()));
+                    sender.sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <main>" + activeQuest1.getQuest().getIdentifier()));
                     counter += 1;
                 }
                 sender.sendMessage(notQuests.parse("<unimportant>Total active quests: <highlight2>" + (counter - 1) + "</highlight2>."));

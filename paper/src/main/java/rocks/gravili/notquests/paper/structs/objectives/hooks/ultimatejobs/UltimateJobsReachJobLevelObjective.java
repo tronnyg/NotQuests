@@ -128,7 +128,7 @@ public class UltimateJobsReachJobLevelObjective extends Objective {
 
     @Override
     public void load(FileConfiguration configuration, String initialPath) {
-        countPreviousLevels = configuration.getBoolean(initialPath + ".specifics.countPreviousTowns");
+        countPreviousLevels = configuration.getBoolean(initialPath + ".specifics.countPreviousLevels");
         jobID = configuration.getString(initialPath + ".specifics.jobID");
     }
 

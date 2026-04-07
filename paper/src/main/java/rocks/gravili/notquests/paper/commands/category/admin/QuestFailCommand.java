@@ -31,7 +31,7 @@ public class QuestFailCommand extends BaseCommand {
                     if (questPlayer != null) {
                         questPlayer.failQuest(activeQuest);
                         context.sender().sendMessage(notQuests.parse(
-                                "<notQuests>The active quest <highlight>" + activeQuest.getQuest().getIdentifier() + "</highlight> has been failed for player <highlight2>" + player.getName() + "</highlight2>!"
+                                "<main>The active quest <highlight>" + activeQuest.getQuest().getIdentifier() + "</highlight> has been failed for player <highlight2>" + player.getName() + "</highlight2>!"
                         ));
 
                     } else {

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.StringArrayParser.stringArrayParser;
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
 
 public class ReachLocationObjective extends Objective {
     private Location min, max;
@@ -56,14 +56,14 @@ public class ReachLocationObjective extends Objective {
 
         manager.command(addObjectiveBuilder
                 .literal("worldeditselection")
-                .required("Location Name", stringArrayParser(), Description.of("Location name"), (context, lastString) -> {
+                .required("Location Name", greedyStringParser(), Description.of("Location name"), (context, lastString) -> {
                     main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "<Location Name>", "");
                     ArrayList<Suggestion> completions = new ArrayList<>();
                     completions.add(Suggestion.suggestion("<Enter new Location name>"));
                     return CompletableFuture.completedFuture(completions);
                 })
                 .handler((context) -> {
-                    final String locationName = String.join(" ", (String[]) context.get("Location Name"));
+                    final String locationName = context.get("Location Name");
                     main.getIntegrationsManager().getWorldEditManager().handleReachLocationObjectiveCreation((Player) context.sender(), locationName, context, level);
                 }));
     }

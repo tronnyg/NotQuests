@@ -224,7 +224,7 @@ public class DateCondition extends Condition {
         setMinutes(configuration.getInt(initialPath + ".specifics.minutes"));
         setSeconds(configuration.getInt(initialPath + ".specifics.seconds"));
         setOperation(configuration.getString(initialPath + ".specifics.operation", ""));
-        final String timeZoneString = configuration.getString(initialPath + ".specifics.operation", "");
+        final String timeZoneString = configuration.getString(initialPath + ".specifics.timeZone", "");
         if (!timeZoneString.isBlank()) {
             setTimeZone(TimeZone.getTimeZone(timeZoneString));
         }

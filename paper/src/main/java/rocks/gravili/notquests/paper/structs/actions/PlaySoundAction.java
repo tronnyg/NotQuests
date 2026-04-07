@@ -104,8 +104,8 @@ public class PlaySoundAction extends Action {
                             final World world = context.flags().getValue(main.getCommandManager().world, null);
 
                             final double locationX = context.flags().getValue(main.getCommandManager().locationX, -1d);
-                            final double locationY = context.flags().getValue(main.getCommandManager().locationX, -1d);
-                            final double locationZ = context.flags().getValue(main.getCommandManager().locationX, -1d);
+                            final double locationY = context.flags().getValue(main.getCommandManager().locationY, -1d);
+                            final double locationZ = context.flags().getValue(main.getCommandManager().locationZ, -1d);
 
                             final float volume = context.flags().getValue(volumeFlag, -1f);
                             final float pitch = context.flags().getValue(pitchFlag, -1f);

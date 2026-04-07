@@ -55,8 +55,8 @@ public class DebugCommand extends BaseCommand {
                     context.sender().sendMessage(Component.empty());
                     Player player = (Player) context.sender();
                     player.sendMessage(notQuests.parse(
-                            "<notQuests>Current world name: <highlight>" + player.getWorld().getName() + "\n" +
-                                    "<notQuests>Current world UUD: <highlight>" + player.getWorld().getUID().toString()
+                            "<main>Current world name: <highlight>" + player.getWorld().getName() + "\n" +
+                                    "<main>Current world UUD: <highlight>" + player.getWorld().getUID().toString()
 
                     ));
                 }));
@@ -68,7 +68,7 @@ public class DebugCommand extends BaseCommand {
                 .handler((context) -> {
                     context.sender().sendMessage(Component.empty());
                     context.sender().sendMessage(notQuests.parse(
-                            "<notQuests>Reloading DataManager..."
+                            "<main>Reloading DataManager..."
                     ));
                     notQuests.getDataManager().reloadData(false);
                     context.sender().sendMessage(notQuests.parse(
@@ -93,7 +93,7 @@ public class DebugCommand extends BaseCommand {
 
                     final String reason = context.get("reason");
                     context.sender().sendMessage(notQuests.parse(
-                            "<notQuests>Disabling NotQuests..."
+                            "<main>Disabling NotQuests..."
                     ));
                     notQuests.getDataManager().disablePluginAndSaving(reason);
 
@@ -140,7 +140,7 @@ public class DebugCommand extends BaseCommand {
 
                     final String reason = context.get("reason");
                     context.sender().sendMessage(notQuests.parse(
-                            "<notQuests>Enabling NotQuests..."
+                            "<main>Enabling NotQuests..."
                     ));
                     notQuests.getDataManager().enablePluginAndSaving(reason);
 

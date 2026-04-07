@@ -130,7 +130,7 @@ public class JobsRebornReachJobLevelObjective extends Objective {
 
     @Override
     public void load(FileConfiguration configuration, String initialPath) {
-        countPreviousLevels = configuration.getBoolean(initialPath + ".specifics.countPreviousTowns");
+        countPreviousLevels = configuration.getBoolean(initialPath + ".specifics.countPreviousLevels");
         jobName = configuration.getString(initialPath + ".specifics.jobName");
 
         // Warn

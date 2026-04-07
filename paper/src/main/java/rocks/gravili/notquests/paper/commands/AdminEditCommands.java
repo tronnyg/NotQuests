@@ -783,8 +783,8 @@ public class AdminEditCommands {
                 .handler((context) -> {
                     final ObjectiveHolder objectiveHolder = main.getCommandManager().getObjectiveHolderFromContextAndLevel(context, level);
 
-                    final String[] order = context.get("order");
-                    final String orderString = String.join(" ", order);
+                    final String orderString = context.get("order");
+                    final String[] order = orderString.split(" ");
                     final ArrayList<String> orderParsed = new ArrayList<>();
                     Collections.addAll(orderParsed, order);
 

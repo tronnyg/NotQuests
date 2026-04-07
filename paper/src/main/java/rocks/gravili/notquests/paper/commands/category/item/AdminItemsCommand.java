@@ -113,9 +113,9 @@ public class AdminItemsCommand extends BaseCommand {
                         context.sender().sendMessage(notQuests.parse(
                                 "<highlight>"
                                         + counter
-                                        + ".</highlight> <notQuests>"
+                                        + ".</highlight> <main>"
                                         + nqItem.getItemName()
-                                        + "</notQuests> <highlight2>Type: <notQuests>"
+                                        + "</main> <highlight2>Type: <main>"
                                         + nqItem.getItemStack().getType().name()
                                         + " <highlight2>Display Name:</highlight2> <white><reset>"
                                         + notQuests.getMiniMessage()
