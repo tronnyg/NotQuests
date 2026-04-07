@@ -37,8 +37,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class UltimateJobsReachJobLevelObjective extends Objective {
 
@@ -70,7 +70,7 @@ public class UltimateJobsReachJobLevelObjective extends Objective {
                             // TODO: FIx
                             return CompletableFuture.completedFuture(completions);
                         })
-                        .required("level", integerParser(1), Description.of("Job level which needs to be reached"))
+                        .required("level", numberVariableParser("level", null), Description.of("Job level which needs to be reached"))
                         .flag(manager.flagBuilder("doNotCountPreviousLevels").withDescription(Description.of("Makes it so only additional levels gained from the time of unlocking this Objective will count (and previous/existing counts will not count, so it starts from zero)")))
                         .handler((context) -> {
                             final String amountExpression = context.get("level");

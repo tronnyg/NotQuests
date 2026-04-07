@@ -161,22 +161,22 @@ public class AdminCommands {
                     //SectionPos.sectionRelativePos()
 
 
-                    notQuests.sendMessage(player, "<highlight>Section Pos: <notQuests>" + sectionPos.asLong()
+                    notQuests.sendMessage(player, "<highlight>Section Pos: <main>" + sectionPos.asLong()
                     );
-                    notQuests.sendMessage(player, "<highlight>Section Pos Chunk x: <notQuests>" + sectionPos.chunk().x
+                    notQuests.sendMessage(player, "<highlight>Section Pos Chunk x: <main>" + sectionPos.chunk().x
                     );
-                    notQuests.sendMessage(player, "<highlight>Section Pos blocks inside size: <notQuests>" + sectionPos.blocksInside().toArray().length);
+                    notQuests.sendMessage(player, "<highlight>Section Pos blocks inside size: <main>" + sectionPos.blocksInside().toArray().length);
 
                     for(Object blockPos1 : sectionPos.blocksInside().toArray()){
                         BlockPos blockPos2 = (BlockPos) blockPos1;
                         BlockEntity blockEntity =  serverLevel.getBlockEntity(blockPos2);
                         if(blockEntity != null){
-                            notQuests.sendMessage(player, "<highlight>Section Pos blocks inside: <notQuests>" + blockEntity.getBlockState().getClass().toString()
+                            notQuests.sendMessage(player, "<highlight>Section Pos blocks inside: <main>" + blockEntity.getBlockState().getClass().toString()
                             );
                         }
 
                     }
-                    notQuests.sendMessage(player, "<highlight>Section Pos short: <notQuests>" + sectionPos.toShortString()
+                    notQuests.sendMessage(player, "<highlight>Section Pos short: <main>" + sectionPos.toShortString()
                     );
 
 
@@ -191,7 +191,7 @@ public class AdminCommands {
 
                    int sectionID = (int) (64/16)+ ( (383/16) / ((location.getBlockY())/16) );
 
-                    notQuests.sendMessage(player, "<highlight>LevelChunkSection Section ID: <notQuests>" + sectionID);
+                    notQuests.sendMessage(player, "<highlight>LevelChunkSection Section ID: <main>" + sectionID);
 
 
                     LevelChunkSection section = levelChunk.getSection(sectionID);
@@ -200,9 +200,9 @@ public class AdminCommands {
 
 
 
-                    notQuests.sendMessage(player, "<highlight>LevelChunkSection Section Count: <notQuests>" + levelChunk.getSectionsCount()
+                    notQuests.sendMessage(player, "<highlight>LevelChunkSection Section Count: <main>" + levelChunk.getSectionsCount()
                     );
-                    notQuests.sendMessage(player, "<highlight>LevelChunkSection Sections length: <notQuests>" + levelChunk.getSections().length
+                    notQuests.sendMessage(player, "<highlight>LevelChunkSection Sections length: <main>" + levelChunk.getSections().length
                     );
 
                     /*Iterator<net.minecraft.world.level.block.state.BlockState> it = section.getStates().registry.iterator();
@@ -214,7 +214,7 @@ public class AdminCommands {
                         names.add(blockState1.getBlock().getClass().toString());
 
                     }
-                    notQuests.sendMessage(player, "<notQuests>" + names.toString());*/
+                    notQuests.sendMessage(player, "<main>" + names.toString());*/
                     /*
 
                     ShortSet positions = ShortSet.of()
@@ -230,13 +230,13 @@ public class AdminCommands {
                         }
                     }
 
-                    notQuests.sendMessage(player, "<highlight>Index 0 state: <notQuests>" + section.states.get(0).getBlock().getClass().getName()
+                    notQuests.sendMessage(player, "<highlight>Index 0 state: <main>" + section.states.get(0).getBlock().getClass().getName()
                     );
 
 
 
 
-                    notQuests.sendMessage(player, "<highlight>Positions: <notQuests>" + positions.toString()
+                    notQuests.sendMessage(player, "<highlight>Positions: <main>" + positions.toString()
                     );
 
 
@@ -248,7 +248,7 @@ public class AdminCommands {
                             section,
                             false);
 
-                    notQuests.sendMessage(player, "<notQuests>Sending packet...");
+                    notQuests.sendMessage(player, "<main>Sending packet...");
 
                     connection.send(clientboundSectionBlocksUpdatePacket);
 
@@ -280,7 +280,7 @@ public class AdminCommands {
                     if (playerSelector.isOnline()) {
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getActiveQuestPlayer(playerSelector.getUniqueId());
                         if (questPlayer != null) {
-                            context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + playerSelector.getName() + "</highlight> <green>(online)</green>: <highlight2>" + questPlayer.getQuestPoints()));
+                            context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + playerSelector.getName() + "</highlight> <green>(online)</green>: <highlight2>" + questPlayer.getQuestPoints()));
                         } else {
                             context.sender().sendMessage(notQuests.parse("<error>Seems like the player <highlight>" + playerSelector.getName() + "</highlight> <green>(online)</green> does not have any quest points!"));
                         }
@@ -290,7 +290,7 @@ public class AdminCommands {
 
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getActiveQuestPlayer(offlinePlayer.getUniqueId());
                         if (questPlayer != null) {
-                            context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
+                            context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
                         } else {
                             context.sender().sendMessage(notQuests.parse("<error>Seems like the player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red> does not have any quest points!"));
                         }
@@ -313,16 +313,16 @@ public class AdminCommands {
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getOrCreateQuestPlayer(playerSelector.getUniqueId());
                         long oldQuestPoints = questPlayer.getQuestPoints();
                         questPlayer.addQuestPoints(questPointsToAdd, false);
-                        context.sender().sendMessage(notQuests.parse(MessageFormat.format("<notQuests>Quest points for player <highlight>{0}</highlight> <green>(online)</green> have been set from <unimportant>{1}</unimportant> to <highlight2>{2}</highlight2>.", playerSelector.getName(), oldQuestPoints, oldQuestPoints + questPointsToAdd)));
+                        context.sender().sendMessage(notQuests.parse(MessageFormat.format("<main>Quest points for player <highlight>{0}</highlight> <green>(online)</green> have been set from <unimportant>{1}</unimportant> to <highlight2>{2}</highlight2>.", playerSelector.getName(), oldQuestPoints, oldQuestPoints + questPointsToAdd)));
                     } else {
                         final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerSelector.getUniqueId());
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getOrCreateQuestPlayerFromDatabase(offlinePlayer.getUniqueId());
                         final long oldQuestPoints = questPlayer.getQuestPoints();
                         questPlayer.addQuestPoints(questPointsToAdd, false);
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red> have been set from <unimportant>" + oldQuestPoints
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red> have been set from <unimportant>" + oldQuestPoints
                                 + "</unimportant> to <highlight2>" + (oldQuestPoints + questPointsToAdd) + "</highlight2>."));
 
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
                     }
                 }));
 
@@ -339,17 +339,17 @@ public class AdminCommands {
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getOrCreateQuestPlayer(playerSelector.getUniqueId());
                         long oldQuestPoints = questPlayer.getQuestPoints();
                         questPlayer.removeQuestPoints(questPointsToRemove, false);
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + playerSelector.getName() + "</highlight> <green>(online)</green> have been set from <unimportant>" + oldQuestPoints
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + playerSelector.getName() + "</highlight> <green>(online)</green> have been set from <unimportant>" + oldQuestPoints
                                 + "</unimportant> to <highlight2>" + (oldQuestPoints - questPointsToRemove) + "</highlight2>."));
                     } else {
                         final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerSelector.getUniqueId());
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getOrCreateQuestPlayerFromDatabase(offlinePlayer.getUniqueId());
                         final long oldQuestPoints = questPlayer.getQuestPoints();
                         questPlayer.removeQuestPoints(questPointsToRemove, false);
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red> have been set from <unimportant>" + oldQuestPoints
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red> have been set from <unimportant>" + oldQuestPoints
                                 + "</unimportant> to <highlight2>" + (oldQuestPoints - questPointsToRemove) + "</highlight2>."));
 
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
                     }
                 }));
 
@@ -367,16 +367,16 @@ public class AdminCommands {
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getOrCreateQuestPlayer(playerSelector.getUniqueId());
                         long oldQuestPoints = questPlayer.getQuestPoints();
                         questPlayer.setQuestPoints(newQuestPointsAmount, false);
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + playerSelector.getName() + "</highlight> <green>(online)</green> have been set from <unimportant>" + oldQuestPoints
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + playerSelector.getName() + "</highlight> <green>(online)</green> have been set from <unimportant>" + oldQuestPoints
                                 + "</unimportant> to <highlight2>" + (newQuestPointsAmount) + "</highlight2>."));
                     } else {
                         final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerSelector.getUniqueId());
                         final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getOrCreateQuestPlayerFromDatabase(offlinePlayer.getUniqueId());
                         final long oldQuestPoints = questPlayer.getQuestPoints();
                         questPlayer.setQuestPoints(newQuestPointsAmount, false);
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight2> <red>(offline)</red> have been set from <unimportant>" + oldQuestPoints
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight2> <red>(offline)</red> have been set from <unimportant>" + oldQuestPoints
                                 + "</unimportant> to <highlight2>" + (newQuestPointsAmount) + "</highlight2>."));
-                        context.sender().sendMessage(notQuests.parse("<notQuests>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
+                        context.sender().sendMessage(notQuests.parse("<main>Quest points for player <highlight>" + offlinePlayer.getName() + "</highlight> <red>(offline)</red>: <highlight2>" + questPlayer.getQuestPoints()));
                     }
                 }));
 
@@ -433,7 +433,7 @@ public class AdminCommands {
                     context.sender().sendMessage(notQuests.parse("<highlight>All Conditions:"));
                     for (final String conditionIdentifier : notQuests.getConditionsYMLManager().getConditionsAndIdentifiers().keySet()) {
                         final Condition condition = notQuests.getConditionsYMLManager().getCondition(conditionIdentifier);
-                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <notQuests>" + conditionIdentifier));
+                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <main>" + conditionIdentifier));
                         context.sender().sendMessage(notQuests.parse("  <veryUnimportant>└─</veryUnimportant> <unimportant>Type: <highlight2>" + condition.getConditionType()));
                         counter += 1;
                     }
@@ -446,7 +446,7 @@ public class AdminCommands {
                     final Condition condition = context.get("condition");
 
                     context.sender().sendMessage(notQuests.parse(
-                            "<notQuests>Category for condition <highlight>" + condition.getConditionName() + "</highlight>: <highlight2>"
+                            "<main>Category for condition <highlight>" + condition.getConditionName() + "</highlight>: <highlight2>"
                                     + condition.getCategory().getCategoryFullName() + "</highlight2>."
                     ));
                 }));
@@ -479,7 +479,7 @@ public class AdminCommands {
 
         manager.command(conditionsEditBuilder.literal("description", Description.of("Sets the new description of the condition."))
                 .literal("set")
-                .required("description", greedyStringParser(), Description.of("Condition description"))
+                .required("description", greedyStringParser(), Description.of("Condition description"), notQuests.getCommandManager().miniMessageSuggestions())
                 .handler((context) -> {
                     final Condition condition = context.get("condition");
 
@@ -537,7 +537,7 @@ public class AdminCommands {
                 .handler((context) -> {
                     final Condition condition = context.get("condition");
 
-                    context.sender().sendMessage(notQuests.parse("<notQuests>Description of condition <highlight>" + condition.getConditionName() + "</highlight>:\n"
+                    context.sender().sendMessage(notQuests.parse("<main>Description of condition <highlight>" + condition.getConditionName() + "</highlight>:\n"
                             + condition.getDescription()
                     ));
                 }));
@@ -593,7 +593,7 @@ public class AdminCommands {
                     context.sender().sendMessage(notQuests.parse("<highlight>All Actions:"));
                     for (final String actionIdentifier : notQuests.getActionsYMLManager().getActionsAndIdentifiers().keySet()) {
                         final Action action = notQuests.getActionsYMLManager().getAction(actionIdentifier);
-                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <notQuests>" + actionIdentifier));
+                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <main>" + actionIdentifier));
                         context.sender().sendMessage(notQuests.parse("  <veryUnimportant>└─</veryUnimportant> <unimportant>Type:</unimportant> <highlight2>" + action.getActionType()));
                         counter += 1;
                     }
@@ -624,11 +624,11 @@ public class AdminCommands {
                     ));
                     int counter = 1;
                     for (Condition condition : action.getConditions()) {
-                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <notQuests>" + condition.getConditionType()));
+                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <main>" + condition.getConditionType()));
                         if (context.sender() instanceof final Player player) {
-                            context.sender().sendMessage(notQuests.parse("<notQuests>" + condition.getConditionDescription(notQuests.getQuestPlayerManager().getOrCreateQuestPlayer(player.getUniqueId()))));
+                            context.sender().sendMessage(notQuests.parse("<main>" + condition.getConditionDescription(notQuests.getQuestPlayerManager().getOrCreateQuestPlayer(player.getUniqueId()))));
                         } else {
-                            context.sender().sendMessage(notQuests.parse("<notQuests>" + condition.getConditionDescription(null)));
+                            context.sender().sendMessage(notQuests.parse("<main>" + condition.getConditionDescription(null)));
                         }
                         counter += 1;
                     }
@@ -674,14 +674,14 @@ public class AdminCommands {
 
                     action.removeCondition(condition, true, action.getCategory().getActionsConfig(), "actions." + action.getActionName());
 
-                    context.sender().sendMessage(notQuests.parse("<notQuests>The condition with the ID <highlight>" + conditionID + "</highlight> of Action <highlight2>" + action.getActionName() + "</highlight2> has been removed!"));
+                    context.sender().sendMessage(notQuests.parse("<main>The condition with the ID <highlight>" + conditionID + "</highlight> of Action <highlight2>" + action.getActionName() + "</highlight2> has been removed!"));
                 }));
 
 
         manager.command(editActionConditionsBuilder.commandDescription(Description.of("Sets the new description of the Action condition."))
                 .literal("description")
                 .literal("set")
-                .required("description", greedyStringParser(), Description.of("Action condition description"))
+                .required("description", greedyStringParser(), Description.of("Action condition description"), notQuests.getCommandManager().miniMessageSuggestions())
                 .handler((context) -> {
                     final Action action = context.get("action");
 
@@ -754,7 +754,7 @@ public class AdminCommands {
                     }
 
 
-                    context.sender().sendMessage(notQuests.parse("<notQuests>Description of condition with ID <highlight>" + conditionID + "</highlight> of action <highlight2>"
+                    context.sender().sendMessage(notQuests.parse("<main>Description of condition with ID <highlight>" + conditionID + "</highlight> of action <highlight2>"
                             + action.getActionName() + "</highlight2>:\n"
                             + condition.getDescription()
                     ));
@@ -800,7 +800,7 @@ public class AdminCommands {
                     final Action action = context.get("action");
 
                     context.sender().sendMessage(notQuests.parse(
-                            "<notQuests>Category for action <highlight>" + action.getActionName() + "</highlight>: <highlight2>"
+                            "<main>Category for action <highlight>" + action.getActionName() + "</highlight>: <highlight2>"
                                     + action.getCategory().getCategoryFullName() + "</highlight2>."
                     ));
                 }));

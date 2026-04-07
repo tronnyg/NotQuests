@@ -97,6 +97,34 @@ public class CommandManager {
     public CommandFlag<String> triggerWorldString;
     public CommandFlag<Long> minimumTimeAfterCompletion;
     private LegacyPaperCommandManager<CommandSender> commandManager;
+
+    /**
+     * Returns a SuggestionProvider that suggests MiniMessage tags like &lt;red&gt;, &lt;bold&gt;, etc.
+     * Use this with greedyStringParser() to get MiniMessage suggestions while keeping String return type.
+     */
+    public org.incendo.cloud.suggestion.SuggestionProvider<CommandSender> miniMessageSuggestions() {
+        return (context, input) -> {
+            java.util.List<Suggestion> completions = new java.util.ArrayList<>();
+            // input.input() returns all remaining input — use lastString for the current token
+            String rawInput = input.input();
+            String[] parts = rawInput.split(" ");
+            String lastString = parts.length > 0 ? parts[parts.length - 1] : "";
+
+            if (lastString.startsWith("{")) {
+                completions.addAll(getAdminCommands().placeholders.stream().map(Suggestion::suggestion).toList());
+            } else if (lastString.startsWith("<")) {
+                for (String tag : main.getUtilManager().getMiniMessageTokens()) {
+                    completions.add(Suggestion.suggestion("<" + tag + ">"));
+                    if (rawInput.contains("<" + tag + ">")) {
+                        if (org.apache.commons.lang3.StringUtils.countMatches(rawInput, "<" + tag + ">") > org.apache.commons.lang3.StringUtils.countMatches(rawInput, "</" + tag + ">")) {
+                            completions.add(Suggestion.suggestion("</" + tag + ">"));
+                        }
+                    }
+                }
+            }
+            return java.util.concurrent.CompletableFuture.completedFuture(completions);
+        };
+    }
     // Builders
     private Command.Builder<CommandSender> adminCommandBuilder;
     private Command.Builder<CommandSender> adminEditCommandBuilder;

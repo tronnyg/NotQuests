@@ -169,7 +169,7 @@ public class AdminItemsCommand extends BaseCommand {
         commandManager.command(admitItemsEditBuilder.commandDescription(Description.of("Sets an item's display name."))
                 .literal("displayName")
                 .literal("set")
-                .required("display-name", greedyStringParser(), Description.of("New display name"))
+                .required("display-name", greedyStringParser(), Description.of("New display name"), notQuests.getCommandManager().miniMessageSuggestions())
                 .handler((context) -> {
                     NQItem nqItem = context.get("item");
                     final String displayName = (String) context.get("display-name");

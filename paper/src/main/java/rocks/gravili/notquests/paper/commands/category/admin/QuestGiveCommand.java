@@ -28,9 +28,9 @@ public class QuestGiveCommand extends BaseCommand {
                     final Player player = context.get("player");
                     final Quest quest = context.get("quest");
                     if (context.flags().hasFlag("force")) {
-                        context.sender().sendMessage(notQuests.parse("<notQuests>" + notQuests.getQuestPlayerManager().forceAcceptQuest(player.getUniqueId(), quest)));
+                        context.sender().sendMessage(notQuests.parse("<main>" + notQuests.getQuestPlayerManager().forceAcceptQuest(player.getUniqueId(), quest)));
                     } else {
-                        context.sender().sendMessage(notQuests.parse("<notQuests>" + notQuests.getQuestPlayerManager().acceptQuest(player, quest, true, true)));
+                        context.sender().sendMessage(notQuests.parse("<main>" + notQuests.getQuestPlayerManager().acceptQuest(player, quest, true, true)));
                         
                     }
                 }));

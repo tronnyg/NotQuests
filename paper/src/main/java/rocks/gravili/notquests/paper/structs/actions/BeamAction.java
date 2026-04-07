@@ -78,9 +78,9 @@ public class BeamAction extends Action {
                 })
                 .literal("spawn")
                 .required("world", worldParser(), Description.of("World name"))
-                .required("x", integerParser(1, 5000), Description.of("X coordinate"))
-                .required("y", integerParser(1, 5000), Description.of("Y coordinate"))
-                .required("z", integerParser(1, 5000), Description.of("Z coordinate"))
+                .required("x", integerParser(), Description.of("X coordinate"))
+                .required("y", integerParser(), Description.of("Y coordinate"))
+                .required("z", integerParser(), Description.of("Z coordinate"))
                 .handler(
                         (context) -> {
                             String beamName = context.get("beamName");

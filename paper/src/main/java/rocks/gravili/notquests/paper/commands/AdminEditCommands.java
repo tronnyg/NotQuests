@@ -19,7 +19,6 @@
 package rocks.gravili.notquests.paper.commands;
 
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -127,32 +126,7 @@ public class AdminEditCommands {
 
         manager.command(editBuilder.literal("description")
                 .literal("set")
-                .required("description", greedyStringParser(),
-                        (context, input) -> {
-                            main.getUtilManager().sendFancyCommandCompletion(context.sender(), input.input().split(" "), "<Enter new Quest description>", "");
-                            ArrayList<Suggestion> completions = new ArrayList<>();
-                            String rawInput = input.input();
-                            if (input.input().startsWith("{")) {
-                                completions.addAll(main.getCommandManager().getAdminCommands()
-                                        .placeholders.stream().map(Suggestion::suggestion).toList());
-                            } else {
-                                if (input.input().startsWith("<")) {
-                                    for (String color : main.getUtilManager().getMiniMessageTokens()) {
-                                        completions.add(Suggestion.suggestion("<" + color + ">"));
-                                        //Now the closings. First we search IF it contains an opening and IF it doesnt contain more closings than the opening
-                                        if (rawInput.contains("<" + color + ">")) {
-                                            if (StringUtils.countMatches(rawInput, "<" + color + ">") > StringUtils.countMatches(rawInput, "</" + color + ">")) {
-                                                completions.add(Suggestion.suggestion("</" + color + ">"));
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    completions.add(Suggestion.suggestion("<Enter new Quest description>"));
-                                }
-                            }
-                            return CompletableFuture.completedFuture(completions);
-                        }
-                ).commandDescription(Description.of("Sets the new description of the Quest."))
+                .required("description", greedyStringParser(), Description.of("Sets the new description of the Quest."), main.getCommandManager().miniMessageSuggestions())
                 .handler((context) -> {
                     final Quest quest = context.get("quest");
 
@@ -189,7 +163,7 @@ public class AdminEditCommands {
 
         manager.command(editBuilder.literal("displayName")
                 .literal("set")
-                .required("display-name", greedyStringParser(), Description.of("Quest display name"))
+                .required("display-name", greedyStringParser(), Description.of("Quest display name"), main.getCommandManager().miniMessageSuggestions())
                 .commandDescription(Description.of("Sets the new display name of the Quest."))
                 .handler((context) -> {
                     final Quest quest = context.get("quest");
@@ -848,7 +822,7 @@ public class AdminEditCommands {
         //Builder: qa edit questname objectives edit <Objective ID> objectives
         //adminEditObjectivesBuilderWithLevels: qa edit questname objectives edit <Objective ID> objectives edit <Objective ID 2>
 
-        final Command.Builder<CommandSender> adminEditObjectivesBuilderWithLevels = builder.required("objective", objectiveParser(main, level), Description.of(objectiveIDIdentifier));
+        final Command.Builder<CommandSender> adminEditObjectivesBuilderWithLevels = builder.literal("edit").required("objective", objectiveParser(main, level), Description.of(objectiveIDIdentifier));
         handleEditObjectives(adminEditObjectivesBuilderWithLevels, level);
     }
 
@@ -1013,7 +987,7 @@ public class AdminEditCommands {
 
         manager.command(builder.literal("description")
                 .literal("set")
-                .required("Objective Description", greedyStringParser(), Description.of("Objective description"))
+                .required("Objective Description", greedyStringParser(), Description.of("Objective description"), main.getCommandManager().miniMessageSuggestions())
                 .commandDescription(Description.of("Sets current objective description."))
                 .handler((context) -> {
                     final Objective objective = main.getCommandManager().getObjectiveFromContextAndLevel(context, level);
@@ -1028,7 +1002,7 @@ public class AdminEditCommands {
 
         manager.command(builder.literal("taskDescription")
                 .literal("set")
-                .required("Task Description", greedyStringParser(), Description.of("Objective task description"))
+                .required("Task Description", greedyStringParser(), Description.of("Objective task description"), main.getCommandManager().miniMessageSuggestions())
                 .commandDescription(Description.of("Sets current objective task description."))
                 .handler((context) -> {
                     final Objective objective = main.getCommandManager().getObjectiveFromContextAndLevel(context, level);
@@ -1061,7 +1035,7 @@ public class AdminEditCommands {
 
         manager.command(builder.literal("displayName")
                 .literal("set")
-                .required("DisplayName", greedyStringParser(), Description.of("Quest display name"))
+                .required("DisplayName", greedyStringParser(), Description.of("Quest display name"), main.getCommandManager().miniMessageSuggestions())
                 .commandDescription(Description.of("Sets current objective displayname."))
                 .handler((context) -> {
                     final Objective objective = main.getCommandManager().getObjectiveFromContextAndLevel(context, level);
@@ -1194,7 +1168,7 @@ public class AdminEditCommands {
 
         manager.command(editQuestRequirementsBuilder.literal("description")
                 .literal("set")
-                .required("description", greedyStringParser(), Description.of("Quest requirementdescription")).commandDescription(Description.of("Sets the new description of the Quest requirement."))
+                .required("description", greedyStringParser(), Description.of("Quest requirementdescription"), main.getCommandManager().miniMessageSuggestions()).commandDescription(Description.of("Sets the new description of the Quest requirement."))
                 .handler((context) -> {
                     final Quest quest = context.get("quest");
                     int conditionID = context.get("Requirement ID");
@@ -1365,7 +1339,7 @@ public class AdminEditCommands {
 
         manager.command(editObjectiveConditionsBuilder.literal("description")
                 .literal("set")
-                .required("description", greedyStringParser(), Description.of("Objective condition description")).commandDescription(Description.of("Sets the new description of the Objective unlock condition."))
+                .required("description", greedyStringParser(), Description.of("Objective condition description"), main.getCommandManager().miniMessageSuggestions()).commandDescription(Description.of("Sets the new description of the Objective unlock condition."))
                 .handler((context) -> {
                     final Objective objective = main.getCommandManager().getObjectiveFromContextAndLevel(context, level);
 
@@ -1549,7 +1523,7 @@ public class AdminEditCommands {
 
         manager.command(editObjectiveConditionsBuilder.literal("description")
                 .literal("set")
-                .required("description", greedyStringParser(), Description.of("Objective condition description")).commandDescription(Description.of("Sets the new description of the Objective progress condition."))
+                .required("description", greedyStringParser(), Description.of("Objective condition description"), main.getCommandManager().miniMessageSuggestions()).commandDescription(Description.of("Sets the new description of the Objective progress condition."))
                 .handler((context) -> {
                     final Objective objective = main.getCommandManager().getObjectiveFromContextAndLevel(context, level);
 
@@ -1732,7 +1706,7 @@ public class AdminEditCommands {
 
         manager.command(editObjectiveConditionsBuilder.literal("description")
                 .literal("set")
-                .required("description", greedyStringParser(), Description.of("Objective condition description")).commandDescription(Description.of("Sets the new description of the Objective complete condition."))
+                .required("description", greedyStringParser(), Description.of("Objective condition description"), main.getCommandManager().miniMessageSuggestions()).commandDescription(Description.of("Sets the new description of the Objective complete condition."))
                 .handler((context) -> {
                     final Objective objective = main.getCommandManager().getObjectiveFromContextAndLevel(context, level);
 
@@ -2042,7 +2016,7 @@ public class AdminEditCommands {
 
         manager.command(builder.literal("displayName")
                 .literal("set")
-                .required("display-name", greedyStringParser(), Description.of("Reward display name")).commandDescription(Description.of("Sets new reward Display Name. Only rewards with a Display Name will be displayed."))
+                .required("display-name", greedyStringParser(), Description.of("Reward display name"), main.getCommandManager().miniMessageSuggestions()).commandDescription(Description.of("Sets new reward Display Name. Only rewards with a Display Name will be displayed."))
                 .handler((context) -> {
                     final int ID = context.get("reward-id");
                     final Objective objective = main.getCommandManager().getObjectiveFromContextAndLevel(context, level);
@@ -2166,7 +2140,7 @@ public class AdminEditCommands {
 
         manager.command(builder.literal("displayName")
                 .literal("set")
-                .required("display-name", greedyStringParser(), Description.of("Reward display name")).commandDescription(Description.of("Sets new reward Display Name. Only rewards with a Display Name will be displayed."))
+                .required("display-name", greedyStringParser(), Description.of("Reward display name"), main.getCommandManager().miniMessageSuggestions()).commandDescription(Description.of("Sets new reward Display Name. Only rewards with a Display Name will be displayed."))
                 .handler((context) -> {
                     final Quest quest = context.get("quest");
                     final int ID = context.get("reward-id");

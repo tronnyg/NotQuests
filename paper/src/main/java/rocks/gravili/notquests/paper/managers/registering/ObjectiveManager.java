@@ -202,15 +202,13 @@ public class ObjectiveManager {
 
         final ObjectiveHolder objectiveHolder = main.getCommandManager().getObjectiveHolderFromContextAndLevel(context, level);
         final Optional<Component> _taskDescription = context.flags().getValue(main.getCommandManager().taskDescription);
-        if(_taskDescription.isEmpty()){
-            context.sender().sendMessage(main.parse("<error>Task description is required!"));
-            return;
-        }
-        String taskDescription = MiniMessage.builder().build().serialize(_taskDescription.get());
         objective.setObjectiveHolder(objectiveHolder);
         objective.setObjectiveID(objectiveHolder.getFreeObjectiveID());
-        if (!taskDescription.isBlank()) {
-            objective.setTaskDescription(taskDescription, true);
+        if(_taskDescription.isPresent()){
+            String taskDescription = MiniMessage.builder().build().serialize(_taskDescription.get());
+            if (!taskDescription.isBlank()) {
+                objective.setTaskDescription(taskDescription, true);
+            }
         }
         context.sender().sendMessage(main.parse("<success>" + getObjectiveType(objective.getClass()) + " Objective successfully added to Quest <highlight>" + objectiveHolder.getIdentifier() + "</highlight>!"));
         objectiveHolder.addObjective(objective, true);

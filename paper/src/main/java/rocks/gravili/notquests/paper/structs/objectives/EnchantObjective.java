@@ -16,7 +16,9 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import java.util.Map;
 
 import static org.incendo.cloud.bukkit.parser.EnchantmentParser.enchantmentParser;
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import org.incendo.cloud.component.TypedCommandComponent;
+import org.incendo.cloud.parser.flag.CommandFlag;
+
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
 import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
@@ -43,8 +45,8 @@ public class EnchantObjective extends Objective {
                 .required("enchantment", enchantmentParser(), Description.of("Enchantment which needs to be applied to the item"))
                 .required("materials", itemStackSelectionParser(main), Description.of("Material of the item which needs to be enchanted"))
                 .required("amount", numberVariableParser("amount", null), Description.of("Amount of times the item needs to be enchanted"))
-                .required("min", integerParser(1), Description.of("Minimum level of the enchantment"))
-                .required("max", integerParser(1), Description.of("Maximum level of the enchantment"))
+                .flag(manager.flagBuilder("min").withComponent(TypedCommandComponent.builder("min", numberVariableParser("min", null))))
+                .flag(manager.flagBuilder("max").withComponent(TypedCommandComponent.builder("max", numberVariableParser("max", null))))
                 .handler(
                         (context) -> {
                             final Enchantment enchantment1 = context.get("enchantment");

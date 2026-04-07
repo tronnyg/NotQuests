@@ -29,8 +29,7 @@ public class PlayerCommandAction extends Action {
     manager.command(builder.required("Player Command", commandParser(main), Description.of("Command which will be executed from the player's perspective. A '/' at the beginning is not required."))
             .handler(
                 (context) -> {
-                  final String playerCommand =
-                      String.join(" ", (String[]) context.get("Player Command"));
+                  final String playerCommand = context.get("Player Command");
 
                   PlayerCommandAction playerCommandAction = new PlayerCommandAction(main);
                   playerCommandAction.setPlayerCommand(playerCommand);

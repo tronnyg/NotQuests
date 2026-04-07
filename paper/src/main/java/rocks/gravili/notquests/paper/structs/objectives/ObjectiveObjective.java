@@ -12,7 +12,7 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.minecraft.extras.parser.ComponentParser.miniMessageParser;
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
 
 //Basically just a holder for sub-objectives
 public class ObjectiveObjective extends Objective {
@@ -30,7 +30,7 @@ public class ObjectiveObjective extends Objective {
 
 
         manager.command(addObjectiveBuilder
-                .required("Objective Holder Name", miniMessageParser(), Description.description("Name of the objective holder"))
+                .required("Objective Holder Name", greedyStringParser(), Description.description("Name of the objective holder"))
                 .handler((context) -> {
                     final String objectiveHolderName = context.get("Objective Holder Name");
 

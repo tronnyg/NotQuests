@@ -14,7 +14,7 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static org.incendo.cloud.parser.standard.StringParser.quotedStringParser;
 
 public class ChatAction extends Action {
     private String chatMessage = "";
@@ -28,7 +28,7 @@ public class ChatAction extends Action {
             LegacyPaperCommandManager<CommandSender> manager,
             Command.Builder<CommandSender> builder,
             ActionFor actionFor) {
-        manager.command(builder.required("Chat Message", stringParser(), Description.of("Message which will be sent / chatted from the player's perspective."), (context, lastString) -> {
+        manager.command(builder.required("Chat Message", quotedStringParser(), Description.of("Message which will be sent / chatted from the player's perspective."), (context, lastString) -> {
                     main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "<enter chat message. Wrap in \"\" to use spaces>", "");
                     ArrayList<Suggestion> completions = new ArrayList<>();
                     completions.add(Suggestion.suggestion("<enter chat message. Wrap in \"\" to use spaces>"));

@@ -18,7 +18,6 @@
 
 package rocks.gravili.notquests.paper.commands.arguments;
 
-import com.sun.jna.StringArray;
 import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.context.CommandContext;
@@ -33,25 +32,27 @@ import rocks.gravili.notquests.paper.NotQuests;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class CommandParser<C> implements ArgumentParser<C, StringArray> {
+public class CommandParser<C> implements ArgumentParser<C, String> {
     private final NotQuests main;
 
     protected CommandParser(NotQuests main) {
         this.main = main;
     }
 
-    public static <C> @NonNull ParserDescriptor<C, StringArray> commandParser(final NotQuests main) {
-        return ParserDescriptor.of(new CommandParser<>(main), StringArray.class);
+    public static <C> @NonNull ParserDescriptor<C, String> commandParser(final NotQuests main) {
+        return ParserDescriptor.of(new CommandParser<>(main), String.class);
     }
 
     @Override
-    public @NonNull ArgumentParseResult<@NonNull StringArray> parse(@NonNull CommandContext<@NonNull C> commandContext, @NonNull CommandInput commandInput) {
-        final String[] result = new String[commandInput.input().split(" ").length];
-        StringArray finalResult = new StringArray(result);
-        for (int i = 0; i < result.length; i++) {
-            result[i] = commandInput.readString();
+    public @NonNull ArgumentParseResult<@NonNull String> parse(@NonNull CommandContext<@NonNull C> commandContext, @NonNull CommandInput commandInput) {
+        StringBuilder result = new StringBuilder();
+        while (!commandInput.isEmpty()) {
+            if (!result.isEmpty()) {
+                result.append(" ");
+            }
+            result.append(commandInput.readString());
         }
-        return ArgumentParseResult.success(finalResult);
+        return ArgumentParseResult.success(result.toString());
     }
 
 
@@ -60,9 +61,6 @@ public class CommandParser<C> implements ArgumentParser<C, StringArray> {
         return (context, input) -> {
             String cmd = input.input().substring(input.input().indexOf("ConsoleCommand") + 15);
             List<Suggestion> completions = new java.util.ArrayList<>();
-            // audience.sendMessage(main.parse(
-            //        "Input: " + cmd
-            // ));
 
             if (main.getCommandManager().getCommandMap() != null) {
                 List<String> compl = main.getCommandManager().getCommandMap().tabComplete(main.getMain().getServer().getConsoleSender(), cmd);

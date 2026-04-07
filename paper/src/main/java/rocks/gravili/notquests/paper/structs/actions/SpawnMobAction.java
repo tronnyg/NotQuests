@@ -27,7 +27,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.incendo.cloud.Command;
-import org.incendo.cloud.bukkit.parser.selector.SingleEntitySelectorParser;
+import static rocks.gravili.notquests.paper.commands.arguments.EntityTypeParser.entityTypeParser;
 import org.incendo.cloud.component.TypedCommandComponent;
 import org.incendo.cloud.description.Description;
 import org.incendo.cloud.paper.LegacyPaperCommandManager;
@@ -74,7 +74,7 @@ public class SpawnMobAction extends Action {
                 .withComponent(TypedCommandComponent.builder("spawnRadiusZ", integerParser(0)))
                 .build();
 
-        Command.Builder<CommandSender> commonBuilder = builder.required("entityType", SingleEntitySelectorParser.singleEntitySelectorParser(), Description.of("Type of Entity which should be spawned."))
+        Command.Builder<CommandSender> commonBuilder = builder.required("entityType", entityTypeParser(main), Description.of("Type of Entity which should be spawned."))
                 .required("amount", integerParser(1), Description.of("Amount of mobs which should be spawned"))
                 .flag(spawnRadiusX)
                 .flag(spawnRadiusY)

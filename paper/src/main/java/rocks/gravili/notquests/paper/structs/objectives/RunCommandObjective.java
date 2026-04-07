@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static org.incendo.cloud.parser.standard.StringParser.quotedStringParser;
 import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class RunCommandObjective extends Objective {
@@ -53,7 +53,7 @@ public class RunCommandObjective extends Objective {
       final int level) {
     manager.command(addObjectiveBuilder
             .required("amount", numberVariableParser("amount", null), Description.of("Amount of times the command needs to be run"))
-                    .required("Command", stringParser(), Description.of("Command to run"), (context, lastString) -> {
+                    .required("Command", quotedStringParser(), Description.of("Command to run"), (context, lastString) -> {
                         main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Enter command (put between \" \" if you want to use spaces)]", "");
                         ArrayList<Suggestion> completions = new ArrayList<>();
                         completions.add(Suggestion.suggestion("<Enter command (put between \" \" if you want to use spaces)>"));

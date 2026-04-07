@@ -47,7 +47,7 @@ public class ConsoleCommandAction extends Action {
             ActionFor actionFor) {
         manager.command(builder.required("Console Command", commandParser(main), Description.of("Command which will be executed from the console as a reward. A '/' at the beginning is not required."))
                 .handler((context) -> {
-                    final String consoleCommand = String.join(" ", (String[]) context.get("Console Command"));
+                    final String consoleCommand = context.get("Console Command");
                     ConsoleCommandAction consoleCommandAction = new ConsoleCommandAction(main);
                     consoleCommandAction.setConsoleCommand(consoleCommand);
 

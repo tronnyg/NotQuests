@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.BooleanParser.booleanParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.BooleanVariableValueParser.booleanVariableParser;
 
 public class BooleanAction extends Action {
 
@@ -93,7 +93,7 @@ public class BooleanAction extends Action {
 
                         return CompletableFuture.completedFuture(completions);
                     })
-                    .required("expression", booleanParser(), Description.of("Expression"))
+                    .required("expression", booleanVariableParser("expression", variable), Description.of("Expression"))
                     .handler(
                             (context) -> {
                                 final String expression = context.get("expression");

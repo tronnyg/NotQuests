@@ -65,25 +65,25 @@ public class DateCondition extends Condition {
                 .withDescription(Description.of("Enter year."))
                 .build();
         final CommandFlag<Integer> month = CommandFlag.builder("month")
-                .withComponent(TypedCommandComponent.builder("month", integerParser(0)))
+                .withComponent(TypedCommandComponent.builder("month", integerParser(0, 12)))
                 .withDescription(Description.of("Enter month."))
                 .build();
         final CommandFlag<Integer> day = CommandFlag.builder("day")
-                .withComponent(TypedCommandComponent.builder("day", integerParser(0)))
+                .withComponent(TypedCommandComponent.builder("day", integerParser(0, 31)))
                 .withDescription(Description.of("Enter day."))
                 .build();
         final CommandFlag<Integer> hours = CommandFlag.builder("hours")
-                .withComponent(TypedCommandComponent.builder("hours", integerParser(0)))
+                .withComponent(TypedCommandComponent.builder("hours", integerParser(0, 24)))
                 .withDescription(Description.of("Enter hours."))
                 .build();
 
         final CommandFlag<Integer> minutes = CommandFlag.builder("minutes")
-                .withComponent(TypedCommandComponent.builder("minutes", integerParser(0)))
+                .withComponent(TypedCommandComponent.builder("minutes", integerParser(0, 60)))
                 .withDescription(Description.of("Enter minutes."))
                 .build();
 
         final CommandFlag<Integer> seconds = CommandFlag.builder("seconds")
-                .withComponent(TypedCommandComponent.builder("seconds", integerParser(0)))
+                .withComponent(TypedCommandComponent.builder("seconds", integerParser(0, 60)))
                 .withDescription(Description.of("Enter seconds."))
                 .build();
 

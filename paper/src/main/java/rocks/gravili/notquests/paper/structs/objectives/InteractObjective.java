@@ -68,9 +68,9 @@ public class InteractObjective extends Objective {
                         ArgumentDescription.of("Coordinates")
                 )*/
                 // Commented out, because this somehow breaks flags
-                .required("x", integerParser(0), Description.of("X coordinate"))
-                .required("y", integerParser(0), Description.of("Y coordinate"))
-                .required("z", integerParser(0), Description.of("Z coordinate"))
+                .required("x", integerParser(), Description.of("X coordinate"))
+                .required("y", integerParser(), Description.of("Y coordinate"))
+                .required("z", integerParser(), Description.of("Z coordinate"))
                 .flag(manager.flagBuilder("leftClick").withDescription(Description.of("Count left-clicks of the location.")))
                 .flag(manager.flagBuilder("rightClick").withDescription(Description.of("Count right-clicks of the location.")))
                 .flag(manager.flagBuilder("cancelInteraction").withDescription(Description.of("Makes it so the interaction will be cancelled while this objective is active")))

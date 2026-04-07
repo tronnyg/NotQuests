@@ -24,7 +24,7 @@ public class CategoryListCommand extends BaseCommand {
                     context.sender().sendMessage(notQuests.parse("<highlight>All categories:"));
                     int counter = 1;
                     for (final Category category : notQuests.getDataManager().getCategories()) {
-                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <notQuests>" + category.getCategoryFullName()));
+                        context.sender().sendMessage(notQuests.parse("<highlight>" + counter + ".</highlight> <main>" + category.getCategoryFullName()));
                         counter++;
                     }
                 }));

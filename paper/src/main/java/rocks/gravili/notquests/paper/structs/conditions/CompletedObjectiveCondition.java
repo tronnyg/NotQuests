@@ -69,10 +69,8 @@ public class CompletedObjectiveCondition extends Condition {
 
                                 final Objective objective = context.get("objectiveId"); //TODO: Support nested objectives
 
-                                final int dependingObjectiveID = context.get("dependingObjectiveId");
-                                final Objective dependingObjective = quest.getObjectiveFromID(dependingObjectiveID);
-                                assert dependingObjective != null; // Shouldn't be null
-
+                                final Objective dependingObjective = context.get("dependingObjectiveId");
+                                final int dependingObjectiveID = dependingObjective.getObjectiveID();
                                 if (dependingObjective != objective) {
 
                                     CompletedObjectiveCondition completedObjectiveCondition =

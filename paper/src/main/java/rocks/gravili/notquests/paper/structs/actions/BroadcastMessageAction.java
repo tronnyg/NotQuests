@@ -29,7 +29,7 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.ArrayList;
 
-import static org.incendo.cloud.minecraft.extras.parser.ComponentParser.miniMessageParser;
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
 
 public class BroadcastMessageAction extends Action {
 
@@ -46,9 +46,9 @@ public class BroadcastMessageAction extends Action {
             ActionFor actionFor) {
         manager.command(
                 builder
-                        .required("Broadcast Message", miniMessageParser(), Description.of("Message to broadcast"))
+                        .required("Broadcast Message", greedyStringParser(), Description.of("Message to broadcast"), main.getCommandManager().miniMessageSuggestions())
                         .handler((context) -> {
-                            final String messageToBroadcast = String.join(" ", (String[]) context.get("Broadcast Message"));
+                            final String messageToBroadcast = (String) context.get("Broadcast Message");
                             BroadcastMessageAction broadcastMessageAction = new BroadcastMessageAction(main);
                             broadcastMessageAction.setMessageToBroadcast(messageToBroadcast);
                             main.getActionManager().addAction(broadcastMessageAction, context, actionFor);
