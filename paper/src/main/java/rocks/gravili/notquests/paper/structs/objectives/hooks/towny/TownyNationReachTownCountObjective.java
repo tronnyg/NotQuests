@@ -18,23 +18,25 @@
 
 package rocks.gravili.notquests.paper.structs.objectives.hooks.towny;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
+
+import java.util.Map;
+
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class TownyNationReachTownCountObjective extends Objective {
 
@@ -46,37 +48,26 @@ public class TownyNationReachTownCountObjective extends Objective {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
     if (!main.getIntegrationsManager().isTownyEnabled()) {
       return;
     }
 
-    manager.command(
-        addObjectiveBuilder
-            .argument(
-                NumberVariableValueArgument.newBuilder("amount", main, null),
-                ArgumentDescription.of("Minimum amount of towns"))
-            .flag(
-                manager
-                    .flagBuilder("doNotCountPreviousTowns")
-                    .withDescription(
-                        ArgumentDescription.of(
-                            "Makes it so only additional towns from the time of unlocking this Objective will count (and previous/existing counts will not count, so it starts from zero)")))
+    manager.command(addObjectiveBuilder
+            .required("amount", numberVariableParser("amount", null), Description.description("Minimum amount of towns"))
+            .flag(manager.flagBuilder("doNotCountPreviousTowns").withDescription(Description.of("Makes it so only additional towns from the time of unlocking this Objective will count (and previous/existing counts will not count, so it starts from zero)")))
             .handler(
                 (context) -> {
                   final String amountExpression = context.get("amount");
-                  final boolean countPreviousTowns =
-                      !context.flags().isPresent("doNotCountPreviousTowns");
+                  final boolean countPreviousTowns = !context.flags().isPresent("doNotCountPreviousTowns");
 
-                  TownyNationReachTownCountObjective townyNationReachTownCountObjective =
-                      new TownyNationReachTownCountObjective(main);
+                  TownyNationReachTownCountObjective townyNationReachTownCountObjective = new TownyNationReachTownCountObjective(main);
                   townyNationReachTownCountObjective.setProgressNeededExpression(amountExpression);
                   townyNationReachTownCountObjective.setCountPreviousTowns(countPreviousTowns);
 
-                  main.getObjectiveManager()
-                      .addObjective(townyNationReachTownCountObjective, context, level);
+                  main.getObjectiveManager().addObjective(townyNationReachTownCountObjective, context, level);
                 }));
   }
 

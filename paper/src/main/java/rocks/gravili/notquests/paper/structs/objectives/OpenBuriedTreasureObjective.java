@@ -18,16 +18,17 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class OpenBuriedTreasureObjective extends Objective {
 
@@ -37,14 +38,11 @@ public class OpenBuriedTreasureObjective extends Objective {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
-    manager.command(
-        addObjectiveBuilder
-            .argument(
-                NumberVariableValueArgument.newBuilder("amount", main, null),
-                ArgumentDescription.of("Amount of buried treasured to open"))
+    manager.command(addObjectiveBuilder
+            .required("amount", numberVariableParser("amount", null), Description.of("Amount of buried treasured to open"))
             .handler(
                 (context) -> {
                   final String amountExpression = context.get("amount");

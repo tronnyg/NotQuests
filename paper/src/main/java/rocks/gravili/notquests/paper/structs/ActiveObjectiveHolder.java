@@ -1,8 +1,5 @@
 package rocks.gravili.notquests.paper.structs;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -14,6 +11,10 @@ import rocks.gravili.notquests.paper.structs.actions.Action;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveHolder;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveObjective;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class ActiveObjectiveHolder {
   private final CopyOnWriteArrayList<ActiveObjective> activeObjectives;

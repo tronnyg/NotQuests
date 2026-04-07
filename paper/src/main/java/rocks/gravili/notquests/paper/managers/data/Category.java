@@ -18,17 +18,17 @@
 
 package rocks.gravili.notquests.paper.managers.data;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.PredefinedProgressOrder;
 import rocks.gravili.notquests.paper.structs.Quest;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Category {
   private final NotQuests main;

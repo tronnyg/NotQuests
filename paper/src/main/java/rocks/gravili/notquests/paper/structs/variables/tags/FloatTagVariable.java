@@ -18,38 +18,33 @@
 
 package rocks.gravili.notquests.paper.structs.variables.tags;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.util.ArrayList;
-import java.util.List;
-import org.bukkit.command.CommandSender;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.managers.tags.Tag;
 import rocks.gravili.notquests.paper.managers.tags.TagType;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.variables.Variable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class FloatTagVariable extends Variable<Float> {
 
     public FloatTagVariable(final NotQuests main) {
         super(main);
 
-        addRequiredString(
-                StringArgument.<CommandSender>newBuilder("TagName").withSuggestionsProvider(
-                        (context, lastString) -> {
-                            final List<String> allArgs = context.getRawInput();
-                            main.getUtilManager().sendFancyCommandCompletion(context.getSender(), allArgs.toArray(new String[0]), "[Tag Name]", "[...]");
-
-                            final ArrayList<String> suggestions = new ArrayList<>();
-                            for (final Tag tag : main.getTagManager().getTags()) {
-                                if (tag.getTagType() == TagType.FLOAT) {
-                                    suggestions.add("" + tag.getTagName());
-                                }
-                            }
-                            return suggestions;
-
-                        }
-                ).single().build()
-        );
+        addRequiredString(StringVariableValueParser.of("TagName", null, (context, lastString) -> {
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Item Slot ID / Equipment Slot Name]", "[...]");
+            ArrayList<Suggestion> suggestions = new ArrayList<>();
+            for (final Tag tag : main.getTagManager().getTags()) {
+                if (tag.getTagType() == TagType.FLOAT) {
+                    suggestions.add(Suggestion.suggestion(tag.getTagName()));
+                }
+            }
+            return CompletableFuture.completedFuture(suggestions);
+        }));
 
         setCanSetValue(true);
     }
@@ -66,7 +61,7 @@ public class FloatTagVariable extends Variable<Float> {
             main.getLogManager().warn("Error reading tag " + tagName + ". Tag does not exist.");
             return 0f;
         }
-        if(tag.getTagType() != TagType.FLOAT){
+        if (tag.getTagType() != TagType.FLOAT) {
             main.getLogManager().warn("Error reading tag " + tagName + ". Tag is no float tag.");
             return 0f;
         }
@@ -93,7 +88,7 @@ public class FloatTagVariable extends Variable<Float> {
             main.getLogManager().warn("Error reading tag " + tagName + ". Tag does not exist.");
             return false;
         }
-        if(tag.getTagType() != TagType.FLOAT){
+        if (tag.getTagType() != TagType.FLOAT) {
             main.getLogManager().warn("Error reading tag " + tagName + ". Tag is no float tag.");
             return false;
         }
@@ -106,7 +101,7 @@ public class FloatTagVariable extends Variable<Float> {
 
 
     @Override
-    public final List<String> getPossibleValues(final QuestPlayer questPlayer, final Object... objects) {
+    public final List<Suggestion> getPossibleValues(final QuestPlayer questPlayer, final Object... objects) {
         return null;
     }
 

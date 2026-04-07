@@ -16,15 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.JavaVersion.*
-import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import net.minecrell.pluginyml.paper.PaperPluginDescription
+import org.gradle.api.JavaVersion.VERSION_25
 
 plugins {
 
     id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper")
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    id("de.eldoria.plugin-yml.bukkit") version "0.9.0"
+    id("de.eldoria.plugin-yml.paper") version "0.9.0"
 }
 
 
@@ -32,9 +31,9 @@ group = "rocks.gravili.notquests"
 version = rootProject.version
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-    sourceCompatibility = VERSION_21
-    targetCompatibility = VERSION_21
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    sourceCompatibility = VERSION_25
+    targetCompatibility = VERSION_25
 }
 
 repositories {
@@ -68,7 +67,6 @@ repositories {
             includeGroup("com.github.retrooper.packetevents")
             includeGroup("io.github.retrooper")
             includeGroup("com.github.AlessioGr")
-            includeGroup("com.github.AlessioGr.packetevents")
             includeGroup("com.github.TownyAdvanced")
             includeGroup("com.github.Zrips")
         }
@@ -89,14 +87,6 @@ repositories {
         }
     }
 
-    maven("https://betonquest.org/nexus/repository/betonquest/"){
-        content {
-            includeGroup("org.betonquest")
-        }
-        metadataSources {
-            artifact()
-        }
-    }
 
     maven("https://maven.enginehub.org/repo/"){
         content {
@@ -126,10 +116,10 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.1.build.29-alpha")
 
-    implementation(project(path= ":common", configuration= "shadow"))
-    implementation(project(path= ":paper", configuration= "shadow"))
+    implementation(project(path= ":common", configuration= "shadowRuntimeElements"))
+    implementation(project(path= ":paper", configuration= "shadowRuntimeElements"))
 
     //implementation(project(":spigot"))
     //implementation(project(":paper"))
@@ -160,20 +150,12 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
-        //minimize()
+        // DO NOT minimize the jar, since cloud doesnt like it
+        // Reference: https://discord.com/channels/766366162388123678/1170254709722984460/1242027222773006376
+
         archiveClassifier.set("")
 
-        //relocate("rocks.gravili.notquests.spigot", "$shadowPath.spigot")
-        //relocate("rocks.gravili.notquests.paper", "$shadowPath.paper")
         relocate("io.papermc.lib", "$shadowPath.paperlib")
-
-        dependencies {
-            include(dependency(":common"))
-            include(dependency(":paper"))
-            include(dependency("io.papermc:paperlib:"))
-        }
-        //archiveBaseName.set("notquests")
-        //archiveClassifier.set(null)
     }
 
 
@@ -181,7 +163,7 @@ tasks {
         dependsOn(":common:jar", ":paper:jar", ":paper:build")
 
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(25)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -193,17 +175,17 @@ tasks {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.1")
+        minecraftVersion("26.1.1")
     }
 
     register<Copy>("copyToServer") {
         val path = System.getenv("PLUGIN_DIR")
-        if (path.toString().isEmpty()) {
+        if (path.isNullOrEmpty()) {
             println("No environment variable PLUGIN_DIR set")
             return@register
         }
         from(reobfJar)
-        destinationDir = File(path.toString())
+        destinationDir = File(path)
     }
 }
 
@@ -214,32 +196,32 @@ bukkit {
     name = "NotQuests"
     version = rootProject.version.toString()
     main = "rocks.gravili.notquests.Main"
-    apiVersion = "1.21"
+    apiVersion = "26.1.1"
     authors = listOf("AlessioGr")
-    description = "Flexible, open, GUI Quest Plugin for Minecraft 1.21.1"
+    description = "Flexible, open, GUI Quest Plugin for Minecraft"
     website = "https://www.notquests.com"
     softDepend = listOf(
         "ProtocolLib",
         "ProtocolSupport",
         "ViaVersion",
+        "ViaBackwards",
+        "ViaRewind",
         "Geyser-Spigot",
         "Citizens",
         "Vault",
         "PlaceholderAPI",
         "MythicMobs",
         "EliteMobs",
-        "BetonQuest",
         "WorldEdit",
         "Slimefun",
         "LuckPerms",
         "Towny",
         "Jobs",
-        "ProjectKorra",
+
         "EcoBosses",
         "eco",
         "UltimateJobs",
-        "Floodgate",
-        "ZNPCs",
+        "Floodgate"
     )
 
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
@@ -266,4 +248,78 @@ bukkit {
             description = "Gives the player permission to use the /notquests profiles command, and to create, delete and switch profiles."
         }
     }
+}
+
+paper {
+    name = "NotQuests"
+    version = rootProject.version.toString()
+    main = "rocks.gravili.notquests.Main"
+    apiVersion = "26.1.1"
+    authors = listOf("AlessioGr")
+    description = "Flexible, open, GUI Quest Plugin for Minecraft"
+    website = "https://www.notquests.com"
+
+    serverDependencies {
+        register("ProtocolLib") {
+            required = false
+        }
+        register("ProtocolSupport") {
+            required = false
+        }
+        register("ViaVersion") {
+            required = false
+        }
+        register("ViaBackwards") {
+            required = false
+        }
+        register("ViaRewind") {
+            required = false
+        }
+        register("Geyser-Spigot") {
+            required = false
+        }
+        register("Citizens") {
+            required = false
+        }
+        register("Vault") {
+            required = false
+        }
+        register("PlaceholderAPI") {
+            required = false
+        }
+        register("MythicMobs") {
+            required = false
+        }
+        register("EliteMobs") {
+            required = false
+        }
+        register("WorldEdit") {
+            required = false
+        }
+        register("Slimefun") {
+            required = false
+        }
+        register("LuckPerms") {
+            required = false
+        }
+        register("Towny") {
+            required = false
+        }
+        register("Jobs") {
+            required = false
+        }
+        register("EcoBosses") {
+            required = false
+        }
+        register("eco") {
+            required = false
+        }
+        register("UltimateJobs") {
+            required = false
+        }
+        register("Floodgate") {
+            required = false
+        }
+    }
+
 }

@@ -1,12 +1,12 @@
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.bukkit.arguments.selector.SinglePlayerSelector;
-import cloud.commandframework.bukkit.parsers.selector.SinglePlayerSelectorArgument;
-import cloud.commandframework.paper.PaperCommandManager;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.bukkit.data.SinglePlayerSelector;
+import org.incendo.cloud.bukkit.parser.selector.SinglePlayerSelectorParser;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,43 +27,38 @@ public class OpenGuiAction extends Action {
         super(main);
     }
 
-    public static void handleCommands(NotQuests main, PaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ActionFor actionFor) {
+    public static void handleCommands(NotQuests main, LegacyPaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> builder, ActionFor actionFor) {
         manager.command(
-                builder.argument(
-                        StringArgument.<CommandSender>builder("guiName").withSuggestionsProvider((objectCommandContext, s) -> {
-                            var completions = main.getGuiService().getGuis().keySet();
-                            return completions.stream().toList();
-
-                        }).build(), ArgumentDescription.of("Opens a gui for the player"))
-                        .flag(manager.flagBuilder("targetPlayer").withArgument(SinglePlayerSelectorArgument.of("targetPlayer")).build())
-                        .flag(manager.flagBuilder("quest").withArgument(StringArgument.of("quest")).build())
-                        .flag(manager.flagBuilder(("npc")).withArgument(IntegerArgument.of("npc")).build())
-                        .flag(manager.flagBuilder(("category")).withArgument(StringArgument.of("category")).build())
+                builder.required("guiName", stringParser(), Description.of("Opens a gui for the player"))
+                        .flag(manager.flagBuilder("targetPlayer").withComponent(SinglePlayerSelectorParser.singlePlayerSelectorParser()).build())
+                        .flag(manager.flagBuilder("quest").withComponent(stringParser()).build())
+                        .flag(manager.flagBuilder("npc").withComponent(integerParser()).build())
+                        .flag(manager.flagBuilder("category").withComponent(stringParser()).build())
 
                 .handler(commandContext -> {
-                    var guiName = (String) commandContext.get("guiName");
-                    var questName = (String) commandContext.flags().get("quest");
+                    String guiName = commandContext.get("guiName");
+                    String questName = commandContext.flags().getValue("quest", null);
 
                     var quest = questName == null ? null : main.getQuestManager().getQuest(questName);
 
 
-                    var playerSelector = (SinglePlayerSelector) commandContext.flags().get("targetPlayer");
-                    var targetPlayer = playerSelector == null ? null : playerSelector.getPlayer();
-                    var npcId = commandContext.flags().get("npc") == null ? null : commandContext.flags().get("npc");
+                    SinglePlayerSelector playerSelector = commandContext.flags().getValue("targetPlayer", null);
+                    var targetPlayer = playerSelector == null ? null : playerSelector.single();
+                    Integer npcId = commandContext.flags().getValue("npc", null);
 
-                    var categoryName = commandContext.flags().get("category") == null ? null : commandContext.flags().get("category");
+                    String categoryName = commandContext.flags().getValue("category", null);
 
                     var guiContext = new GuiContext();
                     guiContext.setPlayer(targetPlayer);
                     guiContext.setQuest(quest);
 
                     if (npcId != null) {
-                        var npc = main.getNPCManager().getOrCreateNQNpc("Citizens", NQNPCID.fromInteger(Integer.parseInt(String.valueOf(npcId))));
+                        var npc = main.getNPCManager().getOrCreateNQNpc("Citizens", NQNPCID.fromInteger(npcId));
                         guiContext.setNqnpc(npc);
                     }
 
                     if (categoryName != null) {
-                        var category = main.getDataManager().getCategory(String.valueOf(categoryName));
+                        var category = main.getDataManager().getCategory(categoryName);
                         guiContext.setCategory(category);
                     }
 

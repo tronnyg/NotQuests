@@ -20,22 +20,9 @@ package rocks.gravili.notquests.paper.managers;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -56,6 +43,16 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.actions.Action;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveHolder;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 
 /**
@@ -1085,10 +1082,6 @@ public class DataManager {
                 true
         ));
 
-        configuration.setIntegrationBetonQuestEnabled(getGeneralConfigBoolean(
-                "integrations.betonquest.enabled",
-                true
-        ));
 
         configuration.setIntegrationWorldEditEnabled(getGeneralConfigBoolean(
                 "integrations.worldedit.enabled",
@@ -1120,11 +1113,6 @@ public class DataManager {
                 true
         ));
 
-        configuration.setIntegrationProjectKorraEnabled(getGeneralConfigBoolean(
-                "integrations.project-korra.enabled",
-                true
-        ));
-
         configuration.setIntegrationEcoBossesEnabled(getGeneralConfigBoolean(
                 "integrations.ecoBosses.enabled",
                 true
@@ -1134,12 +1122,6 @@ public class DataManager {
                 "integrations.ultimatejobs.enabled",
                 true
         ));
-
-        configuration.setIntegrationZNPCsEnabled(getGeneralConfigBoolean(
-            "integrations.zNPCs.enabled",
-            true
-        ));
-
 
         configuration.setIntegrationFloodgateEnabled(getGeneralConfigBoolean(
             "integrations.floodgate.enabled",
@@ -1246,7 +1228,7 @@ public class DataManager {
 
         main.getLogManager().info("Detected version: " + Bukkit.getBukkitVersion() + " <highlight>(Paper)");
 
-        if (!Bukkit.getBukkitVersion().contains("1.21")) {
+        if (!Bukkit.getBukkitVersion().contains("26.")) {
             if (!configuration.isPacketMagicUnsafeDisregardVersion()) {
                 configuration.setPacketMagic(false);
                 main.getLogManager().info("Packet magic has been disabled, because you are using an unsupported bukkit version...");
@@ -1269,7 +1251,6 @@ public class DataManager {
                 "general.update-checker.notify-ops-in-chat",
                 true
         ));
-
 
         configuration.setConversationAllowAnswerNumberInChat(getGeneralConfigBoolean(
             "conversations.interaction-handlers.clickable-text.allow-selecting-option-by-typing-number-in-chat",

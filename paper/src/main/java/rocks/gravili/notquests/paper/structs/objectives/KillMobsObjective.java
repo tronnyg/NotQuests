@@ -18,18 +18,20 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.EntityTypeSelector;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.Map;
+
+import static rocks.gravili.notquests.paper.commands.arguments.EntityTypeParser.entityTypeParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class KillMobsObjective extends Objective {
 
@@ -37,32 +39,21 @@ public class KillMobsObjective extends Objective {
   private String nameTagContainsAny = "";
   private String nameTagEquals = "";
 
-  private String projectKorraAbility = "";
-
   public KillMobsObjective(NotQuests main) {
     super(main);
   }
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
     addObjectiveBuilder =
         addObjectiveBuilder
-            .argument(
-                EntityTypeSelector.of("entityType", main, true),
-                ArgumentDescription.of("Type of Entity the player has to kill."))
-            .argument(
-                NumberVariableValueArgument.newBuilder("amount", main, null),
-                ArgumentDescription.of("Amount of kills needed"))
+            .required("entityType", entityTypeParser(main), Description.of("Type of Entity the player has to kill."))
+            .required("amount", numberVariableParser("amount", null), Description.of("Amount of kills needed"))
             .flag(main.getCommandManager().nametag_equals)
             .flag(main.getCommandManager().nametag_containsany);
-
-    if (main.getIntegrationsManager().isProjectKorraEnabled()) {
-      addObjectiveBuilder =
-          addObjectiveBuilder.flag(main.getCommandManager().withProjectKorraAbilityFlag);
-    }
 
     addObjectiveBuilder =
         addObjectiveBuilder.handler(
@@ -90,33 +81,13 @@ public class KillMobsObjective extends Objective {
               killMobsObjective.setNameTagEquals(nametag_equals);
               killMobsObjective.setNameTagContainsAny(nametag_containsany);
 
-              if (main.getIntegrationsManager().isProjectKorraEnabled()) {
-                final String abilityName =
-                    context
-                        .flags()
-                        .getValue(main.getCommandManager().withProjectKorraAbilityFlag, "");
-                killMobsObjective.setProjectKorraAbility(abilityName);
-              }
-
               main.getObjectiveManager().addObjective(killMobsObjective, context, level);
 
               if (!nametag_equals.isBlank()) {
-                context
-                    .getSender()
-                    .sendMessage(
-                        main.parse(
-                            "<main>With nametag_equals flag: <highlight>"
-                                + nametag_equals
-                                + "</highlight>!"));
+                context.sender().sendMessage(main.parse("<main>With nametag_equals flag: <highlight>" + nametag_equals + "</highlight>!"));
               }
               if (!nametag_containsany.isBlank()) {
-                context
-                    .getSender()
-                    .sendMessage(
-                        main.parse(
-                            "main>With nametag_containsany flag: <highlight>"
-                                + nametag_containsany
-                                + "</highlight>!"));
+                context.sender().sendMessage(main.parse("main>With nametag_containsany flag: <highlight>" + nametag_containsany + "</highlight>!"));
               }
             });
 
@@ -149,10 +120,6 @@ public class KillMobsObjective extends Objective {
     if (!getNameTagEquals().isBlank()) {
       configuration.set(initialPath + ".extras.nameTagEquals", getNameTagEquals());
     }
-
-    if (!projectKorraAbility.isBlank()) {
-      configuration.set(initialPath + ".extras.projectKorraAbility", getProjectKorraAbility());
-    }
   }
 
   @Override
@@ -165,14 +132,6 @@ public class KillMobsObjective extends Objective {
       final ActiveObjective activeObjective,
       final boolean lockedOrCompletedDuringPluginStartupQuestLoadingProcess,
       final boolean completed) {}
-
-  public final String getProjectKorraAbility() {
-    return projectKorraAbility;
-  }
-
-  public void setProjectKorraAbility(final String projectKorraAbility) {
-    this.projectKorraAbility = projectKorraAbility;
-  }
 
   public final String getMobToKill() {
     return mobToKillType;
@@ -210,8 +169,5 @@ public class KillMobsObjective extends Objective {
     if (!nameTagEquals.isBlank()) {
       setNameTagEquals(nameTagEquals);
     }
-
-    setProjectKorraAbility(
-        configuration.getString(initialPath + ".extras.projectKorraAbility", ""));
   }
 }

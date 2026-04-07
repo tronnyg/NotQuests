@@ -17,13 +17,6 @@
  */
 package rocks.gravili.notquests.paper.minimessage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
@@ -34,6 +27,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * A transformation that applies a colour gradient. Source code has been copied from

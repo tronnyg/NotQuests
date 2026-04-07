@@ -19,22 +19,9 @@
 package rocks.gravili.notquests.paper.structs;
 
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
@@ -51,6 +38,12 @@ import rocks.gravili.notquests.paper.structs.objectives.ConditionObjective;
 import rocks.gravili.notquests.paper.structs.objectives.NumberVariableObjective;
 import rocks.gravili.notquests.paper.structs.objectives.OtherQuestObjective;
 import rocks.gravili.notquests.paper.structs.triggers.ActiveTrigger;
+
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * The QuestPlayer Object is initialized for every player, once they join the server - loading its data from the database.

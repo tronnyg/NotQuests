@@ -18,51 +18,49 @@
 
 package rocks.gravili.notquests.paper.structs.triggers.types;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.paper.PaperCommandManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.triggers.Trigger;
 
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+
 public class DisconnectTrigger extends Trigger {
 
-  public DisconnectTrigger(final NotQuests main) {
-    super(main);
-  }
+    public DisconnectTrigger(final NotQuests main) {
+        super(main);
+    }
 
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> addTriggerBuilder) {
-    manager.command(
-        addTriggerBuilder
-            .argument(
-                IntegerArgument.<CommandSender>newBuilder("amount").withMin(1),
-                ArgumentDescription.of("Amount of disconnects needed for the Trigger to trigger."))
-            .flag(main.getCommandManager().applyOn)
-            .flag(main.getCommandManager().triggerWorldString)
-            .meta(
-                CommandMeta.DESCRIPTION, "Triggers when a the Player disconnects from the server.")
-            .handler(
-                (context) -> {
-                  DisconnectTrigger disconnectTrigger = new DisconnectTrigger(main);
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> addTriggerBuilder) {
+        manager.command(addTriggerBuilder
+                .required("amount", integerParser(1), Description.of("Amount of disconnects needed for the Trigger to trigger."))
+                .flag(main.getCommandManager().applyOn)
+                .flag(main.getCommandManager().triggerWorldString)
+                .commandDescription(Description.of("Triggers when a the Player disconnects from the server."))
+                .handler(
+                        (context) -> {
+                            DisconnectTrigger disconnectTrigger = new DisconnectTrigger(main);
 
-                  main.getTriggerManager().addTrigger(disconnectTrigger, context);
-                }));
-  }
+                            main.getTriggerManager().addTrigger(disconnectTrigger, context);
+                        }));
+    }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {}
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+    }
 
-  @Override
-  public String getTriggerDescription() {
-    return null;
-  }
+    @Override
+    public String getTriggerDescription() {
+        return null;
+    }
 
-  @Override
-  public void load(FileConfiguration configuration, String initialPath) {}
+    @Override
+    public void load(FileConfiguration configuration, String initialPath) {
+    }
 }

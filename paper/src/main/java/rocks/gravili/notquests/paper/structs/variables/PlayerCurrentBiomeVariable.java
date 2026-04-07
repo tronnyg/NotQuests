@@ -18,12 +18,15 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.block.Biome;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerCurrentBiomeVariable extends Variable<String> {
   public PlayerCurrentBiomeVariable(NotQuests main) {
@@ -33,13 +36,9 @@ public class PlayerCurrentBiomeVariable extends Variable<String> {
   @Override
   public String getValueInternally(QuestPlayer questPlayer, Object... objects) {
     if (questPlayer != null) {
-      return questPlayer
-          .getPlayer()
-          .getLocation()
-          .getBlock()
-          .getBiome()
-          .name()
-          .toLowerCase(Locale.ROOT);
+      final Biome biome = questPlayer.getPlayer().getLocation().getBlock().getBiome();
+      return RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME)
+          .getKeyOrThrow(biome).getKey();
     } else {
       return null;
     }
@@ -51,10 +50,11 @@ public class PlayerCurrentBiomeVariable extends Variable<String> {
   }
 
   @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    List<String> possibleValues = new ArrayList<>();
-    for (Biome biome : Biome.values()) {
-      possibleValues.add(biome.name().toLowerCase(Locale.ROOT));
+  public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+    List<Suggestion> possibleValues = new ArrayList<>();
+    final var biomeRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME);
+    for (Biome biome : biomeRegistry) {
+      possibleValues.add(Suggestion.suggestion(biomeRegistry.getKeyOrThrow(biome).getKey()));
     }
     return possibleValues;
   }

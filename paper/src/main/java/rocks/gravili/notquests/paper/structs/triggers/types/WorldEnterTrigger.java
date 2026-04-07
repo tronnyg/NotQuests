@@ -18,97 +18,81 @@
 
 package rocks.gravili.notquests.paper.structs.triggers.types;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.triggers.Trigger;
 
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+
 public class WorldEnterTrigger extends Trigger {
 
-  private String worldToEnterName;
+    private String worldToEnterName;
 
-  public WorldEnterTrigger(final NotQuests main) {
-    super(main);
-  }
+    public WorldEnterTrigger(final NotQuests main) {
+        super(main);
+    }
 
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> addTriggerBuilder) {
-    manager.command(
-        addTriggerBuilder
-            .argument(
-                StringArgument.<CommandSender>newBuilder("world to enter")
-                    .withSuggestionsProvider(
-                        (context, lastString) -> {
-                          final List<String> allArgs = context.getRawInput();
-                          main.getUtilManager()
-                              .sendFancyCommandCompletion(
-                                  context.getSender(),
-                                  allArgs.toArray(new String[0]),
-                                  "[World Name / 'ALL']",
-                                  "[Amount of Enters]");
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> addTriggerBuilder) {
+        manager.command(addTriggerBuilder
+                .required("world to enter", stringParser(), Description.of("Name of the world which needs to be entered"), (context, lastString) -> {
+                    main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[World Name / 'ALL']", "[Amount of Enters]");
+                    ArrayList<Suggestion> completions = new ArrayList<>();
+                    completions.add(Suggestion.suggestion("ALL"));
 
-                          ArrayList<String> completions = new ArrayList<>();
+                    for (final World world : Bukkit.getWorlds()) {
+                        completions.add(Suggestion.suggestion(world.getName()));
+                    }
+                    return CompletableFuture.completedFuture(completions);
+                })
+                .required("amount", integerParser(1), Description.of("Amount of times the world needs to be entered."))
+                .flag(main.getCommandManager().applyOn)
+                .flag(main.getCommandManager().triggerWorldString)
+                .commandDescription(Description.of("Triggers when the player enters a specific world."))
+                .handler(
+                        (context) -> {
+                            final String worldToEnterName = context.get("world to enter");
 
-                          completions.add("ALL");
+                            WorldEnterTrigger worldEnterTrigger = new WorldEnterTrigger(main);
+                            worldEnterTrigger.setWorldToEnterName(worldToEnterName);
 
-                          for (final World world : Bukkit.getWorlds()) {
-                            completions.add(world.getName());
-                          }
+                            main.getTriggerManager().addTrigger(worldEnterTrigger, context);
+                        }));
+    }
 
-                          return completions;
-                        })
-                    .single()
-                    .build(),
-                ArgumentDescription.of("Name of the world which needs to be entered"))
-            .argument(
-                IntegerArgument.<CommandSender>newBuilder("amount").withMin(1),
-                ArgumentDescription.of("Amount of times the world needs to be entered."))
-            .flag(main.getCommandManager().applyOn)
-            .flag(main.getCommandManager().triggerWorldString)
-            .meta(CommandMeta.DESCRIPTION, "Triggers when the player enters a specific world.")
-            .handler(
-                (context) -> {
-                  final String worldToEnterName = context.get("world to enter");
+    public final String getWorldToEnterName() {
+        return worldToEnterName;
+    }
 
-                  WorldEnterTrigger worldEnterTrigger = new WorldEnterTrigger(main);
-                  worldEnterTrigger.setWorldToEnterName(worldToEnterName);
+    public void setWorldToEnterName(final String worldToEnterName) {
+        this.worldToEnterName = worldToEnterName;
+    }
 
-                  main.getTriggerManager().addTrigger(worldEnterTrigger, context);
-                }));
-  }
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+        configuration.set(initialPath + ".specifics.worldToEnter", getWorldToEnterName());
+    }
 
-  public final String getWorldToEnterName() {
-    return worldToEnterName;
-  }
+    @Override
+    public String getTriggerDescription() {
+        return "World to enter: <WHITE>" + getWorldToEnterName();
+    }
 
-  public void setWorldToEnterName(final String worldToEnterName) {
-    this.worldToEnterName = worldToEnterName;
-  }
-
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {
-    configuration.set(initialPath + ".specifics.worldToEnter", getWorldToEnterName());
-  }
-
-  @Override
-  public String getTriggerDescription() {
-    return "World to enter: <WHITE>" + getWorldToEnterName();
-  }
-
-  @Override
-  public void load(FileConfiguration configuration, String initialPath) {
-    this.worldToEnterName = configuration.getString(initialPath + ".specifics.worldToEnter", "ALL");
-  }
+    @Override
+    public void load(FileConfiguration configuration, String initialPath) {
+        this.worldToEnterName = configuration.getString(initialPath + ".specifics.worldToEnter", "ALL");
+    }
 }

@@ -18,12 +18,14 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import cloud.commandframework.ArgumentDescription;
-import java.util.HashMap;
-import java.util.List;
 import org.bukkit.inventory.ItemStack;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class InventoryVariable extends Variable<ItemStack[]> {
   public InventoryVariable(NotQuests main) {
@@ -34,7 +36,7 @@ public class InventoryVariable extends Variable<ItemStack[]> {
             .getPaperCommandManager()
             .flagBuilder("skipItemIfInventoryFull")
             .withDescription(
-                ArgumentDescription.of("Does not drop the item if inventory full if flag set"))
+                    Description.of("Does not drop the item if inventory full if flag set"))
             .build());
   }
 
@@ -67,7 +69,7 @@ public class InventoryVariable extends Variable<ItemStack[]> {
   }
 
   @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+  public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
     return null;
   }
 

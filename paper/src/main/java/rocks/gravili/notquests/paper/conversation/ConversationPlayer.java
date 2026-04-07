@@ -18,7 +18,6 @@
 
 package rocks.gravili.notquests.paper.conversation;
 
-import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,6 +28,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.actions.Action;
 import rocks.gravili.notquests.paper.structs.conditions.Condition;
 import rocks.gravili.notquests.paper.structs.conditions.Condition.ConditionResult;
+
+import java.util.ArrayList;
 
 public class ConversationPlayer {
   private final NotQuests main;

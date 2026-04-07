@@ -10,7 +10,6 @@ import rocks.gravili.notquests.paper.gui.icon.Button;
 import rocks.gravili.notquests.paper.gui.icon.Icon;
 import rocks.gravili.notquests.paper.gui.typeserializer.IconTypeSerializer;
 import rocks.gravili.notquests.paper.gui.typeserializer.ItemTypeSerializer;
-import xyz.xenondevs.inventoryaccess.component.AdventureComponentWrapper;
 import xyz.xenondevs.invui.window.Window;
 
 import java.nio.file.Path;
@@ -36,12 +35,13 @@ public class GuiService {
             notQuests.getLogManager().info("Failed showing gui '" + guiName + "' to player " + player.getName());
             return;
         }
-        var title = new AdventureComponentWrapper(notQuests.getLanguageManager().getComponent(customGui.getPathToTitle(), player, guiContext.getAsObjectArray()));
-        var window = Window.single()
+        var title = notQuests.getLanguageManager().getComponent(customGui.getPathToTitle(), player, guiContext.getAsObjectArray());
+        Window.builder()
                 .setViewer(player)
                 .setTitle(title)
-                .setGui(customGui.buildGui(notQuests, guiContext)).build();
-         window.open();
+                .setUpperGui(customGui.buildGui(notQuests, guiContext))
+                .build()
+                .open();
     }
 
     public void saveAllDefaultGuis() {
@@ -56,7 +56,10 @@ public class GuiService {
     }
 
     public void saveDefaultGui(String guiName) {
-        notQuests.getMain().saveResource("guis/" + guiName + ".yml", false);
+        var file = new java.io.File(notQuests.getMain().getDataFolder(), "guis/" + guiName + ".yml");
+        if (!file.exists()) {
+            notQuests.getMain().saveResource("guis/" + guiName + ".yml", false);
+        }
     }
 
     public void loadAllGuis() {

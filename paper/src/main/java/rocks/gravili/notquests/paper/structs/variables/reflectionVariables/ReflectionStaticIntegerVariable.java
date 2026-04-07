@@ -18,110 +18,88 @@
 
 package rocks.gravili.notquests.paper.structs.variables.reflectionVariables;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import org.bukkit.command.CommandSender;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.variables.Variable;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 public class ReflectionStaticIntegerVariable extends Variable<Integer> {
-  public ReflectionStaticIntegerVariable(NotQuests main) {
-    super(main);
-    setCanSetValue(true);
+    public ReflectionStaticIntegerVariable(NotQuests main) {
+        super(main);
+        setCanSetValue(true);
 
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("Class Path")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Class Path]",
-                          "[...]");
+        addRequiredString(StringVariableValueParser.of("Class Path", null, (context, lastString) -> {
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Item Slot ID / Equipment Slot Name]", "[...]");
+            ArrayList<Suggestion> suggestions = new ArrayList<>();
+            suggestions.add(Suggestion.suggestion("<Enter class path>"));
+            return CompletableFuture.completedFuture(suggestions);
+        }));
 
-                  ArrayList<String> suggestions = new ArrayList<>();
-                  suggestions.add("<Enter class path>");
-                  return suggestions;
-                })
-            .single()
-            .build());
-
-    addRequiredString(
-        StringArgument.<CommandSender>newBuilder("Field")
-            .withSuggestionsProvider(
-                (context, lastString) -> {
-                  final List<String> allArgs = context.getRawInput();
-                  main.getUtilManager()
-                      .sendFancyCommandCompletion(
-                          context.getSender(),
-                          allArgs.toArray(new String[0]),
-                          "[Field name]",
-                          "[...]");
-
-                  ArrayList<String> suggestions = new ArrayList<>();
-                  suggestions.add("<Enter field name>");
-                  return suggestions;
-                })
-            .single()
-            .build());
-  }
-
-  @Override
-  public Integer getValueInternally(QuestPlayer questPlayer, Object... objects) {
-    final String classPath = getRequiredStringValue("Class Path");
-    final String fieldName = getRequiredStringValue("Field Name");
-
-    try{
-      Class<?> foundClass = Class.forName(classPath);
-
-      Field field = foundClass.getDeclaredField(fieldName);
-      field.setAccessible(true);
-
-      return field.getInt(null);
-    }catch (Exception e){
-      main.getLogManager().warn("Reflection in ReflectionStaticIntegerVariable failed. Error: " + e.getMessage());
+        addRequiredString(StringVariableValueParser.of("Field", null, (context, lastString) -> {
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Item Slot ID / Equipment Slot Name]", "[...]");
+            ArrayList<Suggestion> suggestions = new ArrayList<>();
+            suggestions.add(Suggestion.suggestion("<Enter field name>"));
+            return CompletableFuture.completedFuture(suggestions);
+        }));
     }
 
+    @Override
+    public Integer getValueInternally(QuestPlayer questPlayer, Object... objects) {
+        final String classPath = getRequiredStringValue("Class Path");
+        final String fieldName = getRequiredStringValue("Field Name");
 
-    return 0;
-  }
+        try {
+            Class<?> foundClass = Class.forName(classPath);
 
-  @Override
-  public boolean setValueInternally(Integer newValue, QuestPlayer questPlayer, Object... objects) {
-    final String classPath = getRequiredStringValue("Class Path");
-    final String fieldName = getRequiredStringValue("Field Name");
+            Field field = foundClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
 
-    try{
-      Class<?> foundClass = Class.forName(classPath);
+            return field.getInt(null);
+        } catch (Exception e) {
+            main.getLogManager().warn("Reflection in ReflectionStaticIntegerVariable failed. Error: " + e.getMessage());
+        }
 
-      Field field = foundClass.getDeclaredField(fieldName);
-      field.setAccessible(true);
 
-      field.setInt(null, newValue);
-      return true;
-    }catch (Exception e){
-      main.getLogManager().warn("Reflection in ReflectionStaticIntegerVariable failed. Error: " + e.getMessage());
+        return 0;
     }
-    return false;
-  }
 
-  @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
-    return null;
-  }
+    @Override
+    public boolean setValueInternally(Integer newValue, QuestPlayer questPlayer, Object... objects) {
+        final String classPath = getRequiredStringValue("Class Path");
+        final String fieldName = getRequiredStringValue("Field Name");
 
-  @Override
-  public String getPlural() {
-    return "Integer from static reflection";
-  }
+        try {
+            Class<?> foundClass = Class.forName(classPath);
 
-  @Override
-  public String getSingular() {
-    return "Integer from static reflection";
-  }
+            Field field = foundClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+
+            field.setInt(null, newValue);
+            return true;
+        } catch (Exception e) {
+            main.getLogManager().warn("Reflection in ReflectionStaticIntegerVariable failed. Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+        return null;
+    }
+
+    @Override
+    public String getPlural() {
+        return "Integer from static reflection";
+    }
+
+    @Override
+    public String getSingular() {
+        return "Integer from static reflection";
+    }
 }

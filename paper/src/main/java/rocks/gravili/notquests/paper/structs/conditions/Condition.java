@@ -18,12 +18,6 @@
 
 package rocks.gravili.notquests.paper.structs.conditions;
 
-import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import javax.annotation.Nullable;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,6 +27,9 @@ import rocks.gravili.notquests.paper.managers.expressions.NumberExpression;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 import rocks.gravili.notquests.paper.structs.objectives.ObjectiveHolder;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 public abstract class Condition {
   protected final NotQuests main;

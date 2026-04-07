@@ -18,92 +18,86 @@
 
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.MiniMessageSelector;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
 
 public class BroadcastMessageAction extends Action {
 
-  private String messageToBroadcast = "";
+    private String messageToBroadcast = "";
 
-  public BroadcastMessageAction(final NotQuests main) {
-    super(main);
-  }
-
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> builder,
-      ActionFor actionFor) {
-    manager.command(
-        builder
-            .argument(
-                MiniMessageSelector.<CommandSender>newBuilder("Broadcast Message", main)
-                    .withPlaceholders()
-                    .build(),
-                ArgumentDescription.of("Message to broadcast"))
-            .handler(
-                (context) -> {
-                  final String messageToBroadcast =
-                      String.join(" ", (String[]) context.get("Broadcast Message"));
-
-                  BroadcastMessageAction broadcastMessageAction = new BroadcastMessageAction(main);
-                  broadcastMessageAction.setMessageToBroadcast(messageToBroadcast);
-
-                  main.getActionManager().addAction(broadcastMessageAction, context, actionFor);
-                }));
-  }
-
-  public final String getMessageToBroadcast() {
-    return messageToBroadcast;
-  }
-
-  public void setMessageToBroadcast(final String messageToBroadcast) {
-    this.messageToBroadcast = messageToBroadcast;
-  }
-
-  @Override
-  public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
-    if (getMessageToBroadcast().isBlank()) {
-      main.getLogManager().warn("Tried to execute SendMessage action with empty message.");
-      return;
+    public BroadcastMessageAction(final NotQuests main) {
+        super(main);
     }
 
-    Bukkit.broadcast(
-        main.parse(
-            main.getUtilManager()
-                .applyPlaceholders(
-                    getMessageToBroadcast(),
-                    questPlayer.getPlayer(),
-                    questPlayer,
-                    getObjectiveHolder(),
-                    objects)));
-  }
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> builder,
+            ActionFor actionFor) {
+        manager.command(
+                builder
+                        .required("Broadcast Message", greedyStringParser(), Description.of("Message to broadcast"), main.getCommandManager().miniMessageSuggestions())
+                        .handler((context) -> {
+                            final String messageToBroadcast = (String) context.get("Broadcast Message");
+                            BroadcastMessageAction broadcastMessageAction = new BroadcastMessageAction(main);
+                            broadcastMessageAction.setMessageToBroadcast(messageToBroadcast);
+                            main.getActionManager().addAction(broadcastMessageAction, context, actionFor);
+                        }));
+    }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {
-    configuration.set(initialPath + ".specifics.message", getMessageToBroadcast());
-  }
+    public final String getMessageToBroadcast() {
+        return messageToBroadcast;
+    }
 
-  @Override
-  public void load(final FileConfiguration configuration, String initialPath) {
-    this.messageToBroadcast = configuration.getString(initialPath + ".specifics.message", "");
-  }
+    public void setMessageToBroadcast(final String messageToBroadcast) {
+        this.messageToBroadcast = messageToBroadcast;
+    }
 
-  @Override
-  public void deserializeFromSingleLineString(ArrayList<String> arguments) {
-    this.messageToBroadcast = String.join(" ", arguments);
-  }
+    @Override
+    public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
+        if (getMessageToBroadcast().isBlank()) {
+            main.getLogManager().warn("Tried to execute SendMessage action with empty message.");
+            return;
+        }
 
-  @Override
-  public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
-    return "Broadcasts Message: " + getMessageToBroadcast();
-  }
+        Bukkit.broadcast(
+                main.parse(
+                        main.getUtilManager()
+                                .applyPlaceholders(
+                                        getMessageToBroadcast(),
+                                        questPlayer.getPlayer(),
+                                        questPlayer,
+                                        getObjectiveHolder(),
+                                        objects)));
+    }
+
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+        configuration.set(initialPath + ".specifics.message", getMessageToBroadcast());
+    }
+
+    @Override
+    public void load(final FileConfiguration configuration, String initialPath) {
+        this.messageToBroadcast = configuration.getString(initialPath + ".specifics.message", "");
+    }
+
+    @Override
+    public void deserializeFromSingleLineString(ArrayList<String> arguments) {
+        this.messageToBroadcast = String.join(" ", arguments);
+    }
+
+    @Override
+    public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
+        return "Broadcasts Message: " + getMessageToBroadcast();
+    }
 }

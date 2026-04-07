@@ -18,15 +18,17 @@
 
 package rocks.gravili.notquests.paper.structs.conditions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.ConditionSelector;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+
+import static rocks.gravili.notquests.paper.commands.arguments.ConditionParser.conditionParser;
 
 public class ConditionCondition extends Condition {
 
@@ -38,21 +40,15 @@ public class ConditionCondition extends Condition {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> builder,
       ConditionFor conditionFor) {
-    manager.command(
-        builder
-            .argument(
-                ConditionSelector.of("Condition", main),
-                ArgumentDescription.of("Name of the condition which will be checked"))
+    manager.command(builder.required("Condition", conditionParser(main), Description.of("Name of the condition which will be checked"))
             .handler(
                 (context) -> {
                   final Condition condition = context.get("Condition");
-
                   ConditionCondition conditionCondition = new ConditionCondition(main);
                   conditionCondition.setCondition(condition);
-
                   main.getConditionsManager().addCondition(conditionCondition, context, conditionFor);
                 }));
   }

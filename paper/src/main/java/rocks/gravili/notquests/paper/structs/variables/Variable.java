@@ -18,37 +18,34 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import cloud.commandframework.arguments.flags.CommandFlag;
-import cloud.commandframework.arguments.standard.StringArgument;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
+import org.incendo.cloud.parser.flag.CommandFlag;
+import org.incendo.cloud.suggestion.Suggestion;
+import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.BooleanVariableValueParser;
+import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
+import rocks.gravili.notquests.paper.managers.expressions.NumberExpression;
+import rocks.gravili.notquests.paper.structs.ActiveObjective;
+import rocks.gravili.notquests.paper.structs.ActiveQuest;
+import rocks.gravili.notquests.paper.structs.QuestPlayer;
+import rocks.gravili.notquests.paper.structs.conditions.*;
+import rocks.gravili.notquests.paper.structs.objectives.ConditionObjective;
+import rocks.gravili.notquests.paper.structs.objectives.NumberVariableObjective;
+
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.inventory.ItemStack;
-import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.variables.BooleanVariableValueArgument;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
-import rocks.gravili.notquests.paper.managers.expressions.NumberExpression;
-import rocks.gravili.notquests.paper.structs.ActiveObjective;
-import rocks.gravili.notquests.paper.structs.ActiveQuest;
-import rocks.gravili.notquests.paper.structs.QuestPlayer;
-import rocks.gravili.notquests.paper.structs.conditions.BooleanCondition;
-import rocks.gravili.notquests.paper.structs.conditions.Condition;
-import rocks.gravili.notquests.paper.structs.conditions.ListCondition;
-import rocks.gravili.notquests.paper.structs.conditions.NumberCondition;
-import rocks.gravili.notquests.paper.structs.conditions.StringCondition;
-import rocks.gravili.notquests.paper.structs.objectives.ConditionObjective;
-import rocks.gravili.notquests.paper.structs.objectives.NumberVariableObjective;
-
 public abstract class Variable<T> {
     protected final NotQuests main;
-    private final ArrayList<StringArgument<CommandSender>> requiredStrings;
-    private final ArrayList<NumberVariableValueArgument<CommandSender>> requiredNumbers;
-    private final ArrayList<BooleanVariableValueArgument<CommandSender>> requiredBooleans;
-    private final ArrayList<CommandFlag<Void>> requiredBooleanFlags;
+    private final ArrayList<StringVariableValueParser<CommandSender>> requiredStrings;
+    private final ArrayList<NumberVariableValueParser<CommandSender>> requiredNumbers;
+    private final ArrayList<BooleanVariableValueParser<CommandSender>> requiredBooleans;
+    private final ArrayList<org.incendo.cloud.parser.flag.CommandFlag<Void>> requiredBooleanFlags;
 
     private final ArrayList<String> setOnlyRequiredValues = new ArrayList<>(); //TODO: Implement
     private final ArrayList<String> getOnlyRequiredValues = new ArrayList<>(); //TODO: Implement
@@ -70,11 +67,7 @@ public abstract class Variable<T> {
         additionalBooleanArguments = new HashMap<>();
 
 
-        Class<T> typeOf = (Class<T>)
-                ((ParameterizedType)getClass()
-                        .getGenericSuperclass())
-                        .getActualTypeArguments()[0];
-
+        Class<T> typeOf = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         if(typeOf == String.class || typeOf == Character.class){
             variableDataType = VariableDataType.STRING;
         }else if(typeOf == Boolean.class){
@@ -103,16 +96,8 @@ public abstract class Variable<T> {
         return additionalStringArguments;
     }
 
-    public void setAdditionalStringArguments(final HashMap<String, String> additionalStringArguments) {
-        this.additionalStringArguments = additionalStringArguments;
-    }
-
     public final HashMap<String, NumberExpression> getAdditionalBooleanArguments() {
         return additionalBooleanArguments;
-    }
-
-    public void setAdditionalBooleanArguments(HashMap<String, NumberExpression> additionalBooleanArguments) {
-        this.additionalBooleanArguments = additionalBooleanArguments;
     }
 
     public void addSetOnlyRequiredValue(final String value) {
@@ -135,31 +120,31 @@ public abstract class Variable<T> {
         this.canSetValue = canSetValue;
     }
 
-    protected void addRequiredString(final StringArgument<CommandSender> stringArgument){
+    protected void addRequiredString(final StringVariableValueParser<CommandSender> stringArgument) {
         requiredStrings.add(stringArgument);
     }
 
-    protected void addRequiredNumber(final NumberVariableValueArgument<CommandSender> numberVariableValueArgument){
+    protected void addRequiredNumber(final NumberVariableValueParser<CommandSender> numberVariableValueArgument){
         requiredNumbers.add(numberVariableValueArgument);
     }
 
-    protected void addRequiredBoolean(final BooleanVariableValueArgument<CommandSender> booleanArgument){
+    protected void addRequiredBoolean(final BooleanVariableValueParser<CommandSender> booleanArgument){
         requiredBooleans.add(booleanArgument);
     }
 
-    protected void addRequiredBooleanFlag(final CommandFlag<Void> commandFlag){
+    protected void addRequiredBooleanFlag(final org.incendo.cloud.parser.flag.CommandFlag<Void> commandFlag){
         requiredBooleanFlags.add(commandFlag);
     }
 
-    public final ArrayList<StringArgument<CommandSender>> getRequiredStrings(){
+    public final ArrayList<StringVariableValueParser<CommandSender>> getRequiredStrings(){
         return requiredStrings;
     }
 
-    public final ArrayList<NumberVariableValueArgument<CommandSender>> getRequiredNumbers(){
+    public final ArrayList<NumberVariableValueParser<CommandSender>> getRequiredNumbers(){
         return requiredNumbers;
     }
 
-    public final ArrayList<BooleanVariableValueArgument<CommandSender>> getRequiredBooleans(){
+    public final ArrayList<BooleanVariableValueParser<CommandSender>> getRequiredBooleans(){
         return requiredBooleans;
     }
 
@@ -169,10 +154,6 @@ public abstract class Variable<T> {
 
     public final HashMap<String, NumberExpression> getAdditionalNumberArguments() {
         return additionalNumberArguments;
-    }
-
-    public void setAdditionalNumberArguments(final HashMap<String, NumberExpression> additionalNumberArguments) {
-        this.additionalNumberArguments = additionalNumberArguments;
     }
 
     protected final String getRequiredStringValue(final String key) {
@@ -268,7 +249,7 @@ public abstract class Variable<T> {
 
     public abstract boolean setValueInternally(final T newValue, final QuestPlayer questPlayer, final Object... objects);
 
-    public abstract List<String> getPossibleValues(final QuestPlayer questPlayer, final Object... objects);
+    public abstract List<Suggestion> getPossibleValues(final QuestPlayer questPlayer, final Object... objects);
 
     public final String getVariableType() {
         return main.getVariablesManager().getVariableType(this.getClass());
@@ -301,6 +282,18 @@ public abstract class Variable<T> {
 
     public void addAdditionalStringArgument(final String key, final String value) {
         additionalStringArguments.put(key, value);
+    }
+
+    public void setAdditionalStringArguments(final HashMap<String, String> additionalStringArguments) {
+        this.additionalStringArguments = additionalStringArguments;
+    }
+
+    public void setAdditionalNumberArguments(final HashMap<String, NumberExpression> additionalNumberArguments) {
+        this.additionalNumberArguments = additionalNumberArguments;
+    }
+
+    public void setAdditionalBooleanArguments(final HashMap<String, NumberExpression> additionalBooleanArguments) {
+        this.additionalBooleanArguments = additionalBooleanArguments;
     }
 
 }

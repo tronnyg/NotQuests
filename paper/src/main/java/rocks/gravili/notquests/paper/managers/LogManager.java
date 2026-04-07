@@ -18,14 +18,15 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import rocks.gravili.notquests.common.managers.LogCategory;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class LogManager {
   private final NotQuests main;

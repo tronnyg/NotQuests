@@ -1,9 +1,10 @@
 package rocks.gravili.notquests.paper.structs;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PredefinedProgressOrder {
   private final boolean firstToLast;

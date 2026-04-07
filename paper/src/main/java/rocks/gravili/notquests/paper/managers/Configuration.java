@@ -18,9 +18,10 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.util.List;
 import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 /**
  * This is the Configuration Class which contains the settings which can be configured in the
@@ -118,33 +119,20 @@ public class Configuration {
   private boolean integrationPlaceholderAPIEnabled = true;
   private boolean integrationMythicMobsEnabled = true;
   private boolean integrationEliteMobsEnabled = true;
-  private boolean integrationBetonQuestEnabled = true;
   private boolean integrationWorldEditEnabled = true;
   private boolean integrationSlimeFunEnabled = true;
   private boolean integrationLuckPermsEnabled = true;
   private boolean integrationUltimateClansEnabled = true;
   private boolean integrationTownyEnabled = true;
   private boolean integrationJobsRebornEnabled = true;
-  private boolean integrationProjectKorraEnabled = true;
   private boolean integrationEcoBossesEnabled = true;
   private boolean integrationUltimateJobsEnabled = true;
 
-  private boolean integrationZNPCsEnabled = true;
 
 
   private boolean objectiveUnlockConditionsCheckOnAnyAction = true;
 
   private int objectiveUnlockConditionsCheckRegularInterval = -1;
-
-
-  public boolean isIntegrationZNPCsEnabled() {
-    return integrationZNPCsEnabled;
-  }
-
-  public void setIntegrationZNPCsEnabled(boolean integrationZNPCsEnabled) {
-    this.integrationZNPCsEnabled = integrationZNPCsEnabled;
-  }
-
 
   public boolean isIntegrationFloodgateEnabled() {
     return integrationFloodgateEnabled;
@@ -759,14 +747,6 @@ public class Configuration {
     this.integrationEliteMobsEnabled = integrationEliteMobsEnabled;
   }
 
-  public boolean isIntegrationBetonQuestEnabled() {
-    return integrationBetonQuestEnabled;
-  }
-
-  public void setIntegrationBetonQuestEnabled(boolean integrationBetonQuestEnabled) {
-    this.integrationBetonQuestEnabled = integrationBetonQuestEnabled;
-  }
-
   public boolean isIntegrationWorldEditEnabled() {
     return integrationWorldEditEnabled;
   }
@@ -813,14 +793,6 @@ public class Configuration {
 
   public void setIntegrationJobsRebornEnabled(boolean integrationJobsRebornEnabled) {
     this.integrationJobsRebornEnabled = integrationJobsRebornEnabled;
-  }
-
-  public boolean isIntegrationProjectKorraEnabled() {
-    return integrationProjectKorraEnabled;
-  }
-
-  public void setIntegrationProjectKorraEnabled(boolean integrationProjectKorraEnabled) {
-    this.integrationProjectKorraEnabled = integrationProjectKorraEnabled;
   }
 
   public boolean isIntegrationEcoBossesEnabled() {

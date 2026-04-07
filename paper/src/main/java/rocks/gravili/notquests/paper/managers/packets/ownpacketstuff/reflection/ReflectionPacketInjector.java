@@ -19,9 +19,10 @@
 package rocks.gravili.notquests.paper.managers.packets.ownpacketstuff.reflection;
 
 import io.netty.channel.Channel;
-import java.lang.reflect.Field;
 import org.bukkit.entity.Player;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.lang.reflect.Field;
 
 public class ReflectionPacketInjector {
   private final NotQuests main;

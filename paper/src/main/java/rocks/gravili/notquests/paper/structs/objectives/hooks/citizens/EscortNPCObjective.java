@@ -18,15 +18,6 @@
 
 package rocks.gravili.notquests.paper.structs.objectives.hooks.citizens;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.flags.CommandFlag;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.bukkit.parsers.location.LocationArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -34,208 +25,188 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.component.TypedCommandComponent;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.parser.flag.CommandFlag;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static org.incendo.cloud.bukkit.parser.location.LocationParser.locationParser;
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+
 public class EscortNPCObjective extends Objective { //TODO: Add support for other NPC systems
 
-  private int npcToEscortID = -1;
-  private int npcToEscortToID = -1;
-  private Location spawnLocation = null;
+    private int npcToEscortID = -1;
+    private int npcToEscortToID = -1;
+    private Location spawnLocation = null;
 
-  public EscortNPCObjective(NotQuests main) {
-    super(main);
-  }
-
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> addObjectiveBuilder,
-      final int level) {
-    if (!main.getIntegrationsManager().isCitizensEnabled()) {
-      return;
+    public EscortNPCObjective(NotQuests main) {
+        super(main);
     }
 
-    CommandFlag<Location> spawnLocationCommandFlag =
-        CommandFlag.newBuilder("spawnLocation")
-            .withArgument(LocationArgument.of("spawnLocation"))
-            .withDescription(ArgumentDescription.of("Spawn Location"))
-            .build();
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> addObjectiveBuilder,
+            final int level) {
+        if (!main.getIntegrationsManager().isCitizensEnabled()) {
+            return;
+        }
 
-    manager.command(
-        addObjectiveBuilder
-            .argument(
-                IntegerArgument.<CommandSender>newBuilder("NPC to escort")
-                    .withSuggestionsProvider(
-                        (context, lastString) -> {
-                          final ArrayList<String> completions = new ArrayList<>();
-                          for (final int npcID : main.getIntegrationsManager().getCitizensManager().getAllNPCIDs()) {
-                            completions.add("" + npcID);
-                          }
-                          final List<String> allArgs = context.getRawInput();
-                          main.getUtilManager()
-                              .sendFancyCommandCompletion(
-                                  context.getSender(),
-                                  allArgs.toArray(new String[0]),
-                                  "[NPC to escort ID]",
-                                  "[Destination NPC ID]");
+        CommandFlag<Location> spawnLocationCommandFlag = CommandFlag.builder("spawnLocation")
+                .withComponent(TypedCommandComponent.builder("spawnLocation", locationParser()))
+                .withDescription(Description.of("Spawn Location"))
+                .build();
 
-                          return completions;
-                        })
-                    .build(),
-                ArgumentDescription.of("ID of the Citizens NPC the player has to escort."))
-            .argument(
-                IntegerArgument.<CommandSender>newBuilder("Destination NPC")
-                    .withSuggestionsProvider(
-                        (context, lastString) -> {
-                          final ArrayList<String> completions = new ArrayList<>();
-                          try {
-                            int npcToEscortID = context.get("NPC to escort");
+        manager.command(addObjectiveBuilder
+                        .required("NPC to escort", integerParser(), Description.of("ID of the Citizens NPC the player has to escort."), (context, lastString) -> {
+                            final ArrayList<Suggestion> completions = new ArrayList<>();
                             for (final int npcID : main.getIntegrationsManager().getCitizensManager().getAllNPCIDs()) {
-                              if (npcID != npcToEscortID) {
-                                completions.add("" + npcID);
-                              }
+                                completions.add(Suggestion.suggestion("" + npcID));
                             }
-                          } catch (Exception ignored) {
-
-                          }
-
-                          final List<String> allArgs = context.getRawInput();
-                          main.getUtilManager()
-                              .sendFancyCommandCompletion(
-                                  context.getSender(),
-                                  allArgs.toArray(new String[0]),
-                                  "[Destination NPC ID]",
-                                  "");
-
-                          return completions;
+                            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[NPC to escort ID]", "[Destination NPC ID]");
+                            return CompletableFuture.completedFuture(completions);
                         })
-                    .build(),
-                ArgumentDescription.of(
-                    "ID of the destination Citizens NPC where the player has to escort the NPC to escort to."))
-            .flag(spawnLocationCommandFlag)
-            .handler(
-                (context) -> {
-                  final int toEscortNPCID = context.get("NPC to escort");
-                  final int destinationNPCID = context.get("Destination NPC");
+                        .required("Destination NPC", integerParser(), Description.of("ID of the destination Citizens NPC where the player has to escort the NPC to escort to."), (context, lastString) -> {
+                            final ArrayList<Suggestion> completions = new ArrayList<>();
+                            try {
+                                int npcToEscortID = context.get("NPC to escort");
+                                for (final int npcID : main.getIntegrationsManager().getCitizensManager().getAllNPCIDs()) {
+                                    if (npcID != npcToEscortID) {
+                                        completions.add(Suggestion.suggestion(String.valueOf(npcID)));
+                                    }
+                                }
+                            } catch (Exception ignored) {
 
-                  final Location spawnLocation =
-                      context.flags().getValue(spawnLocationCommandFlag, null);
+                            }
+                            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Destination NPC ID]", "");
+                            return CompletableFuture.completedFuture(completions);
+                        })
+                        .flag(spawnLocationCommandFlag)
+                        .handler((context) -> {
+                                    final int toEscortNPCID = context.get("NPC to escort");
+                                    final int destinationNPCID = context.get("Destination NPC");
 
-                  if (toEscortNPCID == destinationNPCID) {
-                    context
-                        .getSender()
-                        .sendMessage(
-                            main.parse(
-                                "<error>Error: Um... an NPC cannot themselves himself, to.. themselves?"));
-                    return;
-                  }
+                                    final Location spawnLocation =
+                                            context.flags().getValue(spawnLocationCommandFlag, null);
 
-                  final EscortNPCObjective escortNPCObjective = new EscortNPCObjective(main);
+                                    if (toEscortNPCID == destinationNPCID) {
+                                        context.sender().sendMessage(main.parse("<error>Error: Um... an NPC cannot themselves himself, to.. themselves?"));
+                                        return;
+                                    }
 
-                  escortNPCObjective.setSpawnLocation(spawnLocation);
+                                    final EscortNPCObjective escortNPCObjective = new EscortNPCObjective(main);
 
-                  escortNPCObjective.setNpcToEscortID(toEscortNPCID);
-                  escortNPCObjective.setNpcToEscortToID(destinationNPCID);
+                                    escortNPCObjective.setSpawnLocation(spawnLocation);
 
-                  main.getObjectiveManager().addObjective(escortNPCObjective, context, level);
-                }));
-  }
-
-  public final Location getSpawnLocation() {
-    return spawnLocation;
-  }
-
-  public void setSpawnLocation(final Location spawnLocation) {
-    this.spawnLocation = spawnLocation;
-  }
-
-  @Override
-  public String getTaskDescriptionInternal(
-      final QuestPlayer questPlayer, final @Nullable ActiveObjective activeObjective) {
-    String toReturn = "";
-    if (main.getIntegrationsManager().isCitizensEnabled()) {
-      final NPC npc = CitizensAPI.getNPCRegistry().getById(getNpcToEscortID());
-      final NPC npcDestination = CitizensAPI.getNPCRegistry().getById(getNpcToEscortToID());
-
-      if (npc != null && npcDestination != null) {
-        final String mmNpcName =
-            main.getMiniMessage()
-                .serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(npc.getName().replace("§","&")));
-        final String mmNpcDestinationName =
-            main.getMiniMessage()
-                .serialize(
-                    LegacyComponentSerializer.legacyAmpersand()
-                        .deserialize(npcDestination.getName()));
-
-        toReturn =
-            main.getLanguageManager()
-                .getString(
-                    "chat.objectives.taskDescription.escortNPC.base",
-                    questPlayer,
-                    activeObjective,
-                    Map.of(
-                        "%NPCNAME%", mmNpcName,
-                        "%DESTINATIONNPCNAME%", mmNpcDestinationName));
-      } else {
-        toReturn = "    <GRAY>The target or destination NPC is currently not available!";
-      }
-    } else {
-      toReturn += "    <RED>Error: Citizens plugin not installed. Contact an admin.";
+                                    escortNPCObjective.setNpcToEscortID(toEscortNPCID);
+                                    escortNPCObjective.setNpcToEscortToID(destinationNPCID);
+                                    main.getObjectiveManager().addObjective(escortNPCObjective, context, level);
+                                }));
     }
-    return toReturn;
-  }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {
-    configuration.set(initialPath + ".specifics.NPCToEscortID", getNpcToEscortID());
-    configuration.set(initialPath + ".specifics.destinationNPCID", getNpcToEscortToID());
-    if (getSpawnLocation() != null) {
-      configuration.set(initialPath + ".specifics.spawnLocation", getSpawnLocation());
+    public final Location getSpawnLocation() {
+        return spawnLocation;
     }
-  }
 
-  @Override
-  public void load(FileConfiguration configuration, String initialPath) {
-    npcToEscortID = configuration.getInt(initialPath + ".specifics.NPCToEscortID");
-    npcToEscortToID = configuration.getInt(initialPath + ".specifics.destinationNPCID");
-    setSpawnLocation(configuration.getLocation(initialPath + ".specifics.spawnLocation", null));
-  }
-
-  @Override
-  public void onObjectiveUnlock(
-      final ActiveObjective activeObjective,
-      final boolean unlockedDuringPluginStartupQuestLoadingProcess) {
-    if (main.getIntegrationsManager().isCitizensEnabled()) {
-      main.getIntegrationsManager()
-          .getCitizensManager()
-          .handleEscortNPCObjectiveForActiveObjective(this, activeObjective.getActiveObjectiveHolder());
+    public void setSpawnLocation(final Location spawnLocation) {
+        this.spawnLocation = spawnLocation;
     }
-  }
 
-  @Override
-  public void onObjectiveCompleteOrLock(
-      final ActiveObjective activeObjective,
-      final boolean lockedOrCompletedDuringPluginStartupQuestLoadingProcess,
-      final boolean completed) {}
+    @Override
+    public String getTaskDescriptionInternal(
+            final QuestPlayer questPlayer, final @Nullable ActiveObjective activeObjective) {
+        String toReturn = "";
+        if (main.getIntegrationsManager().isCitizensEnabled()) {
+            final NPC npc = CitizensAPI.getNPCRegistry().getById(getNpcToEscortID());
+            final NPC npcDestination = CitizensAPI.getNPCRegistry().getById(getNpcToEscortToID());
 
-  public final int getNpcToEscortID() {
-    return npcToEscortID;
-  }
+            if (npc != null && npcDestination != null) {
+                final String mmNpcName =
+                        main.getMiniMessage()
+                                .serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(npc.getName().replace("§", "&")));
+                final String mmNpcDestinationName =
+                        main.getMiniMessage()
+                                .serialize(
+                                        LegacyComponentSerializer.legacyAmpersand()
+                                                .deserialize(npcDestination.getName()));
 
-  public void setNpcToEscortID(final int npcToEscortID) {
-    this.npcToEscortID = npcToEscortID;
-  }
+                toReturn =
+                        main.getLanguageManager()
+                                .getString(
+                                        "chat.objectives.taskDescription.escortNPC.base",
+                                        questPlayer,
+                                        activeObjective,
+                                        Map.of(
+                                                "%NPCNAME%", mmNpcName,
+                                                "%DESTINATIONNPCNAME%", mmNpcDestinationName));
+            } else {
+                toReturn = "    <GRAY>The target or destination NPC is currently not available!";
+            }
+        } else {
+            toReturn += "    <RED>Error: Citizens plugin not installed. Contact an admin.";
+        }
+        return toReturn;
+    }
 
-  public final int getNpcToEscortToID() {
-    return npcToEscortToID;
-  }
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+        configuration.set(initialPath + ".specifics.NPCToEscortID", getNpcToEscortID());
+        configuration.set(initialPath + ".specifics.destinationNPCID", getNpcToEscortToID());
+        if (getSpawnLocation() != null) {
+            configuration.set(initialPath + ".specifics.spawnLocation", getSpawnLocation());
+        }
+    }
 
-  public void setNpcToEscortToID(final int npcToEscortToID) {
-    this.npcToEscortToID = npcToEscortToID;
-  }
+    @Override
+    public void load(FileConfiguration configuration, String initialPath) {
+        npcToEscortID = configuration.getInt(initialPath + ".specifics.NPCToEscortID");
+        npcToEscortToID = configuration.getInt(initialPath + ".specifics.destinationNPCID");
+        setSpawnLocation(configuration.getLocation(initialPath + ".specifics.spawnLocation", null));
+    }
+
+    @Override
+    public void onObjectiveUnlock(
+            final ActiveObjective activeObjective,
+            final boolean unlockedDuringPluginStartupQuestLoadingProcess) {
+        if (main.getIntegrationsManager().isCitizensEnabled()) {
+            main.getIntegrationsManager()
+                    .getCitizensManager()
+                    .handleEscortNPCObjectiveForActiveObjective(this, activeObjective.getActiveObjectiveHolder());
+        }
+    }
+
+    @Override
+    public void onObjectiveCompleteOrLock(
+            final ActiveObjective activeObjective,
+            final boolean lockedOrCompletedDuringPluginStartupQuestLoadingProcess,
+            final boolean completed) {
+    }
+
+    public final int getNpcToEscortID() {
+        return npcToEscortID;
+    }
+
+    public void setNpcToEscortID(final int npcToEscortID) {
+        this.npcToEscortID = npcToEscortID;
+    }
+
+    public final int getNpcToEscortToID() {
+        return npcToEscortToID;
+    }
+
+    public void setNpcToEscortToID(final int npcToEscortToID) {
+        this.npcToEscortToID = npcToEscortToID;
+    }
 
 
 }

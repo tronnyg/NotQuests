@@ -18,50 +18,49 @@
 
 package rocks.gravili.notquests.paper.structs.triggers.types;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.paper.PaperCommandManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.triggers.Trigger;
 
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+
 public class DeathTrigger extends Trigger {
 
-  public DeathTrigger(final NotQuests main) {
-    super(main);
-  }
+    public DeathTrigger(final NotQuests main) {
+        super(main);
+    }
 
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> addTriggerBuilder) {
-    manager.command(
-        addTriggerBuilder
-            .argument(
-                IntegerArgument.<CommandSender>newBuilder("amount").withMin(1),
-                ArgumentDescription.of("Amount of deaths needed for the Trigger to trigger."))
-            .flag(main.getCommandManager().applyOn)
-            .flag(main.getCommandManager().triggerWorldString)
-            .meta(CommandMeta.DESCRIPTION, "Triggers when a the Player dies.")
-            .handler(
-                (context) -> {
-                  DeathTrigger deathTrigger = new DeathTrigger(main);
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> addTriggerBuilder) {
+        manager.command(addTriggerBuilder
+                .required("amount", integerParser(1), Description.description("Amount of deaths needed for the Trigger to trigger."))
+                .flag(main.getCommandManager().applyOn)
+                .flag(main.getCommandManager().triggerWorldString)
+                .commandDescription(Description.of("Triggers when a the Player dies."))
+                .handler(
+                        (context) -> {
+                            DeathTrigger deathTrigger = new DeathTrigger(main);
 
-                  main.getTriggerManager().addTrigger(deathTrigger, context);
-                }));
-  }
+                            main.getTriggerManager().addTrigger(deathTrigger, context);
+                        }));
+    }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {}
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+    }
 
-  @Override
-  public String getTriggerDescription() {
-    return null;
-  }
+    @Override
+    public String getTriggerDescription() {
+        return null;
+    }
 
-  @Override
-  public void load(FileConfiguration configuration, String initialPath) {}
+    @Override
+    public void load(FileConfiguration configuration, String initialPath) {
+    }
 }

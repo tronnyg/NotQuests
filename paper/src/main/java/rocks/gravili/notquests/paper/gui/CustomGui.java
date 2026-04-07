@@ -6,10 +6,10 @@ import rocks.gravili.notquests.paper.gui.icon.ButtonType;
 import rocks.gravili.notquests.paper.gui.icon.SpecialIconType;
 import rocks.gravili.notquests.paper.gui.property.types.StringIconProperty;
 import xyz.xenondevs.invui.gui.Gui;
+import xyz.xenondevs.invui.gui.Markers;
 import xyz.xenondevs.invui.gui.PagedGui;
+import xyz.xenondevs.invui.gui.Structure;
 import xyz.xenondevs.invui.gui.TabGui;
-import xyz.xenondevs.invui.gui.structure.Markers;
-import xyz.xenondevs.invui.gui.structure.Structure;
 import xyz.xenondevs.invui.item.Item;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class CustomGui {
     }
 
     private Gui handleNormalGui(GuiContext guiContext) {
-        var guiBuilder = Gui.normal().setStructure(structure);
+        var guiBuilder = Gui.builder().setStructure(structure);
 
         icons.forEach((key, icon) -> guiBuilder.addIngredient(key, icon.buildItem(notQuests, guiContext)));
         for (Object o : guiContext.getAsObjectArray()) {
@@ -77,7 +77,7 @@ public class CustomGui {
         var structureObject = new Structure(structure);
         var targetQuestPlayer = notQuests.getQuestPlayerManager().getOrCreateQuestPlayerFromDatabase(guiContext.getPlayer().getUniqueId());
 
-        var guiBuilder = PagedGui.items().setStructure(structure);
+        var guiBuilder = PagedGui.itemsBuilder().setStructure(structure);
 
         //X and Y are reserved characters!
         var pagedIcon = icons.get('X');
@@ -96,7 +96,7 @@ public class CustomGui {
 
 
         var items = new ArrayList<Item>();
-        var guiSize = structureObject.getIngredientList().findContentListSlots().length;
+        var guiSize = (int) String.join("", structure).chars().filter(c -> c == 'X').count();
         var numberOfTotalItems = guiSize;
 
         switch (pagedIconSpecialType) {
@@ -215,7 +215,7 @@ public class CustomGui {
             tabGuis.add(tabGui.buildGui(notQuests, guiContext));
         });
 
-        var guiBuilder = TabGui.normal()
+        var guiBuilder = TabGui.builder()
                 .setTabs(tabGuis)
                 .setStructure(structure)
                 .addIngredient('X', Markers.CONTENT_LIST_SLOT_HORIZONTAL);

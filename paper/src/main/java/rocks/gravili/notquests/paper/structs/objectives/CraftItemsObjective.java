@@ -18,19 +18,21 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.Map;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionArgument;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.commands.arguments.wrappers.ItemStackSelection;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.Map;
+
+import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class CraftItemsObjective extends Objective {
 
@@ -42,17 +44,13 @@ public class CraftItemsObjective extends Objective {
 
   public static void handleCommands(
       NotQuests main,
-      PaperCommandManager<CommandSender> manager,
+      LegacyPaperCommandManager<CommandSender> manager,
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
     manager.command(
         addObjectiveBuilder
-            .argument(
-                ItemStackSelectionArgument.of("materials", main),
-                ArgumentDescription.of("Material of the item which needs to be crafted"))
-            .argument(
-                NumberVariableValueArgument.newBuilder("amount", main, null),
-                ArgumentDescription.of("Amount of items which need to be crafted"))
+            .required("materials", itemStackSelectionParser(main), Description.description("Material of the item which needs to be crafted"))
+            .required("amount", numberVariableParser("amount", null), Description.of("Amount of items which need to be crafted"))
             .handler(
                 (context) -> {
                   final String amountExpression = context.get("amount");

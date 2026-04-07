@@ -23,9 +23,6 @@
  */
 package rocks.gravili.notquests.paper.minimessage;
 
-import java.util.Collections;
-import java.util.PrimitiveIterator;
-import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -40,6 +37,10 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.PrimitiveIterator;
+import java.util.stream.Stream;
 
 /** Code copied from net.kyori.adventure.text.minimessage.tag.standard */
 abstract class AbstractColorChangingTag implements Modifying, Examinable {

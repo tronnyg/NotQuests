@@ -1,6 +1,5 @@
 package rocks.gravili.notquests.paper.managers.npc;
 
-import java.util.ArrayList;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -11,6 +10,8 @@ import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.conversation.Conversation;
 import rocks.gravili.notquests.paper.managers.integrations.citizens.QuestGiverNPCTrait;
 import rocks.gravili.notquests.paper.structs.Quest;
+
+import java.util.ArrayList;
 
 public class CitizensNPC extends NQNPC {
   private NPC cachedNPC;

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.JavaVersion.*
+import org.gradle.api.JavaVersion.VERSION_25
 
 
 plugins {
@@ -28,9 +28,9 @@ group = "rocks.gravili.notquests"
 version = rootProject.version
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-    sourceCompatibility = VERSION_21
-    targetCompatibility = VERSION_21
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
+    sourceCompatibility = VERSION_25
+    targetCompatibility = VERSION_25
 }
 
 repositories {
@@ -40,12 +40,6 @@ repositories {
         content {
             includeGroup("io.papermc.paper")
             includeGroup("net.kyori")
-        }
-    }
-
-    maven("https://repo.jeff-media.com/public/") {
-        content {
-            includeGroup("com.jeff_media")
         }
     }
 
@@ -61,22 +55,24 @@ repositories {
         }
     }
 
+    maven("https://repo.codemc.io/repository/maven-releases/") {
+        content {
+            includeGroup("com.github.retrooper")
+        }
+    }
+
     maven("https://jitpack.io") {
         content {
             includeGroup("com.github.MilkBowl")
             includeGroup("com.github.TheBusyBiscuit")
-            includeGroup("com.github.retrooper")
-            includeGroup("com.github.retrooper.packetevents")
-            includeGroup("io.github.retrooper")
-            includeGroup("com.github.AlessioGr")
-            includeGroup("com.github.AlessioGr.packetevents")
             includeGroup("com.github.TownyAdvanced")
             includeGroup("com.github.Zrips")
             includeGroup("com.willfp")
             includeGroup("com.github.war-systems")
-            includeGroup("com.github.MilkBowl")
             includeGroup("com.github.UlrichBR")
             includeGroup("com.github.Slimefun")
+            includeGroup("net.citizensnpcs")
+            includeGroup("com.github.Redempt")
         }
         metadataSources {
             artifact()
@@ -89,12 +85,6 @@ repositories {
         }
     }
 
-    /*maven("https://repo.minebench.de/"){
-        content {
-            includeGroup("de.themoep")
-        }
-    }*/
-
     maven("https://mvn.lumine.io/repository/maven-public/") {
         content {
             includeGroup("io.lumine.xikage")
@@ -102,14 +92,6 @@ repositories {
         }
     }
 
-    /*maven("https://betonquest.org/nexus/repository/betonquest/") {
-        content {
-            includeGroup("org.betonquest")
-        }
-        metadataSources {
-            artifact()
-        }
-    }*/
 
     maven("https://maven.enginehub.org/repo/") {
         content {
@@ -122,14 +104,7 @@ repositories {
 
     maven("https://oss.sonatype.org/content/repositories/snapshots") {
         content {
-            includeGroup("org.incendo.interfaces")
-            includeGroup("cloud.commandframework")
-        }
-    }
-
-    maven("https://repo.thbn.me/snapshots") {
-        content {
-            includeGroup("org.incendo.interfaces")
+            includeGroup("org.incendo")
         }
     }
 
@@ -156,7 +131,6 @@ repositories {
     }
 
     maven("https://repo.xenondevs.xyz/releases")
-    maven("https://nexus.betonquest.org/repository/betonquest/")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://repo.magmaguy.com/releases")
     //mavenLocal()
@@ -165,9 +139,10 @@ repositories {
 
 dependencies {
     implementation(project(path = ":common", configuration = "shadow"))
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
-    //compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT!!")
-    //implementation("de.themoep:inventorygui:1.5-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.1.build.29-alpha")
+
+    compileOnly("org.projectlombok:lombok:1.18.44")
+    annotationProcessor("org.projectlombok:lombok:1.18.44")
 
     compileOnly("net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT") {
         exclude(group = "*", module = "*")
@@ -180,11 +155,7 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.3.0-SNAPSHOT")
     compileOnly("com.magmaguy:EliteMobs:9.1.9")
     compileOnly(files("libs/EliteMobs-8.7.11.jar"))
-    compileOnly(files("libs/ProjectKorra-1.11.3.jar"))
-    //compileOnly(files("libs/UltimateJobs-0.2.0-SNAPSHOT.jar"))
 
-
-    compileOnly(files("libs/BetonQuest.jar"));
 
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.0-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
@@ -193,7 +164,6 @@ dependencies {
 
     compileOnly("net.luckperms:api:5.4")
 
-    //compileOnly "com.github.NEZNAMY:TAB:2.9.2"
     compileOnly("com.github.TownyAdvanced:Towny:0.98.4.4")
 
     compileOnly("com.github.Zrips:Jobs:v4.17.2")
@@ -204,45 +174,21 @@ dependencies {
     //Shaded
 
 
-    implementation("net.kyori:adventure-text-serializer-bungeecord:4.2.0") {
-        exclude(group = "net.kyori", module = "adventure-api")
-    }
+    implementation("net.kyori:adventure-api:4.18.0") {}
 
     //CloudCommands
-    implementation("cloud.commandframework:cloud-paper:1.8.4") {
-        exclude(group = "net.kyori", module = "adventure-api")
+    implementation("org.incendo:cloud-paper:2.0.0-SNAPSHOT") {
+        exclude(group = "org.incendo.cloud", module = "cloud-bukkit")
     }
-    implementation("cloud.commandframework:cloud-minecraft-extras:1.8.4") {
-        exclude(group = "net.kyori", module = "adventure-api")
-    }
+    implementation("org.incendo:cloud-minecraft-extras:2.0.0-SNAPSHOT")
+
     //Else it errors:
     implementation("io.leangen.geantyref:geantyref:1.3.13")
 
-    //Interfaces + InvUI
+    //InvUI
+    implementation("xyz.xenondevs.invui:invui:2.0.0-RC.1")
 
-    implementation("xyz.xenondevs.invui:invui:1.38")
-
-    implementation("org.incendo.interfaces:interfaces-core:1.0.0-SNAPSHOT")
-
-    implementation("org.incendo.interfaces:interfaces-paper:1.0.0-SNAPSHOT") {
-        exclude(group = "com.destroystokyo.paper", module = "paper-api")
-    }
-
-    //compileOnly("com.mojang:brigadier:1.0.18")
-
-
-    //implementation 'com.github.retrooper.packetevents:bukkit:2.0-SNAPSHOT'
-    implementation("com.github.AlessioGr.packetevents:bukkit:2.0-SNAPSHOT")
-
-    implementation("com.jeff_media:SpigotUpdateChecker:3.0.3")
-
-
-    //implementation 'commons-io:commons-io:2.11.0'
-    //implementation 'org.apache.commons:commons-text:1.9'
-    //implementation 'org.apache.commons:commons-lang3:3.12.0'
-    //implementation 'org.apache.commons:commons-lang:3.1'
-
-    //implementation("io.netty:netty-all:4.1.74.Final")
+    implementation("com.github.retrooper:packetevents-spigot:2.12.0")
 
 
     implementation("commons-io:commons-io:2.11.0")
@@ -274,31 +220,22 @@ val shadowPath = "rocks.gravili.notquests.paper.shadow"
 tasks {
 
     shadowJar {
+        // DO NOT minimize the jar, since cloud doesnt like it
+        // Reference: https://discord.com/channels/766366162388123678/1170254709722984460/1242027222773006376
 
-        //minimize()
-
-        //exclude('com.mojang:brigadier')
-
-        //relocate('io.papermc.lib', path.concat('.paper'))
         relocate("cloud.commandframework", "$shadowPath.cloud")
+        relocate("cloud.commandframework.bukkit.internal", "$shadowPath.cloud.bukkit.internal")
         relocate("io.leangen.geantyref", "$shadowPath.geantyref")
         relocate("de.themoep", "$shadowPath.de.themoep")
 
         relocate("org.apache.commons.io", "$shadowPath.commons.io")
-        //relocate("org.apache.commons.text", path.concat('.commons.text'))
-        //relocate("org.apache.commons.lang3", path.concat('.commons.lang'))
 
         relocate("io.github.retrooper.packetevents", "$shadowPath.packetevents.bukkit")
         relocate("com.github.retrooper.packetevents", "$shadowPath.packetevents.api")
 
-        //Packet Stuff
-        // relocate('net.kyori.adventure.text.serializer.bungeecord', path.concat('.kyori.bungeecord'))
-        //relocate('net.kyori.adventure.platform.bukkit', path.concat('.kyori.platform-bukkit'))
         relocate("net.kyori.adventure.text.serializer.bungeecord", "$shadowPath.kyori.bungeecord")
 
         relocate("xyz.xenondevs.invui", "$shadowPath.invui")
-
-        relocate("org.incendo.interfaces", "$shadowPath.interfaces")
 
         relocate("redempt.crunch", "$shadowPath.crunch")
 
@@ -308,68 +245,42 @@ tasks {
 
         relocate("com.zaxxer.hikari", "$shadowPath.hikari")
 
-        relocate("com.jeff_media.updatechecker", "$shadowPath.updatechecker")
+        //relocate("com.jeff_media.updatechecker", "$shadowPath.updatechecker")
 
 
         dependencies {
-            //include(dependency('org.apache.commons:')
-            include(dependency("commons-io:commons-io:"))
-            include(dependency("xyz.xenondevs.invui:"))
+            include(dependency("commons-io:commons-io:.*"))
+            include(dependency("xyz.xenondevs.invui:.*:.*"))
 
-            //include(dependency('io.papermc:paperlib')
-            //include(dependency("de.themoep:inventorygui:1.5-SNAPSHOT"))
-            include(dependency("cloud.commandframework:"))
-            include(dependency("io.leangen.geantyref:"))
-            include(dependency("me.lucko:"))
+            include(dependency("org.incendo:.*:.*"))
+            include(dependency("io.leangen.geantyref:.*:.*"))
+            include(dependency("me.lucko:.*:.*"))
 
-            include(dependency("com.github.retrooper.packetevents:"))
-            //include(dependency('io.github.retrooper.packetevents:')
+            include(dependency("com.github.retrooper:.*:.*"))
+            include(dependency("io.github.retrooper:.*:.*"))
 
-            include(dependency("com.github.AlessioGr.packetevents:"))
-            include(dependency("org.incendo.interfaces:"))
+            include(dependency("net.kyori:adventure-text-serializer-bungeecord:.*"))
 
-            //include(dependency('net.kyori:adventure-platform-bukkit:')
-            include(dependency("net.kyori:adventure-text-serializer-bungeecord:"))
+            include(dependency("com.github.Redempt:.*:.*"))
 
-            include(dependency("com.github.Redempt:Crunch:"))
+            include(dependency("com.fasterxml.jackson.dataformat:.*:.*"))
+            include(dependency("com.fasterxml.jackson.core:.*:.*"))
 
-            include(dependency("com.fasterxml.jackson.dataformat:"))
-            include(dependency("com.fasterxml.jackson.core:"))
+            include(dependency("org.apache.httpcomponents:.*:.*"))
 
-            include(dependency("org.apache.httpcomponents:"))
-
-            include(dependency("com.zaxxer:"))
-
-            include(dependency("com.jeff_media:SpigotUpdateChecker:"))
-
+            include(dependency("com.zaxxer:.*:.*"))
         }
 
 
-        //archiveBaseName.set("notquests")
         archiveClassifier.set("")
 
-
-        //  configurations.forEach { println("E: " + it.toString()) }
-
-        // println("Size: " + configurations.size)
-
     }
-
-    // Run reobfJar on build
-    //build {
-    //    dependsOn(shadowJar)
-    //}
-
-
-    /*shadowJar {
-        dependsOn(reobfJar)
-    }*/
 
     compileJava {
         mustRunAfter(":common:jar")
 
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(25)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -380,11 +291,6 @@ tasks {
     }
 
     runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.1")
+        minecraftVersion("26.1.1")
     }
 }
-
-

@@ -1,9 +1,5 @@
 package rocks.gravili.notquests.paper.managers.npc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,6 +15,11 @@ import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.data.Category;
 import rocks.gravili.notquests.paper.structs.Quest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class NPCManager {
   private final NotQuests main;
@@ -37,11 +38,6 @@ public class NPCManager {
     if(main.getIntegrationsManager().isCitizensEnabled()){
       for(final int npcID : main.getIntegrationsManager().getCitizensManager().getAllNPCIDs()){
         npcs.add("citizens:"+npcID);
-      }
-    }
-    if(main.getIntegrationsManager().isZNPCsEnabled()){
-      for(final int npcID : main.getIntegrationsManager().getZNPCsManager().getAllNPCIDs()){
-        npcs.add("znpcs:"+npcID);
       }
     }
     return npcs;
@@ -68,15 +64,6 @@ public class NPCManager {
       final ArmorstandNPC newArmorStandNPC = new ArmorstandNPC(main, npcID);
       npcs.add(newArmorStandNPC);
       return newArmorStandNPC;
-    }else if(type.equalsIgnoreCase("znpcs")){
-      if(main.getIntegrationsManager().isZNPCsEnabled()){
-        final ZNPCNPC newZNPCNPC = new ZNPCNPC(main, npcID);
-        npcs.add(newZNPCNPC);
-        return newZNPCNPC;
-      }else{
-        main.getLogManager().warn("Tried to create a zNPCs NQNPC with ID <highlight>%s</highlight>, but zNPCs is not active/loaded.", npcID);
-        return null;
-      }
     }
 
     return null;

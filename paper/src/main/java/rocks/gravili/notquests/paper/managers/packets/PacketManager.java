@@ -20,9 +20,8 @@ package rocks.gravili.notquests.paper.managers.packets;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
-import com.github.retrooper.packetevents.factory.bukkit.BukkitPacketEventsBuilder;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import com.github.retrooper.packetevents.settings.PacketEventsSettings;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChatMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
@@ -50,7 +49,7 @@ public class PacketManager implements Listener {
   public PacketManager(final NotQuests main) {
     this.main = main;
     usePacketEvents = main.getConfiguration().usePacketEvents;
-    modern = Bukkit.getVersion().contains("1.21");
+    modern = Bukkit.getVersion().contains("26.");
   }
 
   public final ReflectionPacketInjector getPacketInjector() {
@@ -69,7 +68,6 @@ public class PacketManager implements Listener {
   public void initialize() {
     if (main.getConfiguration().packetMagic) {
       if (usePacketEvents) {
-        WrapperPlayServerChatMessage.HANDLE_JSON = false;
         PacketEvents.getAPI()
             .getEventManager()
             .registerListener(new PacketEventsPacketListener(main), PacketListenerPriority.LOW);
@@ -139,7 +137,7 @@ public class PacketManager implements Listener {
 
   public void onLoad() {
     if (usePacketEvents && main.getConfiguration().packetMagic) {
-      PacketEvents.setAPI(BukkitPacketEventsBuilder.build(main.getMain()));
+      PacketEvents.setAPI(SpigotPacketEventsBuilder.build(main.getMain()));
       PacketEvents.getAPI().load();
     }
   }

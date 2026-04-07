@@ -18,10 +18,6 @@
 
 package rocks.gravili.notquests.paper.conversation;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,23 +28,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.conversation.interactionhandlers.SendClickableText;
 import rocks.gravili.notquests.paper.conversation.interactionhandlers.ConversationInteractionHandler;
+import rocks.gravili.notquests.paper.conversation.interactionhandlers.SendClickableText;
 import rocks.gravili.notquests.paper.managers.data.Category;
 import rocks.gravili.notquests.paper.managers.npc.NQNPC;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
-import rocks.gravili.notquests.paper.structs.actions.Action;
-import rocks.gravili.notquests.paper.structs.actions.BooleanAction;
-import rocks.gravili.notquests.paper.structs.actions.ListAction;
-import rocks.gravili.notquests.paper.structs.actions.NumberAction;
-import rocks.gravili.notquests.paper.structs.actions.StringAction;
-import rocks.gravili.notquests.paper.structs.conditions.BooleanCondition;
-import rocks.gravili.notquests.paper.structs.conditions.Condition;
-import rocks.gravili.notquests.paper.structs.conditions.ListCondition;
-import rocks.gravili.notquests.paper.structs.conditions.NumberCondition;
-import rocks.gravili.notquests.paper.structs.conditions.StringCondition;
+import rocks.gravili.notquests.paper.structs.actions.*;
+import rocks.gravili.notquests.paper.structs.conditions.*;
 import rocks.gravili.notquests.paper.structs.variables.Variable;
 import rocks.gravili.notquests.paper.structs.variables.VariableDataType;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class ConversationManager {
 

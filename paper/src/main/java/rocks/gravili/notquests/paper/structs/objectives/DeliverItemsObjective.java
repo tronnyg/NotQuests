@@ -18,19 +18,14 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.Map;
-import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionArgument;
-import rocks.gravili.notquests.paper.commands.arguments.NQNPCSelector;
-import rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueArgument;
 import rocks.gravili.notquests.paper.commands.arguments.wrappers.ItemStackSelection;
 import rocks.gravili.notquests.paper.commands.arguments.wrappers.NQNPCResult;
 import rocks.gravili.notquests.paper.managers.npc.NQNPC;
@@ -38,6 +33,13 @@ import rocks.gravili.notquests.paper.managers.npc.NQNPCID;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.Quest;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.Map;
+import java.util.UUID;
+
+import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
+import static rocks.gravili.notquests.paper.commands.arguments.NQNPCParser.nqNPCParser;
 
 public class DeliverItemsObjective extends Objective {
 
@@ -51,12 +53,12 @@ public class DeliverItemsObjective extends Objective {
         super(main);
     }
 
-    public static void handleCommands(NotQuests main, PaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> addObjectiveBuilder,
-        final int level) {
+    public static void handleCommands(NotQuests main, LegacyPaperCommandManager<CommandSender> manager, Command.Builder<CommandSender> addObjectiveBuilder,
+                                      final int level) {
         manager.command(addObjectiveBuilder
-                .argument(ItemStackSelectionArgument.of("materials", main), ArgumentDescription.of("Material of the item which needs to be delivered"))
-                .argument(NumberVariableValueArgument.newBuilder("amount", main, null), ArgumentDescription.of("Amount of items which need to be delivered"))
-                .argument(NQNPCSelector.of("NPC", main, false, true), ArgumentDescription.of("NPC to whom the items should be delivered."))
+                        .required("materials", itemStackSelectionParser(main), Description.of("Material of the item which needs to be delivered"))
+                        .required("amount", numberVariableParser("amount", null), Description.of("Amount of items which need to be delivered"))
+                        .required("NPC", nqNPCParser(main, false, true), Description.of("NPC to whom the items should be delivered."))
                 .handler((context) -> {
                     final Quest quest = context.get("quest");
                     final String amountToDeliverExpression = context.get("amount");
@@ -68,7 +70,7 @@ public class DeliverItemsObjective extends Objective {
                     final NQNPCResult nqNPCResult = context.get("NPC");
 
                     if (nqNPCResult.isRightClickSelect()) {//Armor Stands
-                        if (context.getSender() instanceof final Player player) {
+                        if (context.sender() instanceof final Player player) {
                             main.getNPCManager().handleRightClickNQNPCSelectionWithAction(
                                 (nqNPC) -> {
                                     final DeliverItemsObjective deliverItemsObjective = new DeliverItemsObjective(main);
@@ -87,7 +89,7 @@ public class DeliverItemsObjective extends Objective {
                             );
 
                         } else {
-                            context.getSender().sendMessage(main.parse("<error>Error: this command can only be run as a player."));
+                            context.sender().sendMessage(main.parse("<error>Error: this command can only be run as a player."));
                         }
                     }else {
                         final NQNPC nqNPC = nqNPCResult.getNQNPC();

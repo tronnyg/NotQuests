@@ -18,14 +18,16 @@
 
 package rocks.gravili.notquests.paper.structs.variables;
 
-import cloud.commandframework.arguments.standard.StringArgument;
-import java.util.ArrayList;
-import java.util.List;
-import org.bukkit.command.CommandSender;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
+import rocks.gravili.notquests.paper.commands.arguments.variables.StringVariableValueParser;
 import rocks.gravili.notquests.paper.structs.FailedQuest;
 import rocks.gravili.notquests.paper.structs.Quest;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This variable is true if the amount of times the player has previously failed this Quest is
@@ -34,26 +36,14 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 public class QuestReachedMaxFailsVariable extends Variable<Boolean> {
     public QuestReachedMaxFailsVariable(NotQuests main) {
         super(main);
-        addRequiredString(
-                StringArgument.<CommandSender>newBuilder("Quest to check")
-                        .withSuggestionsProvider(
-                                (context, lastString) -> {
-                                    final List<String> allArgs = context.getRawInput();
-                                    main.getUtilManager()
-                                            .sendFancyCommandCompletion(
-                                                    context.getSender(),
-                                                    allArgs.toArray(new String[0]),
-                                                    "[Quest Name]",
-                                                    "[...]");
-
-                                    ArrayList<String> suggestions = new ArrayList<>();
-                                    for (Quest quest : main.getQuestManager().getAllQuests()) {
-                                        suggestions.add(quest.getIdentifier() );
-                                    }
-                                    return suggestions;
-                                })
-                        .single()
-                        .build());
+        addRequiredString(StringVariableValueParser.of("Quest to check", null, (context, lastString) -> {
+            main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Quest Name]", "[...]");
+            ArrayList<Suggestion> suggestions = new ArrayList<>();
+            for (Quest quest : main.getQuestManager().getAllQuests()) {
+                suggestions.add(Suggestion.suggestion(quest.getIdentifier()));
+            }
+            return CompletableFuture.completedFuture(suggestions);
+        }));
     }
 
     @Override
@@ -87,7 +77,7 @@ public class QuestReachedMaxFailsVariable extends Variable<Boolean> {
     }
 
     @Override
-    public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+    public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
         return null;
     }
 

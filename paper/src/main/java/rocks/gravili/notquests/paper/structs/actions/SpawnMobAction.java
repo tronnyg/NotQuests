@@ -18,15 +18,6 @@
 
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.arguments.flags.CommandFlag;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.bukkit.parsers.WorldArgument;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,336 +26,332 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.incendo.cloud.Command;
+import static rocks.gravili.notquests.paper.commands.arguments.EntityTypeParser.entityTypeParser;
+import org.incendo.cloud.component.TypedCommandComponent;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.parser.flag.CommandFlag;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.EntityTypeSelector;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Random;
+
+import static org.incendo.cloud.bukkit.parser.WorldParser.worldParser;
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 
 public class SpawnMobAction extends Action {
 
-  private String mobToSpawnType = "";
-  private boolean usePlayerLocation = false;
-  private Location spawnLocation;
-  private int spawnAmount = 1;
-  private int spawnRadiusX = 0;
-  private int spawnRadiusY = 0;
-  private int spawnRadiusZ = 0;
+    private String mobToSpawnType = "";
+    private boolean usePlayerLocation = false;
+    private Location spawnLocation;
+    private int spawnAmount = 1;
+    private int spawnRadiusX = 0;
+    private int spawnRadiusY = 0;
+    private int spawnRadiusZ = 0;
 
-  public SpawnMobAction(final NotQuests main) {
-    super(main);
-  }
-
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> builder,
-      ActionFor actionFor) {
-    CommandFlag<Integer> spawnRadiusX =
-        CommandFlag.newBuilder("spawnRadiusX")
-            .withArgument(
-                IntegerArgument.<CommandSender>newBuilder("spawnRadiusX").withMin(0).build())
-            .build();
-    CommandFlag<Integer> spawnRadiusY =
-        CommandFlag.newBuilder("spawnRadiusY")
-            .withArgument(
-                IntegerArgument.<CommandSender>newBuilder("spawnRadiusY").withMin(0).build())
-            .build();
-    CommandFlag<Integer> spawnRadiusZ =
-        CommandFlag.newBuilder("spawnRadiusZ")
-            .withArgument(
-                IntegerArgument.<CommandSender>newBuilder("spawnRadiusZ").withMin(0).build())
-            .build();
-
-    Command.Builder<CommandSender> commonBuilder =
-        builder
-            .argument(
-                EntityTypeSelector.of("entityType", main, false),
-                ArgumentDescription.of("Type of Entity which should be spawned."))
-            .argument(
-                IntegerArgument.<CommandSender>newBuilder("amount").withMin(1),
-                ArgumentDescription.of("Amount of mobs which should be spawned"))
-            .flag(spawnRadiusX)
-            .flag(spawnRadiusY)
-            .flag(spawnRadiusZ);
-
-    manager.command(
-        commonBuilder
-            .literal(
-                "PlayerLocation",
-                ArgumentDescription.of(
-                    "Takes the location the player currently is in (when executing the action). So, this is a dynamic location."))
-            .handler(
-                (context) -> {
-                  final String entityType = context.get("entityType");
-                  final int amountToSpawn = context.get("amount");
-
-                  SpawnMobAction spawnMobAction = new SpawnMobAction(main);
-                  spawnMobAction.setMobToSpawnType(entityType);
-                  spawnMobAction.setSpawnAmount(amountToSpawn);
-                  spawnMobAction.setUsePlayerLocation(true);
-
-                  final int spawnRadiusXValue = context.flags().getValue(spawnRadiusX, 0);
-                  final int spawnRadiusYValue = context.flags().getValue(spawnRadiusY, 0);
-                  final int spawnRadiusZValue = context.flags().getValue(spawnRadiusZ, 0);
-                  spawnMobAction.setSpawnRadiusX(spawnRadiusXValue);
-                  spawnMobAction.setSpawnRadiusY(spawnRadiusYValue);
-                  spawnMobAction.setSpawnRadiusZ(spawnRadiusZValue);
-
-                  main.getActionManager().addAction(spawnMobAction, context, actionFor);
-                }));
-
-    manager.command(
-        commonBuilder
-            .literal("Location", ArgumentDescription.of("Takes the location you enter"))
-            .argument(WorldArgument.of("world"), ArgumentDescription.of("World name"))
-            /* .argumentTriplet(
-                    "coords",
-                    TypeToken.get(Vector.class),
-                    Triplet.of("x", "y", "z"),
-                    Triplet.of(Integer.class, Integer.class, Integer.class),
-                    (sender, triplet) -> new Vector(triplet.getFirst(), triplet.getSecond(),
-                            triplet.getThird()
-                    ),
-                    ArgumentDescription.of("Coordinates")
-            )*/
-            // Commented out, because this somehow breaks flags
-            .argument(IntegerArgument.newBuilder("x"), ArgumentDescription.of("X coordinate"))
-            .argument(IntegerArgument.newBuilder("y"), ArgumentDescription.of("Y coordinate"))
-            .argument(IntegerArgument.newBuilder("z"), ArgumentDescription.of("Z coordinate"))
-            .handler(
-                (context) -> {
-                  final String entityType = context.get("entityType");
-                  final int amountToSpawn = context.get("amount");
-
-                  SpawnMobAction spawnMobAction = new SpawnMobAction(main);
-                  spawnMobAction.setMobToSpawnType(entityType);
-                  spawnMobAction.setSpawnAmount(amountToSpawn);
-                  spawnMobAction.setUsePlayerLocation(false);
-
-                  final int spawnRadiusXValue = context.flags().getValue(spawnRadiusX, 0);
-                  final int spawnRadiusYValue = context.flags().getValue(spawnRadiusY, 0);
-                  final int spawnRadiusZValue = context.flags().getValue(spawnRadiusZ, 0);
-                  spawnMobAction.setSpawnRadiusX(spawnRadiusXValue);
-                  spawnMobAction.setSpawnRadiusY(spawnRadiusYValue);
-                  spawnMobAction.setSpawnRadiusZ(spawnRadiusZValue);
-
-                  final World world = context.get("world");
-                  final Vector coordinates =
-                      new Vector(context.get("x"), context.get("y"), context.get("z"));
-                  final Location location = coordinates.toLocation(world);
-
-                  spawnMobAction.setSpawnLocation(location);
-
-                  main.getActionManager().addAction(spawnMobAction, context, actionFor);
-                }));
-  }
-
-  public final String getMobToSpawnType() {
-    return mobToSpawnType;
-  }
-
-  public void setMobToSpawnType(final String mobToSpawnType) {
-    this.mobToSpawnType = mobToSpawnType;
-  }
-
-  public final Location getSpawnLocation() {
-    return spawnLocation;
-  }
-
-  public void setSpawnLocation(final Location spawnLocation) {
-    this.spawnLocation = spawnLocation;
-  }
-
-  public final boolean isUsePlayerLocation() {
-    return usePlayerLocation;
-  }
-
-  public void setUsePlayerLocation(final boolean usePlayerLocation) {
-    this.usePlayerLocation = usePlayerLocation;
-  }
-
-  public final int getSpawnAmount() {
-    return spawnAmount;
-  }
-
-  public void setSpawnAmount(final int spawnAmount) {
-    this.spawnAmount = spawnAmount;
-  }
-
-  @Override
-  public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
-    if (!Bukkit
-        .isPrimaryThread()) { // Can only be run in main thread (at least for bukkit entities) :(
-      Bukkit.getScheduler()
-          .runTask(
-              main.getMain(),
-              () -> {
-                execute2(questPlayer.getPlayer(), objects);
-              });
-    } else {
-      execute2(questPlayer.getPlayer(), objects);
+    public SpawnMobAction(final NotQuests main) {
+        super(main);
     }
-  }
 
-  public final Location getRandomLocationWithRadius(final Location baseLocation) {
-    if (getSpawnRadiusX() == 0 && getSpawnRadiusY() == 0 && getSpawnRadiusZ() == 0) {
-      return baseLocation;
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> builder,
+            ActionFor actionFor) {
+
+        CommandFlag<Integer> spawnRadiusX = CommandFlag.builder("spawnRadiusX")
+                .withComponent(TypedCommandComponent.builder("spawnRadiusX", integerParser(0)))
+                .build();
+
+        CommandFlag<Integer> spawnRadiusY = CommandFlag.builder("spawnRadiusY")
+                .withComponent(TypedCommandComponent.builder("spawnRadiusY", integerParser(0)))
+                .build();
+
+        CommandFlag<Integer> spawnRadiusZ = CommandFlag.builder("spawnRadiusZ")
+                .withComponent(TypedCommandComponent.builder("spawnRadiusZ", integerParser(0)))
+                .build();
+
+        Command.Builder<CommandSender> commonBuilder = builder.required("entityType", entityTypeParser(main), Description.of("Type of Entity which should be spawned."))
+                .required("amount", integerParser(1), Description.of("Amount of mobs which should be spawned"))
+                .flag(spawnRadiusX)
+                .flag(spawnRadiusY)
+                .flag(spawnRadiusZ);
+
+        manager.command(commonBuilder.literal("PlayerLocation", Description.of("Takes the location the player currently is in (when executing the action). So, this is a dynamic location."))
+                .handler(
+                        (context) -> {
+                            final String entityType = context.get("entityType");
+                            final int amountToSpawn = context.get("amount");
+
+                            SpawnMobAction spawnMobAction = new SpawnMobAction(main);
+                            spawnMobAction.setMobToSpawnType(entityType);
+                            spawnMobAction.setSpawnAmount(amountToSpawn);
+                            spawnMobAction.setUsePlayerLocation(true);
+
+                            final int spawnRadiusXValue = context.flags().getValue(spawnRadiusX, 0);
+                            final int spawnRadiusYValue = context.flags().getValue(spawnRadiusY, 0);
+                            final int spawnRadiusZValue = context.flags().getValue(spawnRadiusZ, 0);
+                            spawnMobAction.setSpawnRadiusX(spawnRadiusXValue);
+                            spawnMobAction.setSpawnRadiusY(spawnRadiusYValue);
+                            spawnMobAction.setSpawnRadiusZ(spawnRadiusZValue);
+
+                            main.getActionManager().addAction(spawnMobAction, context, actionFor);
+                        }));
+
+        manager.command(commonBuilder.literal("Location", Description.of("Takes the location you enter"))
+                        .required("world", worldParser(), Description.of("World name"))
+                        /* .argumentTriplet(
+                                "coords",
+                                TypeToken.get(Vector.class),
+                                Triplet.of("x", "y", "z"),
+                                Triplet.of(Integer.class, Integer.class, Integer.class),
+                                (sender, triplet) -> new Vector(triplet.getFirst(), triplet.getSecond(),
+                                        triplet.getThird()
+                                ),
+                                ArgumentDescription.of("Coordinates")
+                        )*/
+                        // Commented out, because this somehow breaks flags
+                        .required("x", integerParser(), Description.of("X coordinate"))
+                        .required("y", integerParser(), Description.of("Y coordinate"))
+                        .required("z", integerParser(), Description.of("Z coordinate"))
+                        .handler(
+                                (context) -> {
+                                    final String entityType = context.get("entityType");
+                                    final int amountToSpawn = context.get("amount");
+
+                                    SpawnMobAction spawnMobAction = new SpawnMobAction(main);
+                                    spawnMobAction.setMobToSpawnType(entityType);
+                                    spawnMobAction.setSpawnAmount(amountToSpawn);
+                                    spawnMobAction.setUsePlayerLocation(false);
+
+                                    final int spawnRadiusXValue = context.flags().getValue(spawnRadiusX, 0);
+                                    final int spawnRadiusYValue = context.flags().getValue(spawnRadiusY, 0);
+                                    final int spawnRadiusZValue = context.flags().getValue(spawnRadiusZ, 0);
+                                    spawnMobAction.setSpawnRadiusX(spawnRadiusXValue);
+                                    spawnMobAction.setSpawnRadiusY(spawnRadiusYValue);
+                                    spawnMobAction.setSpawnRadiusZ(spawnRadiusZValue);
+
+                                    final World world = context.get("world");
+                                    final Vector coordinates =
+                                            new Vector(context.get("x"), context.get("y"), context.get("z"));
+                                    final Location location = coordinates.toLocation(world);
+
+                                    spawnMobAction.setSpawnLocation(location);
+
+                                    main.getActionManager().addAction(spawnMobAction, context, actionFor);
+                                }));
     }
-    int xToAdd;
-    int yToAdd;
-    int zToAdd;
-    final Random r = new Random();
 
-    xToAdd =
-        getSpawnRadiusX() != 0
-            ? ((-getSpawnRadiusX() == getSpawnRadiusX())
-                ? -getSpawnRadiusX()
-                : r.nextInt(getSpawnRadiusX() + 1 + getSpawnRadiusX()) - getSpawnRadiusX())
-            : 0;
-    yToAdd =
-        getSpawnRadiusY() != 0
-            ? ((-getSpawnRadiusY() == getSpawnRadiusY())
-                ? -getSpawnRadiusY()
-                : r.nextInt(getSpawnRadiusY() + 1 + getSpawnRadiusY()) - getSpawnRadiusY())
-            : 0;
-    zToAdd =
-        getSpawnRadiusZ() != 0
-            ? ((-getSpawnRadiusZ() == getSpawnRadiusZ())
-                ? -getSpawnRadiusZ()
-                : r.nextInt(getSpawnRadiusZ() + 1 + getSpawnRadiusZ()) - getSpawnRadiusZ())
-            : 0;
+    public final String getMobToSpawnType() {
+        return mobToSpawnType;
+    }
 
-    return baseLocation.clone().add(xToAdd, yToAdd, zToAdd);
-  }
+    public void setMobToSpawnType(final String mobToSpawnType) {
+        this.mobToSpawnType = mobToSpawnType;
+    }
 
-  public void execute2(final Player player, Object... objects) {
-    try {
-      EntityType entityType = EntityType.valueOf(getMobToSpawnType().toUpperCase(Locale.ROOT));
+    public final Location getSpawnLocation() {
+        return spawnLocation;
+    }
 
-      if (isUsePlayerLocation()) {
-        final Location location = player.getLocation().clone().add(new Vector(0, 1, 0));
+    public void setSpawnLocation(final Location spawnLocation) {
+        this.spawnLocation = spawnLocation;
+    }
 
-        for (int i = 0; i < getSpawnAmount(); i++) {
+    public final boolean isUsePlayerLocation() {
+        return usePlayerLocation;
+    }
 
-          player.getWorld().spawnEntity(getRandomLocationWithRadius(location), entityType);
-        }
-      } else {
-        if (getSpawnLocation() == null) {
-          main.getLogManager().warn("Tried to execute SpawnMob action with null location.");
-          return;
-        }
-        if (getSpawnLocation().getWorld() == null) {
-          main.getLogManager().warn("Tried to execute SpawnMob action with invalid world.");
-          return;
-        }
-        final Location location = getSpawnLocation().clone().add(new Vector(0, 1, 0));
+    public void setUsePlayerLocation(final boolean usePlayerLocation) {
+        this.usePlayerLocation = usePlayerLocation;
+    }
 
-        for (int i = 0; i < getSpawnAmount(); i++) {
-          getSpawnLocation()
-              .getWorld()
-              .spawnEntity(getRandomLocationWithRadius(location), entityType);
-        }
-      }
-    } catch (IllegalArgumentException e) {
-      if (main.getIntegrationsManager().isMythicMobsEnabled()
-          && main.getIntegrationsManager()
-              .getMythicMobsManager()
-              .isMythicMob(getMobToSpawnType())) {
-        if (isUsePlayerLocation()) {
-          main.getIntegrationsManager()
-              .getMythicMobsManager()
-              .spawnMob(getMobToSpawnType(), player.getLocation(), getSpawnAmount(), this);
+    public final int getSpawnAmount() {
+        return spawnAmount;
+    }
+
+    public void setSpawnAmount(final int spawnAmount) {
+        this.spawnAmount = spawnAmount;
+    }
+
+    @Override
+    public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
+        if (!Bukkit
+                .isPrimaryThread()) { // Can only be run in main thread (at least for bukkit entities) :(
+            Bukkit.getScheduler()
+                    .runTask(
+                            main.getMain(),
+                            () -> {
+                                execute2(questPlayer.getPlayer(), objects);
+                            });
         } else {
-          main.getIntegrationsManager()
-              .getMythicMobsManager()
-              .spawnMob(getMobToSpawnType(), getSpawnLocation(), getSpawnAmount(), this);
+            execute2(questPlayer.getPlayer(), objects);
         }
-      } else if (main.getIntegrationsManager().isEcoBossesEnabled()
-          && main.getIntegrationsManager().getEcoBossesManager().isEcoBoss(getMobToSpawnType())) {
-        if (isUsePlayerLocation()) {
-          main.getIntegrationsManager()
-              .getEcoBossesManager()
-              .spawnMob(getMobToSpawnType(), player.getLocation(), getSpawnAmount(), this);
-        } else {
-          main.getIntegrationsManager()
-              .getEcoBossesManager()
-              .spawnMob(getMobToSpawnType(), getSpawnLocation(), getSpawnAmount(), this);
+    }
+
+    public final Location getRandomLocationWithRadius(final Location baseLocation) {
+        if (getSpawnRadiusX() == 0 && getSpawnRadiusY() == 0 && getSpawnRadiusZ() == 0) {
+            return baseLocation;
         }
-      } else {
-        main.getLogManager()
-            .warn(
-                "Tried to execute SpawnMob with an either invalid mob, or a mythic mob while the mythic mobs plugin is not installed.");
-      }
+        int xToAdd;
+        int yToAdd;
+        int zToAdd;
+        final Random r = new Random();
+
+        xToAdd =
+                getSpawnRadiusX() != 0
+                        ? ((-getSpawnRadiusX() == getSpawnRadiusX())
+                        ? -getSpawnRadiusX()
+                        : r.nextInt(getSpawnRadiusX() + 1 + getSpawnRadiusX()) - getSpawnRadiusX())
+                        : 0;
+        yToAdd =
+                getSpawnRadiusY() != 0
+                        ? ((-getSpawnRadiusY() == getSpawnRadiusY())
+                        ? -getSpawnRadiusY()
+                        : r.nextInt(getSpawnRadiusY() + 1 + getSpawnRadiusY()) - getSpawnRadiusY())
+                        : 0;
+        zToAdd =
+                getSpawnRadiusZ() != 0
+                        ? ((-getSpawnRadiusZ() == getSpawnRadiusZ())
+                        ? -getSpawnRadiusZ()
+                        : r.nextInt(getSpawnRadiusZ() + 1 + getSpawnRadiusZ()) - getSpawnRadiusZ())
+                        : 0;
+
+        return baseLocation.clone().add(xToAdd, yToAdd, zToAdd);
     }
-  }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {
-    configuration.set(initialPath + ".specifics.mobToSpawn", getMobToSpawnType());
-    configuration.set(initialPath + ".specifics.spawnLocation", getSpawnLocation());
-    configuration.set(initialPath + ".specifics.usePlayerLocation", isUsePlayerLocation());
-    configuration.set(initialPath + ".specifics.amount", getSpawnAmount());
-    configuration.set(initialPath + ".specifics.spawnRadiusX", getSpawnRadiusX());
-    configuration.set(initialPath + ".specifics.spawnRadiusY", getSpawnRadiusY());
-    configuration.set(initialPath + ".specifics.spawnRadiusZ", getSpawnRadiusZ());
-  }
+    public void execute2(final Player player, Object... objects) {
+        try {
+            EntityType entityType = EntityType.valueOf(getMobToSpawnType().toUpperCase(Locale.ROOT));
 
-  @Override
-  public void load(final FileConfiguration configuration, String initialPath) {
-    this.mobToSpawnType = configuration.getString(initialPath + ".specifics.mobToSpawn", "");
-    this.spawnLocation = configuration.getLocation(initialPath + ".specifics.spawnLocation");
-    this.usePlayerLocation = configuration.getBoolean(initialPath + ".specifics.usePlayerLocation");
-    this.spawnAmount = configuration.getInt(initialPath + ".specifics.amount", 1);
-    this.spawnRadiusX = configuration.getInt(initialPath + ".specifics.spawnRadiusX", 0);
-    this.spawnRadiusY = configuration.getInt(initialPath + ".specifics.spawnRadiusY", 0);
-    this.spawnRadiusZ = configuration.getInt(initialPath + ".specifics.spawnRadiusZ", 0);
-  }
+            if (isUsePlayerLocation()) {
+                final Location location = player.getLocation().clone().add(new Vector(0, 1, 0));
 
-  @Override
-  public void deserializeFromSingleLineString(ArrayList<String> arguments) {
-    this.mobToSpawnType = arguments.get(0);
-    this.spawnAmount = Integer.parseInt(arguments.get(1));
+                for (int i = 0; i < getSpawnAmount(); i++) {
 
-    this.usePlayerLocation = (arguments.size() < 3);
+                    player.getWorld().spawnEntity(getRandomLocationWithRadius(location), entityType);
+                }
+            } else {
+                if (getSpawnLocation() == null) {
+                    main.getLogManager().warn("Tried to execute SpawnMob action with null location.");
+                    return;
+                }
+                if (getSpawnLocation().getWorld() == null) {
+                    main.getLogManager().warn("Tried to execute SpawnMob action with invalid world.");
+                    return;
+                }
+                final Location location = getSpawnLocation().clone().add(new Vector(0, 1, 0));
 
-    if (!isUsePlayerLocation()) {
-      final World world = Bukkit.getWorld(arguments.get(2));
-      final Vector coordinates =
-          new Vector(
-              Integer.parseInt(arguments.get(3)),
-              Integer.parseInt(arguments.get(4)),
-              Integer.parseInt(arguments.get(5)));
-      final Location location = coordinates.toLocation(world);
-
-      this.spawnLocation = location;
+                for (int i = 0; i < getSpawnAmount(); i++) {
+                    getSpawnLocation()
+                            .getWorld()
+                            .spawnEntity(getRandomLocationWithRadius(location), entityType);
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            if (main.getIntegrationsManager().isMythicMobsEnabled()
+                    && main.getIntegrationsManager()
+                    .getMythicMobsManager()
+                    .isMythicMob(getMobToSpawnType())) {
+                if (isUsePlayerLocation()) {
+                    main.getIntegrationsManager()
+                            .getMythicMobsManager()
+                            .spawnMob(getMobToSpawnType(), player.getLocation(), getSpawnAmount(), this);
+                } else {
+                    main.getIntegrationsManager()
+                            .getMythicMobsManager()
+                            .spawnMob(getMobToSpawnType(), getSpawnLocation(), getSpawnAmount(), this);
+                }
+            } else if (main.getIntegrationsManager().isEcoBossesEnabled()
+                    && main.getIntegrationsManager().getEcoBossesManager().isEcoBoss(getMobToSpawnType())) {
+                if (isUsePlayerLocation()) {
+                    main.getIntegrationsManager()
+                            .getEcoBossesManager()
+                            .spawnMob(getMobToSpawnType(), player.getLocation(), getSpawnAmount(), this);
+                } else {
+                    main.getIntegrationsManager()
+                            .getEcoBossesManager()
+                            .spawnMob(getMobToSpawnType(), getSpawnLocation(), getSpawnAmount(), this);
+                }
+            } else {
+                main.getLogManager()
+                        .warn(
+                                "Tried to execute SpawnMob with an either invalid mob, or a mythic mob while the mythic mobs plugin is not installed.");
+            }
+        }
     }
-  }
 
-  @Override
-  public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
-    return "Spawns Mob: " + getMobToSpawnType();
-  }
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+        configuration.set(initialPath + ".specifics.mobToSpawn", getMobToSpawnType());
+        configuration.set(initialPath + ".specifics.spawnLocation", getSpawnLocation());
+        configuration.set(initialPath + ".specifics.usePlayerLocation", isUsePlayerLocation());
+        configuration.set(initialPath + ".specifics.amount", getSpawnAmount());
+        configuration.set(initialPath + ".specifics.spawnRadiusX", getSpawnRadiusX());
+        configuration.set(initialPath + ".specifics.spawnRadiusY", getSpawnRadiusY());
+        configuration.set(initialPath + ".specifics.spawnRadiusZ", getSpawnRadiusZ());
+    }
 
-  public int getSpawnRadiusX() {
-    return spawnRadiusX;
-  }
+    @Override
+    public void load(final FileConfiguration configuration, String initialPath) {
+        this.mobToSpawnType = configuration.getString(initialPath + ".specifics.mobToSpawn", "");
+        this.spawnLocation = configuration.getLocation(initialPath + ".specifics.spawnLocation");
+        this.usePlayerLocation = configuration.getBoolean(initialPath + ".specifics.usePlayerLocation");
+        this.spawnAmount = configuration.getInt(initialPath + ".specifics.amount", 1);
+        this.spawnRadiusX = configuration.getInt(initialPath + ".specifics.spawnRadiusX", 0);
+        this.spawnRadiusY = configuration.getInt(initialPath + ".specifics.spawnRadiusY", 0);
+        this.spawnRadiusZ = configuration.getInt(initialPath + ".specifics.spawnRadiusZ", 0);
+    }
 
-  public void setSpawnRadiusX(int spawnRadiusX) {
-    this.spawnRadiusX = spawnRadiusX;
-  }
+    @Override
+    public void deserializeFromSingleLineString(ArrayList<String> arguments) {
+        this.mobToSpawnType = arguments.get(0);
+        this.spawnAmount = Integer.parseInt(arguments.get(1));
 
-  public int getSpawnRadiusY() {
-    return spawnRadiusY;
-  }
+        this.usePlayerLocation = (arguments.size() < 3);
 
-  public void setSpawnRadiusY(int spawnRadiusY) {
-    this.spawnRadiusY = spawnRadiusY;
-  }
+        if (!isUsePlayerLocation()) {
+            final World world = Bukkit.getWorld(arguments.get(2));
+            final Vector coordinates =
+                    new Vector(
+                            Integer.parseInt(arguments.get(3)),
+                            Integer.parseInt(arguments.get(4)),
+                            Integer.parseInt(arguments.get(5)));
+            final Location location = coordinates.toLocation(world);
 
-  public int getSpawnRadiusZ() {
-    return spawnRadiusZ;
-  }
+            this.spawnLocation = location;
+        }
+    }
 
-  public void setSpawnRadiusZ(int spawnRadiusZ) {
-    this.spawnRadiusZ = spawnRadiusZ;
-  }
+    @Override
+    public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
+        return "Spawns Mob: " + getMobToSpawnType();
+    }
+
+    public int getSpawnRadiusX() {
+        return spawnRadiusX;
+    }
+
+    public void setSpawnRadiusX(int spawnRadiusX) {
+        this.spawnRadiusX = spawnRadiusX;
+    }
+
+    public int getSpawnRadiusY() {
+        return spawnRadiusY;
+    }
+
+    public void setSpawnRadiusY(int spawnRadiusY) {
+        this.spawnRadiusY = spawnRadiusY;
+    }
+
+    public int getSpawnRadiusZ() {
+        return spawnRadiusZ;
+    }
+
+    public void setSpawnRadiusZ(int spawnRadiusZ) {
+        this.spawnRadiusZ = spawnRadiusZ;
+    }
 }

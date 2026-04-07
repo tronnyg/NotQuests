@@ -18,96 +18,94 @@
 
 package rocks.gravili.notquests.paper.structs.actions;
 
-import cloud.commandframework.ArgumentDescription;
-import cloud.commandframework.Command;
-import cloud.commandframework.paper.PaperCommandManager;
-import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.description.Description;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import rocks.gravili.notquests.paper.NotQuests;
-import rocks.gravili.notquests.paper.commands.arguments.QuestSelector;
 import rocks.gravili.notquests.paper.structs.ActiveQuest;
 import rocks.gravili.notquests.paper.structs.Quest;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
+import java.util.ArrayList;
+
+import static rocks.gravili.notquests.paper.commands.arguments.QuestParser.questParser;
+
 public class FailQuestAction extends Action {
 
-  private String questToFailName = "";
+    private String questToFailName = "";
 
-  public FailQuestAction(final NotQuests main) {
-    super(main);
-  }
-
-  public static void handleCommands(
-      NotQuests main,
-      PaperCommandManager<CommandSender> manager,
-      Command.Builder<CommandSender> builder,
-      ActionFor actionFor) {
-    manager.command(
-        builder
-            .argument(
-                QuestSelector.of("quest to fail", main),
-                ArgumentDescription.of("Name of the Quest which should be failed for the player."))
-            .handler(
-                (context) -> {
-                  final Quest foundQuest = context.get("quest to fail");
-
-                  FailQuestAction failQuestAction = new FailQuestAction(main);
-                  failQuestAction.setQuestToFailName(foundQuest.getIdentifier() );
-
-                  main.getActionManager().addAction(failQuestAction, context, actionFor);
-                }));
-  }
-
-  public final String getQuestToFailName() {
-    return questToFailName;
-  }
-
-  public void setQuestToFailName(final String questName) {
-    this.questToFailName = questName;
-  }
-
-  @Override
-  public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
-    Quest foundQuest = main.getQuestManager().getQuest(getQuestToFailName());
-    if (foundQuest == null) {
-      main.getLogManager()
-          .warn(
-              "Tried to execute FailQuest action with null quest. Cannot find the following Quest: "
-                  + getQuestToFailName());
-      return;
+    public FailQuestAction(final NotQuests main) {
+        super(main);
     }
 
-    if (questPlayer == null) {
-      return;
+    public static void handleCommands(
+            NotQuests main,
+            LegacyPaperCommandManager<CommandSender> manager,
+            Command.Builder<CommandSender> builder,
+            ActionFor actionFor) {
+        manager.command(builder.required("quest to fail", questParser(main), Description.of("Name of the Quest which should be failed for the player."))
+                .handler(
+                        (context) -> {
+                            final Quest foundQuest = context.get("quest to fail");
+
+                            FailQuestAction failQuestAction = new FailQuestAction(main);
+                            failQuestAction.setQuestToFailName(foundQuest.getIdentifier());
+
+                            main.getActionManager().addAction(failQuestAction, context, actionFor);
+                        }));
     }
 
-    ActiveQuest foundActiveQuest = questPlayer.getActiveQuest(foundQuest);
-
-    if (foundActiveQuest == null) {
-      return;
+    public final String getQuestToFailName() {
+        return questToFailName;
     }
 
-    questPlayer.failQuest(foundActiveQuest);
-  }
+    public void setQuestToFailName(final String questName) {
+        this.questToFailName = questName;
+    }
 
-  @Override
-  public void save(FileConfiguration configuration, String initialPath) {
-    configuration.set(initialPath + ".specifics.quest", getQuestToFailName());
-  }
+    @Override
+    public void executeInternally(final QuestPlayer questPlayer, Object... objects) {
+        Quest foundQuest = main.getQuestManager().getQuest(getQuestToFailName());
+        if (foundQuest == null) {
+            main.getLogManager()
+                    .warn(
+                            "Tried to execute FailQuest action with null quest. Cannot find the following Quest: "
+                                    + getQuestToFailName());
+            return;
+        }
 
-  @Override
-  public void load(final FileConfiguration configuration, String initialPath) {
-    this.questToFailName = configuration.getString(initialPath + ".specifics.quest");
-  }
+        if (questPlayer == null) {
+            return;
+        }
 
-  @Override
-  public void deserializeFromSingleLineString(ArrayList<String> arguments) {
-    this.questToFailName = arguments.get(0);
-  }
+        ActiveQuest foundActiveQuest = questPlayer.getActiveQuest(foundQuest);
 
-  @Override
-  public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
-    return "Fails Quest: " + getQuestToFailName();
-  }
+        if (foundActiveQuest == null) {
+            return;
+        }
+
+        questPlayer.failQuest(foundActiveQuest);
+    }
+
+    @Override
+    public void save(FileConfiguration configuration, String initialPath) {
+        configuration.set(initialPath + ".specifics.quest", getQuestToFailName());
+    }
+
+    @Override
+    public void load(final FileConfiguration configuration, String initialPath) {
+        this.questToFailName = configuration.getString(initialPath + ".specifics.quest");
+    }
+
+    @Override
+    public void deserializeFromSingleLineString(ArrayList<String> arguments) {
+        this.questToFailName = arguments.get(0);
+    }
+
+    @Override
+    public String getActionDescription(final QuestPlayer questPlayer, final Object... objects) {
+        return "Fails Quest: " + getQuestToFailName();
+    }
 }

@@ -1,8 +1,9 @@
 package rocks.gravili.notquests.paper.managers.integrations;
 
-import java.util.UUID;
 import org.geysermc.floodgate.api.FloodgateApi;
 import rocks.gravili.notquests.paper.NotQuests;
+
+import java.util.UUID;
 
 public class FloodgateManager {
   private final NotQuests main;

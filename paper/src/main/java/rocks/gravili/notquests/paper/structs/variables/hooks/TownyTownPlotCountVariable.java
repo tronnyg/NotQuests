@@ -21,10 +21,12 @@ package rocks.gravili.notquests.paper.structs.variables.hooks;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import java.util.List;
+import org.incendo.cloud.suggestion.Suggestion;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.variables.Variable;
+
+import java.util.List;
 
 public class TownyTownPlotCountVariable extends Variable<Integer> {
   public TownyTownPlotCountVariable(NotQuests main) {
@@ -56,7 +58,7 @@ public class TownyTownPlotCountVariable extends Variable<Integer> {
   }
 
   @Override
-  public List<String> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
+  public List<Suggestion> getPossibleValues(QuestPlayer questPlayer, Object... objects) {
     return null;
   }
 

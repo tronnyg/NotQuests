@@ -18,13 +18,14 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.io.IOException;
-import java.util.HashMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.managers.data.Category;
 import rocks.gravili.notquests.paper.structs.conditions.Condition;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 public class ConditionsYMLManager {
   private final NotQuests main;

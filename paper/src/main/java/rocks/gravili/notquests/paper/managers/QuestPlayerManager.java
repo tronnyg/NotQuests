@@ -18,9 +18,6 @@
 
 package rocks.gravili.notquests.paper.managers;
 
-import java.sql.*;
-import java.util.*;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +25,12 @@ import org.jetbrains.annotations.Nullable;
 import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.*;
 import rocks.gravili.notquests.paper.structs.triggers.ActiveTrigger;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 public class QuestPlayerManager {
   private final NotQuests main;

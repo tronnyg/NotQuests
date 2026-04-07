@@ -1,7 +1,5 @@
 package rocks.gravili.notquests.paper.conversation.interactionhandlers;
 
-import java.util.ArrayList;
-import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -12,6 +10,9 @@ import rocks.gravili.notquests.paper.conversation.ConversationLine;
 import rocks.gravili.notquests.paper.conversation.ConversationPlayer;
 import rocks.gravili.notquests.paper.conversation.Speaker;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class SendClickableText implements
     ConversationInteractionHandler {

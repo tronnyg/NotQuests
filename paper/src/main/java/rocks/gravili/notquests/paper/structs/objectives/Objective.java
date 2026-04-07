@@ -18,8 +18,6 @@
 
 package rocks.gravili.notquests.paper.structs.objectives;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -31,6 +29,9 @@ import rocks.gravili.notquests.paper.structs.PredefinedProgressOrder;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.actions.Action;
 import rocks.gravili.notquests.paper.structs.conditions.Condition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Objective extends ObjectiveHolder{
   protected final NotQuests main;

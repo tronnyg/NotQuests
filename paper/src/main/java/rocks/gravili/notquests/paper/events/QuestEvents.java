@@ -1042,9 +1042,6 @@ public class QuestEvents implements Listener {
             questPlayer.queueObjectiveCheck(activeObjective -> {
                 if (activeObjective.getObjective() instanceof final KillMobsObjective killMobsObjective) {
                     if (activeObjective.isUnlocked()) {
-                        if(main.getIntegrationsManager().isProjectKorraEnabled() && !killMobsObjective.getProjectKorraAbility().isBlank()){
-                            return; //See ProjectKorraEvents.java onEntityKilled() for that.
-                        }
                         final EntityType killedMob = e.getEntity().getType();
                         if (killMobsObjective.getMobToKill().equalsIgnoreCase("any") || killMobsObjective.getMobToKill().equalsIgnoreCase(killedMob.toString())) {
                             if (e.getEntity() != e.getEntity().getKiller()) { //Suicide prevention
@@ -1327,10 +1324,6 @@ public class QuestEvents implements Listener {
             }
         }
 
-        if (e.getPlayer().isOp() && main.getConfiguration().isUpdateCheckerNotifyOpsInChat()) {
-            main.getUpdateManager().checkForPluginUpdates(e.getPlayer());
-
-        }
 
 
     }
