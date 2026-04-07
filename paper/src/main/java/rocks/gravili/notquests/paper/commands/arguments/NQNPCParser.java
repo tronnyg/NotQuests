@@ -60,7 +60,7 @@ public class NQNPCParser<C> implements ArgumentParser<C, NQNPCResult> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Conversation: " + commandContext));
         }
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
 
         if(allowNone && rawInput.equalsIgnoreCase("none")){
             // TODO: Missing context

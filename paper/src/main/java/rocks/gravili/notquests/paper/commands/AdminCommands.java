@@ -45,8 +45,8 @@ import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import static org.incendo.cloud.bukkit.parser.PlayerParser.playerParser;
-import static org.incendo.cloud.minecraft.extras.parser.ComponentParser.miniMessageParser;
-import static org.incendo.cloud.parser.standard.BooleanParser.booleanParser;
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
+import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.CategoryParser.categoryParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ConditionParser.conditionParser;
@@ -82,7 +82,6 @@ public class AdminCommands {
         handleQuestPoints();
 
         new DebugCommand(notQuests, builder).apply(manager);
-        new EditorCommand(notQuests, builder).apply(manager);
         new ListCommand(notQuests, builder).apply(manager);
         new QuestCompleteCommand(notQuests, builder).apply(manager);
         new QuestCreateCommand(notQuests, builder).apply(manager);
@@ -480,11 +479,11 @@ public class AdminCommands {
 
         manager.command(conditionsEditBuilder.literal("description", Description.of("Sets the new description of the condition."))
                 .literal("set")
-                .required("description", miniMessageParser(), Description.of("Condition description"))
+                .required("description", greedyStringParser(), Description.of("Condition description"))
                 .handler((context) -> {
                     final Condition condition = context.get("condition");
 
-                    final String description = String.join(" ", (String[]) context.get("description"));
+                    final String description = (String) context.get("description");
 
                     condition.setDescription(description);
 
@@ -499,7 +498,7 @@ public class AdminCommands {
 
         manager.command(conditionsEditBuilder.literal("hidden", Description.of("Sets the new hidden status of the condition."))
                 .literal("set")
-                .required("hiddenStatusExpression", booleanParser(), Description.of("Expression"))
+                .required("hiddenStatusExpression", stringParser(), Description.of("Expression"))
                 .handler((context) -> {
                     final Condition condition = context.get("condition");
 
@@ -682,7 +681,7 @@ public class AdminCommands {
         manager.command(editActionConditionsBuilder.commandDescription(Description.of("Sets the new description of the Action condition."))
                 .literal("description")
                 .literal("set")
-                .required("description", miniMessageParser(), Description.of("Action condition description"))
+                .required("description", greedyStringParser(), Description.of("Action condition description"))
                 .handler((context) -> {
                     final Action action = context.get("action");
 
@@ -696,7 +695,7 @@ public class AdminCommands {
                         return;
                     }
 
-                    final String description = String.join(" ", (String[]) context.get("description"));
+                    final String description = (String) context.get("description");
 
                     condition.setDescription(description);
 
@@ -764,7 +763,7 @@ public class AdminCommands {
 
         manager.command(editActionConditionsBuilder.literal("hidden", Description.of("Sets the new hidden status of the Action condition."))
                 .literal("set")
-                .required("hiddenStatusExpression", booleanParser(), Description.of("Expression"))
+                .required("hiddenStatusExpression", stringParser(), Description.of("Expression"))
                 .handler((context) -> {
                     final Action action = context.get("action");
 

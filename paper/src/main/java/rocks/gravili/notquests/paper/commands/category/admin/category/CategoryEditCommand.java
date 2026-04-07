@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.CategoryParser.categoryParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
 
 public class CategoryEditCommand extends BaseCommand {
@@ -34,7 +35,9 @@ public class CategoryEditCommand extends BaseCommand {
 
     @Override
     public void apply(CommandManager<CommandSender> commandManager) {
-        builder = builder.literal("edit");
+        builder = builder.literal("categories")
+                .literal("edit")
+                .required("category", categoryParser(notQuests), Description.of("Category to edit"));
 
         commandManager.command(builder.literal("predefinedProgressOrder")
                 .literal("show", Description.of("Shows the current predefined order in which the quests inside this category need to be progressed for your quest."))
@@ -175,7 +178,7 @@ public class CategoryEditCommand extends BaseCommand {
                 .handler((context) -> {
                     final Category category = context.get("category");
 
-                    final String displayName = String.join(" ", (String[]) context.get("display-name"));
+                    final String displayName = (String) context.get("display-name");
 
                     category.setDisplayName(displayName, true);
                     context.sender().sendMessage(notQuests.parse("<success>Display name successfully added to category <highlight>"

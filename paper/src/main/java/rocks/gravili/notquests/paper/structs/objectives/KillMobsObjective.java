@@ -30,8 +30,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.EntityTypeParser.entityTypeParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class KillMobsObjective extends Objective {
 
@@ -51,7 +51,7 @@ public class KillMobsObjective extends Objective {
     addObjectiveBuilder =
         addObjectiveBuilder
             .required("entityType", entityTypeParser(main), Description.of("Type of Entity the player has to kill."))
-            .required("amount", integerParser(1), Description.of("Amount of kills needed"))
+            .required("amount", numberVariableParser("amount", null), Description.of("Amount of kills needed"))
             .flag(main.getCommandManager().nametag_equals)
             .flag(main.getCommandManager().nametag_containsany);
 

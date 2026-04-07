@@ -49,7 +49,7 @@ public class ActionParser<C> implements ArgumentParser<C, Action> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Category: " + commandContext));
         }
-        final String input = String.valueOf(commandInput.peek());
+        final String input = commandInput.readString();
         final Action foundAction = main.getActionsYMLManager().getAction(input);
 
         if (foundAction == null) {return ArgumentParseResult.failure(new IllegalArgumentException("Action '" + input + "' does not exist!"));

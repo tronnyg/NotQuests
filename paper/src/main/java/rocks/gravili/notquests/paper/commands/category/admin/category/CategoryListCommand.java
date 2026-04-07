@@ -17,6 +17,7 @@ public class CategoryListCommand extends BaseCommand {
     @Override
     public void apply(CommandManager<CommandSender> commandManager) {
         commandManager.command(builder.commandDescription(Description.of("Lists all categories."))
+                .literal("categories")
                 .literal("list")
                 .handler((context) -> {
                     context.sender().sendMessage(Component.empty());

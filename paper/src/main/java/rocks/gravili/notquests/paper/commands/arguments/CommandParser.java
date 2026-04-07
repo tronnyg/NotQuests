@@ -49,7 +49,7 @@ public class CommandParser<C> implements ArgumentParser<C, StringArray> {
         final String[] result = new String[commandInput.input().split(" ").length];
         StringArray finalResult = new StringArray(result);
         for (int i = 0; i < result.length; i++) {
-            result[i] = commandInput.peekString(); // TODO: Missing context
+            result[i] = commandInput.readString();
         }
         return ArgumentParseResult.success(finalResult);
     }

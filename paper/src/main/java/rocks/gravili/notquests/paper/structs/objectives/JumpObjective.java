@@ -30,7 +30,7 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class JumpObjective extends Objective {
 
@@ -44,7 +44,7 @@ public class JumpObjective extends Objective {
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
     manager.command(addObjectiveBuilder
-            .required("amount", integerParser(1), Description.of("Amount of times the player needs to jump."))
+            .required("amount", numberVariableParser("amount", null), Description.of("Amount of times the player needs to jump."))
             .handler(
                 (context) -> {
                   final String amountExpression = context.get("amount");

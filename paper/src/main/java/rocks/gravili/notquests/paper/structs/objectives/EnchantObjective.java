@@ -18,6 +18,7 @@ import java.util.Map;
 import static org.incendo.cloud.bukkit.parser.EnchantmentParser.enchantmentParser;
 import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class EnchantObjective extends Objective {
     private String enchantment;
@@ -41,7 +42,7 @@ public class EnchantObjective extends Objective {
         manager.command(addObjectiveBuilder
                 .required("enchantment", enchantmentParser(), Description.of("Enchantment which needs to be applied to the item"))
                 .required("materials", itemStackSelectionParser(main), Description.of("Material of the item which needs to be enchanted"))
-                .required("amount", integerParser(1), Description.of("Amount of times the item needs to be enchanted"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of times the item needs to be enchanted"))
                 .required("min", integerParser(1), Description.of("Minimum level of the enchantment"))
                 .required("max", integerParser(1), Description.of("Maximum level of the enchantment"))
                 .handler(

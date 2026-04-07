@@ -54,7 +54,7 @@ public class ApplyOnParser<C> implements ArgumentParser<C, Integer> {
         }
         final Quest quest = commandContext.get(questContext);
 
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
         if (rawInput.equalsIgnoreCase("Quest")) {
             return ArgumentParseResult.success(0);
         } else {

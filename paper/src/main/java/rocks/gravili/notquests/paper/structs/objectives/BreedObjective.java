@@ -28,8 +28,8 @@ import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.EntityTypeParser.entityTypeParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class BreedObjective extends Objective {
   private String entityToBreedType = "";
@@ -45,7 +45,7 @@ public class BreedObjective extends Objective {
       final int level) {
     manager.command(addObjectiveBuilder
             .required("entityType", entityTypeParser(main, false), Description.of("Type of Entity the player has to breed."))
-            .required("amount", integerParser(1), Description.of("Amount of times the player needs to breed this entity."))
+            .required("amount", numberVariableParser("amount", null), Description.of("Amount of times the player needs to breed this entity."))
             .handler(
                 (context) -> {
                   final String entityType = context.get("entityType");

@@ -49,7 +49,7 @@ public class CategoryParser<C> implements ArgumentParser<C, Category> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Category: " + commandContext));
         }
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
         List<Category> entries = main.getDataManager().getCategories();
         Category foundCategory;
         for (Category category : entries) {

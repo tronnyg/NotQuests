@@ -35,6 +35,7 @@ import java.util.Map;
 
 import static org.incendo.cloud.bukkit.parser.WorldParser.worldParser;
 import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class InteractObjective extends Objective {
 
@@ -54,7 +55,7 @@ public class InteractObjective extends Objective {
             Command.Builder<CommandSender> addObjectiveBuilder,
             final int level) {
         manager.command(addObjectiveBuilder
-                .required("amount", integerParser(1), Description.of("Amount of interactions needed"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of interactions needed"))
                 .required("world", worldParser(), Description.of("World name"))
                 /* .argumentTriplet(
                         "coords",

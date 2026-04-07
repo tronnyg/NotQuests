@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class NumberVariableObjective extends Objective { // TODO: Not done yet
     private String variableName;
@@ -73,7 +73,7 @@ public class NumberVariableObjective extends Objective { // TODO: Not done yet
                         main.getUtilManager().sendFancyCommandCompletion(context.sender(), lastString.input().split(" "), "[Math Comparison Operator]", "[...]");
                         return CompletableFuture.completedFuture(completions);
                     })
-                    .required("amount", integerParser(1), Description.of("Amount"))
+                    .required("amount", numberVariableParser("amount", null), Description.of("Amount"))
 
                     .flag(manager.flagBuilder("checkOnlyWhenCorrespondingVariableValueChanged").withDescription(Description.of("This checks this objective only, when the corresponding variable value is changed via an action, instead of checking every x seconds.")))
                     .handler((context) -> {

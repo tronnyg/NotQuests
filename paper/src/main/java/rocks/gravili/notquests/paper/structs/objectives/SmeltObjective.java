@@ -31,8 +31,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class SmeltObjective extends Objective {
 
@@ -49,7 +49,7 @@ public class SmeltObjective extends Objective {
             final int level) {
         manager.command(addObjectiveBuilder
                 .required("materials", itemStackSelectionParser(main), Description.description("Material of the item which needs to be smelted"))
-                .required("amount", integerParser(1), Description.of("Amount of items which need to be smelted"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of items which need to be smelted"))
                 .handler(
                         (context) -> {
                             final String amountExpression = context.get("amount");

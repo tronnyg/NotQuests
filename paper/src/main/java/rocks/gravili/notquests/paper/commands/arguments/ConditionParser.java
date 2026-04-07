@@ -49,7 +49,7 @@ public class ConditionParser<C> implements ArgumentParser<C, Condition> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Condition: " + commandContext));
         }
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
         final Condition foundCondition = main.getConditionsYMLManager().getCondition(rawInput);
         if (foundCondition == null) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Condition '" + rawInput + "' does not exist!"));

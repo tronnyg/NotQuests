@@ -13,8 +13,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class FishItemsObjective extends Objective {
 
@@ -31,7 +31,7 @@ public class FishItemsObjective extends Objective {
             final int level) {
         manager.command(addObjectiveBuilder
                 .required("materials", itemStackSelectionParser(main), Description.of("Material of the item which needs to be fished"))
-                .required("amount", integerParser(1), Description.of("Amount of items which need to be fished"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of items which need to be fished"))
                 .handler(
                         (context) -> {
                             final String amountExpression = context.get("amount");

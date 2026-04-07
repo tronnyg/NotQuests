@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
-import static rocks.gravili.notquests.paper.commands.arguments.CategoryParser.categoryParser;
 
 public class CategoryCreateCommand extends BaseCommand {
     public CategoryCreateCommand(NotQuests notQuests, Command.Builder<CommandSender> builder) {
@@ -22,9 +21,9 @@ public class CategoryCreateCommand extends BaseCommand {
 
     @Override
     public void apply(CommandManager<CommandSender> commandManager) {
-        builder = builder.literal("creater");
+        builder = builder.literal("categories").literal("create");
 
-        commandManager.command(builder.required("categoryName", categoryParser(notQuests), Description.of("Name of your new category"), (context, input) -> {
+        commandManager.command(builder.required("categoryName", stringParser(), Description.of("Name of your new category"), (context, input) -> {
                             notQuests.getUtilManager().sendFancyCommandCompletion(context.sender(), input.input().split(" "), "[Name of your new category]", "");
 
                             final ArrayList<Suggestion> suggestions = new ArrayList<>();

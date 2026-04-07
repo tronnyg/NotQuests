@@ -31,8 +31,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class PickupItemsObjective extends Objective {
 
@@ -53,7 +53,7 @@ public class PickupItemsObjective extends Objective {
             final int level) {
         manager.command(addObjectiveBuilder
                 .required("materials", itemStackSelectionParser(main), Description.description("Material of the item which needs to be collected"))
-                .required("amount", integerParser(1), Description.of("Amount of items which need to be collected"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of items which need to be collected"))
                 .flag(manager.flagBuilder("doNotDeductIfItemIsDropped").withDescription(Description.of("Makes it so Quest progress is NOT removed if the item is dropped.")))
                 .flag(manager.flagBuilder("doNotDeductIfItemIsPlaced").withDescription(Description.of("Makes it so Quest progress is NOT removed if the item is placed.")))
                 .flag(manager.flagBuilder("doNotDeductIfItemIsRemovedFromInventory").withDescription(Description.of("Makes it so Quest progress is NOT removed if the item is removed from inventory.")))

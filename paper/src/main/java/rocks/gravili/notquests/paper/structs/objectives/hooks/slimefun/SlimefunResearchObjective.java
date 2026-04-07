@@ -29,7 +29,7 @@ import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import rocks.gravili.notquests.paper.structs.objectives.Objective;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class SlimefunResearchObjective extends Objective {
 
@@ -47,7 +47,7 @@ public class SlimefunResearchObjective extends Objective {
         }
 
         manager.command(addObjectiveBuilder
-                .required("amount", integerParser(1), Description.of("Amount to spend on research"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount to spend on research"))
                 .handler((context) -> {
                     SlimefunResearchObjective slimefunResearchobjective = new SlimefunResearchObjective(main);
                     slimefunResearchobjective.setProgressNeededExpression(context.get("amount"));

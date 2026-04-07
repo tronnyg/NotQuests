@@ -61,12 +61,13 @@ public class QuestParser<C> implements ArgumentParser<C, Quest> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new QuestParseException(commandContext));
         }
-        final Quest foundQuest = main.getQuestManager().getQuest(commandInput.input());
+        final String input = commandInput.readString();
+        final Quest foundQuest = main.getQuestManager().getQuest(input);
         if (foundQuest == null) {
             if (commandContext.sender() instanceof Player player) {
-                return ArgumentParseResult.failure(new IllegalArgumentException(main.getLanguageManager().getString("chat.quest-does-not-exist", player).replace("%QUESTNAME%", commandInput.input())));
+                return ArgumentParseResult.failure(new IllegalArgumentException(main.getLanguageManager().getString("chat.quest-does-not-exist", player).replace("%QUESTNAME%", input)));
             } else {
-                return ArgumentParseResult.failure(new IllegalArgumentException(main.getLanguageManager().getString("chat.quest-does-not-exist", (QuestPlayer) null).replace("%QUESTNAME%", commandInput.input())));
+                return ArgumentParseResult.failure(new IllegalArgumentException(main.getLanguageManager().getString("chat.quest-does-not-exist", (QuestPlayer) null).replace("%QUESTNAME%", input)));
             }
         }
         if (this.takeEnabledOnly && !foundQuest.isTakeEnabled() ) {

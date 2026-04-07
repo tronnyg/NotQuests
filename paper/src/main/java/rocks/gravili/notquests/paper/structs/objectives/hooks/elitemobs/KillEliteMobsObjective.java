@@ -37,8 +37,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class KillEliteMobsObjective extends Objective {
 
@@ -127,7 +127,7 @@ public class KillEliteMobsObjective extends Objective {
 
         manager.command(addObjectiveBuilder
                 .literal("KillEliteMobs")
-                .required("amount", integerParser(1), Description.of("Amount of kills needed"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of kills needed"))
                 .flag(mobname)
                 .flag(minimumLevel)
                 .flag(maximumLevel)

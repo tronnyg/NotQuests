@@ -80,7 +80,7 @@ public class NumberVariableValueParser<C> implements ArgumentParser<C, String> {
         if(commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("No input provided"));
         }
-        final String input = commandInput.input();
+        final String input = commandInput.readString();
 
         try{
             final NumberExpression numberExpression = new NumberExpression(main, input);

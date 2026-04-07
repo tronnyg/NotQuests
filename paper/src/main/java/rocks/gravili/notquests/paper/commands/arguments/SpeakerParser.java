@@ -51,7 +51,7 @@ public class SpeakerParser<C> implements ArgumentParser<C, Speaker> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Category: " + commandContext));
         }
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
         final Conversation conversation = commandContext.get(conversationContext);
 
         for (final Speaker speaker : conversation.getSpeakers()) {

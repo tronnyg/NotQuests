@@ -61,7 +61,8 @@ public class ItemStackSelectionParser<C> implements ArgumentParser<C, ItemStackS
         try {
             final ItemStackSelection itemStackSelection = new ItemStackSelection(main);
 
-            for (final String inputPart : commandInput.input().split(",")) {
+            final String input = commandInput.readString();
+            for (final String inputPart : input.split(",")) {
                 if (inputPart.equalsIgnoreCase("hand")) {
                     if (commandContext.sender() instanceof final Player player) {
                         itemStackSelection.addItemStack(player.getInventory().getItemInMainHand());
@@ -86,7 +87,7 @@ public class ItemStackSelectionParser<C> implements ArgumentParser<C, ItemStackS
             return ArgumentParseResult.success(itemStackSelection);
 
         } catch (final IllegalArgumentException exception) {
-            return ArgumentParseResult.failure(new MaterialParseException(commandInput.input(), commandContext));
+            return ArgumentParseResult.failure(new MaterialParseException("invalid input", commandContext));
         }
     }
 

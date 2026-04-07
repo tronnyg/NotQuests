@@ -37,8 +37,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 import static rocks.gravili.notquests.paper.commands.arguments.NQNPCParser.nqNPCParser;
 
 public class DeliverItemsObjective extends Objective {
@@ -57,7 +57,7 @@ public class DeliverItemsObjective extends Objective {
                                       final int level) {
         manager.command(addObjectiveBuilder
                         .required("materials", itemStackSelectionParser(main), Description.of("Material of the item which needs to be delivered"))
-                        .required("amount", integerParser(1), Description.of("Amount of items which need to be delivered"))
+                        .required("amount", numberVariableParser("amount", null), Description.of("Amount of items which need to be delivered"))
                         .required("NPC", nqNPCParser(main, false, true), Description.of("NPC to whom the items should be delivered."))
                 .handler((context) -> {
                     final Quest quest = context.get("quest");

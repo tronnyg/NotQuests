@@ -12,7 +12,7 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class ShearSheepObjective extends Objective {
 
@@ -28,7 +28,7 @@ public class ShearSheepObjective extends Objective {
             Command.Builder<CommandSender> addObjectiveBuilder,
             final int level) {
         manager.command(addObjectiveBuilder
-                .required("amount", integerParser(1), Description.of("Amount of shears needed"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of shears needed"))
                 .flag(manager.flagBuilder("cancelShearing").withDescription(Description.of("Makes it so the shearing will be cancelled while this objective is active")))
                 .flag(main.getCommandManager().maxDistance)
                 .handler(

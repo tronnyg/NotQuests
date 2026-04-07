@@ -48,7 +48,7 @@ public class ObjectiveTriggerCommand extends BaseCommand {
                 )
                 .required("player", playerParser(), Description.of("Player whose trigger should e triggered."))
                 .handler((context) -> {
-                    final String triggerName = context.get("Trigger Name");
+                    final String triggerName = context.get("trigger-name");
                     final Player player = context.get("player");
                     final QuestPlayer questPlayer = notQuests.getQuestPlayerManager().getActiveQuestPlayer(player.getUniqueId());
                     if (questPlayer != null) {

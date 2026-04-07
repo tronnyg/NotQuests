@@ -31,8 +31,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class PlaceBlocksObjective extends Objective {
 
@@ -51,7 +51,7 @@ public class PlaceBlocksObjective extends Objective {
             final int level) {
         manager.command(addObjectiveBuilder
                 .required("materials", itemStackSelectionParser(main), Description.of("Material of the block which needs to be placed"))
-                .required("amount", integerParser(1), Description.of("Amount of blocks which need to be placed"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of blocks which need to be placed"))
                 .flag(manager.flagBuilder("doNotDeductIfBlockIsBroken").withDescription(Description.of("Makes it so Quest progress is not removed if the block is broken")))
                 .handler((context) -> {
                     final String amountExpression = context.get("amount");

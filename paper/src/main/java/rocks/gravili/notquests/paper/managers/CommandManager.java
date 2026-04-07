@@ -511,67 +511,34 @@ public class CommandManager {
     public void constructCommands() {
 
         // General Stuff
-        MinecraftExceptionHandler<Audience> exceptionHandler = MinecraftExceptionHandler.create(AudienceProvider.nativeAudience())
-                .decorator(message -> main.parse("<main>NotQuests > ").append(main.parse(main.getMiniMessage().serialize(message))))
-                .defaultCommandExecutionHandler((context) -> {
-                    main.getLogManager().debug("Command1: " + context.exception().getMessage());
+        MinecraftExceptionHandler.<CommandSender>create(sender -> sender)
+                .decorator(message -> main.parse("<main>NotQuests > ").append(message))
+                .handler(org.incendo.cloud.exception.ArgumentParseException.class, (formatter, ctx) -> {
+                    var cause = ctx.exception().getCause();
+                    main.getLogManager().debug("Command (argument parse): " + cause.getMessage());
                     if (main.getConfiguration().debug) {
-                        context.exception().printStackTrace();
+                        ctx.exception().printStackTrace();
                     }
+                    return main.parse("<error>" + cause.getMessage());
+                })
+                .handler(org.incendo.cloud.exception.CommandExecutionException.class, (formatter, ctx) -> {
+                    var cause = ctx.exception().getCause();
+                    main.getLogManager().debug("Command (execution): " + cause.getMessage());
                     if (main.getConfiguration().debug) {
-                        context.exception().printStackTrace();
+                        ctx.exception().printStackTrace();
                     }
-                    main.getLogManager().debug("<error>" + context.exception().getCause().getMessage());
-                }).defaultHandlers();
-
-        /*
-        TODO fix up the exception handler
-        new MinecraftExceptionHandler<CommandSender>()
-                .withArgumentParsingHandler()
-                .withInvalidSenderHandler()
-                .withInvalidSyntaxHandler()
-                .withNoPermissionHandler()
-                .withCommandExecutionHandler()
-                .withDecorator(
-                        message -> {
-                            return main.parse("<main>NotQuests > ")
-                                    .append(main.parse(main.getMiniMessage().serialize(message)));
-                        })
-                .withHandler(
-                        MinecraftExceptionHandler.ExceptionType.INVALID_SYNTAX,
-                        (sender, e) -> {
-                            main.getLogManager().debug("Command0: " + e.toString());
-                            if (main.getConfiguration().debug) {
-                                e.printStackTrace();
-                            }
-                            final String[] split = e.getMessage().split("syntax is: ");
-                            minecraftAdminHelp.queryCommands(split[1], sender);
-                            return main.parse("<error>" + split[0] + "syntax is: <main>" + split[1]);
-                        })
-                .withHandler(
-                        ExceptionType.COMMAND_EXECUTION,
-                        (sender, e) -> {
-                            main.getLogManager().debug("Command1: " + e.toString());
-                            if (main.getConfiguration().debug) {
-                                e.printStackTrace();
-                            }
-                            if (main.getConfiguration().debug) {
-                                e.printStackTrace();
-                            }
-                            return main.parse("<error>" + e.getCause().getMessage());
-                        })
-                .withHandler(
-                        ExceptionType.ARGUMENT_PARSING,
-                        (sender, e) -> {
-                            main.getLogManager().debug("Command2: " + e.toString());
-                            if (main.getConfiguration().debug) {
-                                e.printStackTrace();
-                            }
-                            return main.parse("<error>" + e.getCause().getMessage());
-                        });
-
-        exceptionHandler. (commandManager, AudienceProvider.nativeAudience());
-        */
+                    return main.parse("<error>" + cause.getMessage());
+                })
+                .handler(org.incendo.cloud.exception.InvalidSyntaxException.class, (formatter, ctx) -> {
+                    main.getLogManager().debug("Command (syntax): " + ctx.exception().getMessage());
+                    if (main.getConfiguration().debug) {
+                        ctx.exception().printStackTrace();
+                    }
+                    return main.parse("<error>Invalid syntax! Correct syntax is: <main>" + ctx.exception().correctSyntax());
+                })
+                .defaultInvalidSenderHandler()
+                .defaultNoPermissionHandler()
+                .registerTo(commandManager);
         // User Stuff
         // Help menu
 

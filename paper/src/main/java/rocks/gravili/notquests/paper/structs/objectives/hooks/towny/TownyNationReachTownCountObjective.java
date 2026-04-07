@@ -36,7 +36,7 @@ import rocks.gravili.notquests.paper.structs.objectives.Objective;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class TownyNationReachTownCountObjective extends Objective {
 
@@ -56,7 +56,7 @@ public class TownyNationReachTownCountObjective extends Objective {
     }
 
     manager.command(addObjectiveBuilder
-            .required("amount", integerParser(1), Description.description("Minimum amount of towns"))
+            .required("amount", numberVariableParser("amount", null), Description.description("Minimum amount of towns"))
             .flag(manager.flagBuilder("doNotCountPreviousTowns").withDescription(Description.of("Makes it so only additional towns from the time of unlocking this Objective will count (and previous/existing counts will not count, so it starts from zero)")))
             .handler(
                 (context) -> {

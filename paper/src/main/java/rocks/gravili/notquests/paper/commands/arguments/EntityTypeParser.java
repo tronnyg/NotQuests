@@ -53,7 +53,7 @@ public class EntityTypeParser<C> implements ArgumentParser<C, String> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Category: " + commandContext));
         }
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
         if (mythicMobsFactions && main.getIntegrationsManager().isMythicMobsEnabled() && main.getIntegrationsManager().getMythicMobsManager() != null) {
             if(main.getIntegrationsManager().getMythicMobsManager().getFactionNames("mmfaction:").contains(rawInput)) {
                 return ArgumentParseResult.success(rawInput);

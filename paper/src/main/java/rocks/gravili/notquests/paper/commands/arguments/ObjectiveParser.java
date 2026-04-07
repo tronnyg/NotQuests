@@ -53,7 +53,7 @@ public class ObjectiveParser<C> implements ArgumentParser<C, Objective> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Objective: " + commandContext));
         }
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
         List<Objective> entries = getObjectiveHolderForLevel(commandContext, level).getObjectives();
         for (Objective objective : entries) {
             if (String.valueOf(objective.getObjectiveID()).equalsIgnoreCase(rawInput)) {

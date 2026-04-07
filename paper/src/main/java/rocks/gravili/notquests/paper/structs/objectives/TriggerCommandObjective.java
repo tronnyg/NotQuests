@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class TriggerCommandObjective extends Objective {
 
@@ -56,7 +56,7 @@ public class TriggerCommandObjective extends Objective {
                     completions.add(Suggestion.suggestion("<Enter new TriggerCommand name>"));
                     return CompletableFuture.completedFuture(completions);
                 })
-                .required("amount", integerParser(1), Description.of("Amount of times the trigger needs to be triggered to complete this objective."))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of times the trigger needs to be triggered to complete this objective."))
                 .handler((context) -> {
                     final String triggerName = context.get("Trigger name");
                     final String amountExpression = context.get("amount");

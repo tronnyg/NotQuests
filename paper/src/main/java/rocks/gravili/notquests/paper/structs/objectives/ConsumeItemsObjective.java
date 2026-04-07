@@ -31,8 +31,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class ConsumeItemsObjective extends Objective {
 
@@ -49,7 +49,7 @@ public class ConsumeItemsObjective extends Objective {
             final int level) {
         manager.command(addObjectiveBuilder
                 .required("materials", itemStackSelectionParser(main), Description.description("Material of the item which needs to be consumed"))
-                .required("amount", integerParser(1), Description.description("Amount of items which need to be consumed"))
+                .required("amount", numberVariableParser("amount", null), Description.description("Amount of items which need to be consumed"))
                 .handler(
                         (context) -> {
                             final String amountExpression = context.get("amount");

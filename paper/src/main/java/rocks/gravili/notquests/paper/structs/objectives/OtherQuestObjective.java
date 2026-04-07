@@ -31,8 +31,8 @@ import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
 import java.util.Map;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static rocks.gravili.notquests.paper.commands.arguments.QuestParser.questParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class OtherQuestObjective extends Objective {
     private String otherQuestName = "";
@@ -49,7 +49,7 @@ public class OtherQuestObjective extends Objective {
             final int level) {
         manager.command(addObjectiveBuilder
                 .required("other quest name", questParser(main), Description.of("Name of the other Quest the player has to complete"))
-                .required("amount", integerParser(1), Description.of("Amount of times the Quest needs to be completed"))
+                .required("amount", numberVariableParser("amount", null), Description.of("Amount of times the Quest needs to be completed"))
                 .flag(manager.flagBuilder("countPreviouslyCompletedQuests").withDescription(Description.of("Makes it so quests completed before this OtherQuest objective becomes active will be counted towards the progress too.")))
                 .handler((context) -> {
                     final Quest otherQuest = context.get("other quest name");

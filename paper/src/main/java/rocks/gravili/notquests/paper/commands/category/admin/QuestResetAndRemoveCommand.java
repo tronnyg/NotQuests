@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.context.CommandContext;
@@ -36,7 +35,7 @@ public class QuestResetAndRemoveCommand extends BaseCommand {
                 .required("quest", questParser(notQuests), Description.of("Name of the Quest which should be reset and removed."))
                 .handler((context) -> {
                     context.sender().sendMessage(Component.empty());
-                    final Player player = context.get("player");
+                    final OfflinePlayer player = context.get("player");
 
                     removeQuest(player, context);
                     context.sender().sendMessage(notQuests.parse("<success>Operation done!"));
@@ -47,7 +46,6 @@ public class QuestResetAndRemoveCommand extends BaseCommand {
                 .required("quest", questParser(notQuests), Description.of("Name of the Quest which should be reset and removed."))
                 .handler((context) -> {
                     context.sender().sendMessage(Component.empty());
-                    final Player player = context.get("player");
 
                     notQuests.getQuestPlayerManager().getAllQuestPlayersForAllProfiles().forEach(questPlayer -> {
                         removeQuest(Bukkit.getOfflinePlayer(questPlayer.getUniqueId()), context);

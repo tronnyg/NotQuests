@@ -49,7 +49,7 @@ public class ConversationParser<C> implements ArgumentParser<C, Conversation> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("Invalid Conversation: " + commandContext));
         }
-        String rawInput = commandInput.input();
+        String rawInput = commandInput.readString();
         List<Conversation> entries = main.getConversationManager().getAllConversations();
         Conversation foundConversation;
         for (Conversation conversation : entries) {

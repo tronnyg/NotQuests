@@ -56,7 +56,7 @@ public class AdminTagCommands {
                         return;
                     }
 
-                    var tag = new Tag(main, tagName, TagType.BOOLEAN);
+                    var tag = new Tag(main, tagName, tagType);
                     if (commandContext.flags().contains(main.getCommandManager().categoryFlag)) {
                         final Category category = commandContext.flags().getValue(
                                 main.getCommandManager().categoryFlag,
@@ -104,7 +104,7 @@ public class AdminTagCommands {
                     return CompletableFuture.completedFuture(main.getTagManager().getTags().stream().map(tag -> Suggestion.suggestion(tag.getTagName())).toList());
                 })
                 .handler((context) -> {
-                    final String tagName = context.get("Tag Name");
+                    final String tagName = context.get("tag-name");
 
                     var foundTag = main.getTagManager().getTag(tagName);
                     if (foundTag == null) {

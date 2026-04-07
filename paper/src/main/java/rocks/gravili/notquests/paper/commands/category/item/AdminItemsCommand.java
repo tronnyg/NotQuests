@@ -35,7 +35,7 @@ import rocks.gravili.notquests.paper.managers.items.NQItem;
 import java.util.Arrays;
 
 import static org.incendo.cloud.bukkit.parser.PlayerParser.playerParser;
-import static org.incendo.cloud.minecraft.extras.parser.ComponentParser.miniMessageParser;
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
 import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 import static rocks.gravili.notquests.paper.commands.arguments.ItemStackSelectionParser.itemStackSelectionParser;
@@ -50,7 +50,7 @@ public class AdminItemsCommand extends BaseCommand {
     @Override
     public void apply(CommandManager<CommandSender> commandManager) {
         
-        var editBuilder = commandManager.commandBuilder("notquestsqdmin", "nqa").literal("items");
+        var editBuilder = builder.literal("items");
         commandManager.command(editBuilder
                 .literal("create", Description.of("Creates a new Item."))
                 .required("name", stringParser(), Description.of("Item Name"))
@@ -169,10 +169,10 @@ public class AdminItemsCommand extends BaseCommand {
         commandManager.command(admitItemsEditBuilder.commandDescription(Description.of("Sets an item's display name."))
                 .literal("displayName")
                 .literal("set")
-                .required("display-name", miniMessageParser(), Description.of("New display name"))
+                .required("display-name", greedyStringParser(), Description.of("New display name"))
                 .handler((context) -> {
                     NQItem nqItem = context.get("item");
-                    final String displayName = String.join(" ", (String[]) context.get("display-name"));
+                    final String displayName = (String) context.get("display-name");
 
                     nqItem.setDisplayName(displayName, true);
 

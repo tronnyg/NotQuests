@@ -50,7 +50,7 @@ public class MultiActionsParser<C> implements ArgumentParser<C, ActionList> {
         if (commandInput.isEmpty()) {
             return ArgumentParseResult.failure(new IllegalArgumentException("No Input provided!"));
         }
-        final String rawData = commandInput.input();
+        final String rawData = commandInput.readString();
         final ActionList actions = new ActionList();
         for (final String inputAction : rawData.split(",")) {
             final Action action = main.getActionsYMLManager().getAction(inputAction);

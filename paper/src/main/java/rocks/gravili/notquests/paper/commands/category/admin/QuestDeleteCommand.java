@@ -33,6 +33,9 @@ public class QuestDeleteCommand extends BaseCommand {
                     }
                     return CompletableFuture.completedFuture(completions);
                 })
-                .handler((context) -> context.sender().sendMessage(notQuests.parse(notQuests.getQuestManager().deleteQuest(context.get("questName"))))));
+                .handler((context) -> {
+                    final Quest quest = context.get("questName");
+                    context.sender().sendMessage(notQuests.parse(notQuests.getQuestManager().deleteQuest(quest.getIdentifier())));
+                }));
     }
 }

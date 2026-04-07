@@ -28,7 +28,7 @@ import rocks.gravili.notquests.paper.NotQuests;
 import rocks.gravili.notquests.paper.structs.ActiveObjective;
 import rocks.gravili.notquests.paper.structs.QuestPlayer;
 
-import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static rocks.gravili.notquests.paper.commands.arguments.variables.NumberVariableValueParser.numberVariableParser;
 
 public class OpenBuriedTreasureObjective extends Objective {
 
@@ -42,7 +42,7 @@ public class OpenBuriedTreasureObjective extends Objective {
       Command.Builder<CommandSender> addObjectiveBuilder,
       final int level) {
     manager.command(addObjectiveBuilder
-            .required("amount", integerParser(1), Description.of("Amount of buried treasured to open"))
+            .required("amount", numberVariableParser("amount", null), Description.of("Amount of buried treasured to open"))
             .handler(
                 (context) -> {
                   final String amountExpression = context.get("amount");
