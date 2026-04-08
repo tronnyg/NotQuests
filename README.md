@@ -28,6 +28,41 @@ Git clone this project and build it with these Gradle commands: `clean build`
 The output file should be in the folder `plugin/build/libs/plugin-version.jar`
 
 
+
+![Banner_Images](https://user-images.githubusercontent.com/70709113/133997397-fbe14d0b-22fe-4ede-98e2-4d7a2cbcb489.png)
+
+The images are all OLD and need to be updated:
+
+Quest Giver NPC:
+
+![image](https://user-images.githubusercontent.com/70709113/131539574-ef73ddfb-1dcd-4ab8-a85c-9b38d2f95a8d.png)
+
+What happens when you right click it:
+
+![image](https://user-images.githubusercontent.com/70709113/131539663-5bd12479-3bc8-4958-81a2-de12a541820f.png)
+
+Quest Accepting GUI:
+
+![image](https://user-images.githubusercontent.com/70709113/131539715-b055e4cd-2a7e-4a78-8d7a-dc840399c0c0.png)
+
+Quest User GUI:
+
+![image](https://user-images.githubusercontent.com/70709113/131539761-66be66c2-26d9-4636-bbd5-d69fd11bfeaf.png)
+
+Preview Quests GUI:
+
+![image](https://user-images.githubusercontent.com/70709113/131539815-48c7de30-a5af-499c-b5c7-8316da5e186b.png)
+
+Admin Commands (for quest creation):
+
+![image](https://i.imgur.com/mAyL08w.png)
+
+Admin Commands - Quest Editing:
+
+![image](https://i.imgur.com/WKYvJ4V.png)
+
+
+
 ![Banner_Features](https://user-images.githubusercontent.com/70709113/133997198-bbc020b6-69c5-454b-b5b5-5f1bec0bab0d.png)
 - Proxy support (like Velocity, Waterfall & BungeeCord)
 - **Custom YAML-based GUIs** - the entire GUI system is configurable via YAML files, supporting tabbed interfaces, paged item lists, action buttons, custom skull textures, and dynamic placeholders
